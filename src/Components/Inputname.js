@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Inputname = () => {
+const Inputname = ({style,name}) => {
   return (
     <View>
-      <Text>Inputname</Text>
+      <Text style={style}>{name}</Text>
     </View>
   )
 }

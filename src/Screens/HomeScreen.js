@@ -2,7 +2,17 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React from 'react';
 import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
+import {useState} from 'react';
+import Button from '../Components/Button';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 const HomeScreen = () => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+ const handleicon = () => {
+  setIsPasswordVisible(!isPasswordVisible);
+};
+
   return (
     <View style={styles.container}>
       <View style={styles.logoimage}>
@@ -11,11 +21,11 @@ const HomeScreen = () => {
       <View>
         <Text style={styles.signin}>Sign In</Text>
       </View>
+
       <Inputname
         style={{fontSize: 17, paddingTop: 10, marginLeft: -50}}
         name={'Email Address / Mobile Number'}
       />
-      {/* Input box  */}
       <Inputbox
         style={{
           width: 250,
@@ -25,7 +35,7 @@ const HomeScreen = () => {
           paddingLeft: 5,
           borderRadius: 5,
         }}
-        placeholder='Enter email/Mobile Number'
+        placeholder="Enter email/Mobile Number"
       />
 
       <Inputname
@@ -40,10 +50,25 @@ const HomeScreen = () => {
           borderColor: '#ccc',
           borderWidth: 1,
           paddingLeft: 5,
-          borderRadius: 5,     
+          borderRadius: 5,
         }}
-        placeholder='Enter your password'
+        iconn={
+          <Icon
+            name={isPasswordVisible ? 'visibility-off' : 'visibility'}
+            size={25}
+            color="gray"
+            onPress={handleicon}
+          />
+        }
+        placeholder="Enter your password"
+        isPasswordVisible={isPasswordVisible} 
       />
+
+      <View>
+           <Text style={{color:'#0cbcb9',paddingTop:10,left:50}}>Forget Password?</Text>
+      </View>
+
+      <Button/>
     </View>
   );
 };
@@ -59,8 +84,6 @@ const styles = StyleSheet.create({
   signin: {
     justifyContent: 'center',
     alignItems: 'center',
-    // position: 'absolute',
-    // right: 70,
     fontWeight: 700,
     fontSize: 25,
     fontFamily: 'bold',

@@ -9,9 +9,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 const HomeScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
- const handleicon = () => {
-  setIsPasswordVisible(!isPasswordVisible);
-};
+  const handleicon = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <View style={styles.container}>
@@ -61,14 +61,27 @@ const HomeScreen = () => {
           />
         }
         placeholder="Enter your password"
-        isPasswordVisible={isPasswordVisible} 
+        isPasswordVisible={isPasswordVisible}
       />
 
       <View>
-           <Text style={{color:'#0cbcb9',paddingTop:10,left:50}}>Forget Password?</Text>
+        <Text style={{color: '#0cbcb9', paddingTop: 10, left: 50}}>
+          Forget Password?
+        </Text>
       </View>
 
-      <Button/>
+      <Button />
+
+      <View
+        style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+        <Text style={{fontSize: 20}}>OR</Text>
+      </View>
+
+      <View>
+        <Text style={{color: '#0cbcb9',fontSize:18, paddingTop: 10,justifyContent:'center',alignItems:'center'}}>
+          Login With OTP
+        </Text>
+      </View>
     </View>
   );
 };
@@ -85,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 700,
-    fontSize: 25,
+    fontSize: 30,
     fontFamily: 'bold',
     marginLeft: -150,
     paddingTop: 10,

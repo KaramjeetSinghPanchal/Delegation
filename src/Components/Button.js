@@ -1,10 +1,12 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 
-const Button = () => {
+const Button = ({name}) => {
+
+  
   return (
     <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Sign in</Text>
+      <Text style={styles.buttonText}>{name}</Text>
     </TouchableOpacity>
   );
 };
@@ -13,17 +15,17 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#0cbcb9',
     paddingVertical: 12,
-    width: 250,
+    width: 290,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 25,
     marginRight:30
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
 });
 

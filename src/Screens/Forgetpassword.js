@@ -29,7 +29,7 @@ const Forgetpassword = ({navigation}) => {
         <Image source={require('../assets/images/logo-black.png')} />
       </View>
       <View>
-        <Text style={styles.signin}>Forget Password?</Text>
+        <Text style={styles.signin}>Forgot Password?</Text>
       </View>
 
       <Inputname

@@ -74,7 +74,7 @@ const HomeScreen = ({navigation}) => {
         </Text>
       </TouchableOpacity>
 
-      <Button name={'Sign In'} />
+      <Button name={'Sign In'} onPress={()=>navigation.navigate('Tabs')}/>
 
       <View
         style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}>

@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Usermanagement = () => {
+const TaskManagement = () => {
   return (
     <View>
-      <Text>Usermanagement</Text>
+      <Text>TaskManagement</Text>
     </View>
   )
 }
 
-export default Usermanagement
+export default TaskManagement
 
 const styles = StyleSheet.create({})

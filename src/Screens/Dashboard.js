@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = () => {
   const data = ['Item 1', 'Item 2', 'Item 3', 'Item 4']; // Example data
   const [selectedDate, setSelectedDate] = useState('');
@@ -82,10 +83,12 @@ const Dashboard = () => {
               <TouchableOpacity
                 style={styles.datePickerButton}
                 onPress={() => setOpen(true)}>
-               
                 <Text style={styles.buttonText}>
                   {selectedDate ? `${selectedDate}` : 'Select Date'}
                 </Text>
+                <View style={{marginHorizontal: 10,marginTop:8}}>
+                  <Icon name={'calendar-month'} size={25} color="#0cbcb9" />
+                </View>
               </TouchableOpacity>
 
               {/* DatePicker Modal */}
@@ -96,7 +99,7 @@ const Dashboard = () => {
                 onConfirm={date => {
                   setOpen(false);
                   setDate(date);
-                  setSelectedDate(date.toDateString()); 
+                  setSelectedDate(date.toDateString());
                 }}
                 onCancel={() => {
                   setOpen(false);
@@ -195,29 +198,33 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   container: {
-    width: 140,
+    width: 180,
     height: 40,
 
     backgroundColor: '#f9f9f9',
   },
   datePickerButton: {
     backgroundColor: '#ffffff',
-
-    borderRadius: 12, // Rounded corners to resemble iOS button style
-    shadowColor: '#000', // Shadow effect for iOS-like appearance
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 1,
+    borderRadius: 5,
+    shadowColor: '#000',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     shadowRadius: 5,
-    elevation: 2, // To apply shadow on Android
+    elevation: 2,
+    borderWidth: 0.3,
+    width: 200,
+    height: 40,
   },
   buttonText: {
     fontSize: 16,
-    color: '#333', // Dark gray text color
+    color: '#333', 
     textAlign: 'center',
     height: 26,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 5,
+    marginTop:10,
+    marginHorizontal:10
   },
   selectedDate: {
     width: 250,

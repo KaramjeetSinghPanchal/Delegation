@@ -138,7 +138,7 @@ const Dashboard = () => {
                     {selectedDate ? `${selectedDate}` : 'Select Date'}
                   </Text>
                   <View style={{marginHorizontal: 10, marginTop: 8}}>
-                    <Icon name={'calendar-month'} size={25} color="#0cbcb9" />
+                    <Icon name="calendar-month" size={25} color="gray" />
                   </View>
                 </TouchableOpacity>
 
@@ -207,7 +207,7 @@ const Dashboard = () => {
                     marginLeft: 7,
                     borderBlockColor: 'gray',
                   }}>
-                  <Icon name="search" size={28} color="#0cbcb9" />
+                  <Icon name="search" size={28} color="gray" />
                 </View>
               </View>
 
@@ -242,12 +242,16 @@ const Dashboard = () => {
                     View Details
                   </Text>
                 </View>
-                <View></View>
+               
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
+
+      <TouchableOpacity style={styles.floatingButton}>
+                  <Icon name="add" size={40} color="white" />
+                </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -404,4 +408,19 @@ const styles = StyleSheet.create({
     borderRadius: 6, // Make it round
     marginRight: 10, // Space between bullet and text
   },
+  floatingButton: {
+    position: 'absolute',  // Keeps the button fixed
+    right: 20,  // Position the button on the right
+    bottom: 40, // Position the button at the bottom (fixed to bottom)
+    backgroundColor: '#0cbcb9',  // Button color
+    borderRadius: 100,  // Rounded corners
+    padding: 15,  // Button padding
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',  // Button shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,  // For Android shadow
+  }
 });

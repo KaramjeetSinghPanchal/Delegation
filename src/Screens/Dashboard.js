@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useState} from 'react';
+import Profile from '../Components/Profile';
 import PieChart from 'react-native-pie-chart';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const Dashboard = () => {
+const Dashboard = ({navigation}) => {
   const gap = 5;
   const data = [
     'Item 1',
@@ -45,9 +46,10 @@ const Dashboard = () => {
               style={styles.icon}
             />
             <Text style={styles.text}>Dashboard</Text>
-            <Image
-              source={require('../assets/images/gymone.jpeg')}
-              style={[styles.icon, styles.roundedIcon]}
+            <Profile
+              onPress="Details"
+              navigation={navigation}
+              style={{marginTop: 10}}
             />
           </View>
 
@@ -242,7 +244,6 @@ const Dashboard = () => {
                     View Details
                   </Text>
                 </View>
-               
               </View>
             </View>
           </View>
@@ -250,8 +251,8 @@ const Dashboard = () => {
       </ScrollView>
 
       <TouchableOpacity style={styles.floatingButton}>
-                  <Icon name="add" size={40} color="white" />
-                </TouchableOpacity>
+        <Icon name="add" size={40} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -278,15 +279,7 @@ const styles = StyleSheet.create({
     // borderWidth: 2,
     backgroundColor: 'white',
   },
-  icon: {
-    height: 40,
-    width: 40,
-    marginTop: 10,
-    marginHorizontal: 10,
-  },
-  roundedIcon: {
-    borderRadius: 100,
-  },
+
   listContainer: {
     width: '45%', // Adjust width for the list container
     marginTop: 10,
@@ -409,18 +402,27 @@ const styles = StyleSheet.create({
     marginRight: 10, // Space between bullet and text
   },
   floatingButton: {
-    position: 'absolute',  // Keeps the button fixed
-    right: 20,  // Position the button on the right
+    position: 'absolute', // Keeps the button fixed
+    right: 20, // Position the button on the right
     bottom: 40, // Position the button at the bottom (fixed to bottom)
-    backgroundColor: '#0cbcb9',  // Button color
-    borderRadius: 100,  // Rounded corners
-    padding: 15,  // Button padding
+    backgroundColor: '#0cbcb9', // Button color
+    borderRadius: 100, // Rounded corners
+    padding: 15, // Button padding
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',  // Button shadow
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#000', // Button shadow
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    elevation: 5,  // For Android shadow
-  }
+    elevation: 5, // For Android shadow
+  },
+  icon: {
+    height: 30,
+    width: 30,
+    marginTop: 10,
+    marginHorizontal: 10,
+  },
+  roundedIcon: {
+    borderRadius: 100,
+  },
 });

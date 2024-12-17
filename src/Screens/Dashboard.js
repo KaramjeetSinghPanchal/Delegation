@@ -40,7 +40,6 @@ const Dashboard = ({navigation}) => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.main}>
           <View style={styles.main2}>
-            {/* Image with padding */}
             <Image
               source={require('../assets/images/Picon.png')}
               style={styles.icon}
@@ -80,17 +79,15 @@ const Dashboard = ({navigation}) => {
                     widthAndHeight={widthAndHeight}
                     series={series}
                     sliceColor={sliceColor}
-                    innerRadius="30%" // This will create space between slices (inner radius)
+                    innerRadius="30%" 
                     padAngle={0.03}
                   />
                 </View>
                 <View style={styles.listContainer}>
-                  {/* FlatList to display list items */}
                   <FlatList
                     data={data}
                     keyExtractor={(item, index) => index.toString()} // Ensure that each item has a unique key
                     renderItem={({item, index}) => {
-                      // Accessing index and item
                       const bulletColor = [
                         '#fbd203',
                         '#ffb300',

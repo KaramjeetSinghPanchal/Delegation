@@ -2,7 +2,7 @@ import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {useEffect} from 'react';
 import React from 'react';
 
-const Inputbox = ({style, placeholder, iconn, isPasswordVisible,placeholderTextColor}) => {
+const Inputbox = ({style, placeholder, iconn, isPasswordVisible,placeholderTextColor,value,onChangeText}) => {
   return (
     <View
       style={{
@@ -16,7 +16,8 @@ const Inputbox = ({style, placeholder, iconn, isPasswordVisible,placeholderTextC
         style={style}
         placeholderTextColor={placeholderTextColor}
         secureTextEntry={isPasswordVisible}
-      
+        value={value}
+        onChangeText={onChangeText}
       />
       <View
         style={{

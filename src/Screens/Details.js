@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Inputname from '../Components/Inputname';
@@ -14,6 +14,10 @@ import Inputbox from '../Components/Inputbox';
 // import { Button } from '@react-navigation/elements';
 import Button from '../Components/Button';
 const Details = ({navigation}) => {
+  const [isOpen,setOpen] = useState(false)
+  const [currentValue,setCurrentValue] = useState()
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>

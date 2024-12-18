@@ -5,13 +5,42 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
-import { listing } from '../apiClient/api';
-import { useEffect } from 'react';
+import {listing} from '../apiClient/api';
+import {useEffect, useState} from 'react';
 const Usermanagement = () => {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    console.warn('usermanagement');
+
+    const fetchUsers = async () => {
+      try {
+        console.warn('Fetching users...');
+        const data = await listing(); // Call the listing function from API
+        console.warn(data, 'datadata');
+
+        if (data && data.data) {
+          // Assuming data.data contains the array of users
+         
+          setUsers(data.data.data); // Set the users array to state
+        } else {
+          console.warn('No users data found.');
+        }
+      } catch (err) {
+        console.error('Error fetching users:', err.message);
+        setError(err.message || 'Failed to load users');
+      }
+    };
+
+    fetchUsers();
+  }, []); // Empt
 
   return (
     <SafeAreaView style={styles.containermain}>
@@ -39,20 +68,27 @@ const Usermanagement = () => {
           />
         </View>
 
-        <View style={{marginHorizontal:20,marginTop:50,flexDirection:'row',justifyContent:'space-between'}}>
-          <View><Text style={{fontSize:18,fontWeight:400}}>Sachin Sharama</Text></View> 
-          <View><Text style={{color:'#0CBCB9',fontSize:16}}>View Details</Text></View>
+        <View style={{marginHorizontal: 20, marginTop: 50}}>
+          {/* FlatList to render each user */}
+          <FlatList
+            data={users} // Pass users array as data
+            keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+            renderItem={({item}) => (
+              <View style={styles.userContainer}>
+                <View>
+                  <Text style={styles.userName}>{item?.name}</Text>
+                  <Text style={styles.email}>{item?.email}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => console.log(`View details of ${item.name}`)}>
+                  <Text style={styles.viewDetailsText}>View Details</Text>
+                  
+                </TouchableOpacity>
+              </View>
+            )}
+            ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
+          />
         </View>
-        <View style={{marginHorizontal:20,marginTop:50,flexDirection:'row',justifyContent:'space-between'}}>
-          <View><Text style={{fontSize:18,fontWeight:400}}>Sachin Sharama</Text></View> 
-          <View><Text style={{color:'#0CBCB9',fontSize:16}}>View Details</Text></View>
-        </View>
-        <View style={{marginHorizontal:20,marginTop:50,flexDirection:'row',justifyContent:'space-between'}}>
-          <View><Text style={{fontSize:18,fontWeight:400}}>Sachin Sharama</Text></View> 
-          <View><Text style={{color:'#0CBCB9',fontSize:16}}>View Details</Text></View>
-        </View>
-
-
       </View>
     </SafeAreaView>
   );
@@ -113,5 +149,39 @@ const styles = StyleSheet.create({
   icons: {
     position: 'absolute', // Position the icon inside the container
     left: 10, // Distance from the left side of the container
+  },
+  itemContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  itemText: {
+    fontSize: 16,
+  },
+  userContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    paddingVertical: 10, 
+    paddingHorizontal: 20, 
+    // borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    height:90,
+    width:'100%'
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  email: {
+    fontSize: 14,
+    fontWeight: '400',
+    color:'gray'
+  },
+  viewDetailsText: {
+    color: '#0CBCB9',
+    fontSize: 16,
+    fontWeight:400
+    // fontSize:400
   },
 });

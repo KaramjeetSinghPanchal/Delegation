@@ -1,13 +1,13 @@
 // api.js
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
 // Login function using FormData
 export const loginUser = async (phone_email, password) => {
-  console.warn(phone_email, password,"balle");
+  console.warn(phone_email, password, 'balle');
 
   try {
-    console.log("Sending request to:", `${baseUrl}user-login`);
+    console.log('Sending request to:', `${baseUrl}user-login`);
 
     // Create FormData object to append the form fields
     const formData = new FormData();
@@ -24,12 +24,20 @@ export const loginUser = async (phone_email, password) => {
     if (!response.ok) {
       const errorResponse = await response.json();
       console.error('Error response:', errorResponse);
-      throw new Error(errorResponse.message || 'Login failed. Please try again.');
+      throw new Error(
+        errorResponse.message || 'Login failed. Please try again.',
+      );
     }
 
     // If the response is successful, parse the JSON response
     const data = await response.json();
-    console.log('Login successful', data);
+
+    if (data.data.token) {
+      await AsyncStorage.setItem('authToken', data.data.token); // Store token in localStorage
+      console.log('Token saved to AsyncStorage:', data.data.token);
+    } else {
+      console.error('No token found in response');
+    }
 
     return data;
   } catch (error) {
@@ -39,52 +47,56 @@ export const loginUser = async (phone_email, password) => {
   }
 };
 
-
-export const listing = async () => {
+const gettoken = async () => {
   try {
-    console.log("Sending request to:", `${baseUrl}delegatees-listing`);
-
-    // Send the request with credentials (cookies) included
-    const response = await fetch(`${baseUrl}delegatees-listing`, {
-      method: 'GET',
-      credentials: 'include',  // Ensures cookies are sent with the request
-      headers: {
-        'Content-Type': 'application/json',
-        // Optionally add other headers like Authorization or X-CSRF-Token
-        // 'Authorization': 'Bearer <your_token>',
-        // 'X-CSRF-Token': '<your_token>',
-      }
-    });
-
-    // Log the response status and headers for debugging
-    console.log('Response Status:', response.status);
-    console.log('Response Headers:', JSON.stringify(response.headers));
-
-    // Check if the response is successful
-    if (!response.ok) {
-      const errorText = await response.text();  // Log the response as text in case of an error
-      console.error('Error response:', errorText);
-      throw new Error(`Failed to fetch users list. Status: ${response.status}`);
+    const token = await AsyncStorage.getItem('authToken');
+    if (token) {
+      return token;
+    } else {
+      throw new Error('Token not found in "gettoken"');
     }
-
-    // Read the response body
-    const responseText = await response.text();
-    console.log("Raw response body:", responseText);
-
-    // If the response body starts with '<html>', it's likely an HTML error page (login page, 404, etc.)
-    if (responseText.startsWith("<html>")) {
-      throw new Error("Received HTML response, likely an error page. Check the API server.");
-    }
-
-    // Parse the response as JSON if it's valid
-    const data = JSON.parse(responseText);
-    console.warn("Fetched users list successfully:", data);
-
-    return data;
-
   } catch (error) {
-    console.error('Error fetching users listing:', error.message);
-    return null;  // Return null or an empty array if there's an error
+    console.error('Error retrieving token:', error);
+    throw error;
   }
 };
 
+export const listing = async () => {
+  try {
+    const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
+    const response = await fetch(`${baseUrl}user-listing`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch users, status:', response.status);
+      return null; // Return null or handle the error as needed
+    }
+
+    const data = await response.json();
+    console.log('API response:', data);
+    return data; // Return the data if the request is successful
+  } catch (error) {
+    console.error('Error fetching users listing:', error);
+    throw error; // Re-throw the error to be caught in the useEffect
+  }
+};
+
+const delegationtask = async () => {
+  const data = await fetch(`${baseUrl}delegation-get-task`,{
+    method : 'GET',
+    headers : {
+      Authorization: `Bearer ${token}`,
+      'Content-Type' : 'application/json',
+    },
+  });
+
+  const response = await response.json();
+  console.warn(response,'response');
+  
+
+};

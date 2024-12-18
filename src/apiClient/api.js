@@ -86,17 +86,27 @@ export const listing = async () => {
   }
 };
 
-const delegationtask = async () => {
-  const data = await fetch(`${baseUrl}delegation-get-task`,{
-    method : 'GET',
-    headers : {
-      Authorization: `Bearer ${token}`,
-      'Content-Type' : 'application/json',
-    },
-  });
+export const delegationtask = async () => {
+  try {
+    const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
+    const response = await fetch(`${baseUrl}delegation-get-task`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-  const response = await response.json();
-  console.warn(response,'response');
-  
+    if (!response.ok) {
+      console.error('Failed to fetch users, status:', response.status);
+      return null; // Return null or handle the error as needed
+    }
 
+    const data = await response.json();
+    console.log('API response new:', data);
+    return data; // Return the data if the request is successful
+  } catch (error) {
+    console.error('Error fetching users listing:', error);
+    throw error; // Re-throw the error to be caught in the useEffect
+  }
 };

@@ -15,7 +15,6 @@ import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
 const Usermanagement = () => {
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     console.warn('usermanagement');
@@ -35,7 +34,6 @@ const Usermanagement = () => {
         }
       } catch (err) {
         console.error('Error fetching users:', err.message);
-        setError(err.message || 'Failed to load users');
       }
     };
 

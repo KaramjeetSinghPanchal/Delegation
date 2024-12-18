@@ -4,36 +4,62 @@ import {
   View,
   Image,
   SafeAreaView,
-  Button,
   TouchableOpacity,
   ScrollView,
   FlatList,
 } from 'react-native';
+import {useEffect} from 'react';
 import React from 'react';
 import {useState} from 'react';
 import Profile from '../Components/Profile';
 import PieChart from 'react-native-pie-chart';
+import {delegationtask} from '../apiClient/api';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
-  const gap = 5;
   const data = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 2',
-    'Item 3',
-    'Item 4',
+    'In-Progress',
+    'To Be Accepted',
+    'In-progress',
+    'Completed',
+    'In-Draft'
   ]; // Example data
 
   const [selectedDate, setSelectedDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [task, settask] = useState({});
+
   const widthAndHeight = 170;
-  const series = [145, 321, 123, 789, 537];
+  const seriess = [145, 321, 123, 789, 537];
   const sliceColor = ['#fbd203', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00'];
+
+  useEffect(() => {
+    console.warn('usermanagement');
+
+    const fetchUsers = async () => {
+      try {
+        console.warn('Fetching users...');
+        const data = await delegationtask(); // Call the listing function from API
+        console.warn(data, 'datadata');
+
+        if (data && data.data) {
+          // Assuming data.data contains the array of users
+
+          settask(data.data.allCount); // Set the users array to state
+        } else {
+          console.warn('No users data found.');
+        }
+      } catch (err) {
+        console.error('Error fetching users:', err.message);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  console.warn('tssask', task);
 
   return (
     <SafeAreaView style={styles.containermain}>
@@ -53,15 +79,94 @@ const Dashboard = ({navigation}) => {
           </View>
 
           <View style={styles.firstBoxmain}>
-            <View style={styles.firstBox}>
-              <Text style={{color: 'gray', fontSize: 20}}>
-                In-Progress {'\n'}{' '}
+            <ScrollView horizontal={true}>
+              {' '}
+              <View style={styles.firstBox}>
                 <Text
-                  style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>
-                  43
+                  style={{color: 'gray', fontSize: 18, marginHorizontal: 10}}>
+                  {/* {item?.data?.assigned_by_id} {'\n'}{' '} */}
+                  In-Progress
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inProgressCount}
+                  </Text>
                 </Text>
-              </Text>
-            </View>
+              </View>
+              <View style={styles.firstBox}>
+                <Text style={{color: 'gray', fontSize: 18}}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  Overdue
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inOverDueCount}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.firstBox}>
+                <Text style={{color: 'gray', fontSize: 18}}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  Draft Count
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inDraftCount}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.firstBox}>
+                <Text style={{color: 'gray', fontSize: 18}}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  To Be Completed
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.taskToBeAcceptedCount}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.firstBox}>
+                <Text style={{color: 'gray', fontSize: 18}}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  In Draft
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inDraftCount}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.firstBox}>
+                <Text style={{color: 'gray', fontSize: 18}}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  Completed
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.completeCount}
+                  </Text>
+                </Text>
+              </View>
+            </ScrollView>
           </View>
 
           <View style={styles.secondBoxmain}>
@@ -74,15 +179,17 @@ const Dashboard = ({navigation}) => {
               <View
                 style={{justifyContent: 'space-between', flexDirection: 'row'}}>
                 <View style={styles.containerchart}>
-                  <Text style={styles.title}>Basic</Text>
+               
                   <PieChart
                     widthAndHeight={widthAndHeight}
-                    series={series}
+                    series={seriess}
                     sliceColor={sliceColor}
-                    innerRadius="30%" 
+                    innerRadius="100%"
                     padAngle={0.03}
+                    
                   />
                 </View>
+
                 <View style={styles.listContainer}>
                   <FlatList
                     data={data}
@@ -297,9 +404,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     padding: 10,
+    marginLeft: 10,
   },
   firstBoxmain: {
-    paddingTop: 5,
+    paddingTop: 20,
     paddingHorizontal: 10,
   },
   secondBox: {
@@ -310,7 +418,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   secondBoxmain: {
-    paddingTop: 10,
+    paddingTop: 20,
     paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -385,6 +493,7 @@ const styles = StyleSheet.create({
     width: '45%', // Adjust width for pie chart
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:-80
   },
   title: {
     fontSize: 18,

@@ -11,15 +11,6 @@ import {useState} from 'react';
 import Profile from '../Components/Profile';
 import DropDownPicker from 'react-native-dropdown-picker';
 const Dashboard = ({navigation}) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [currentValue,setCurrentValue] = useState();
-  const items = [
-    {label: 'Dancing', value: 'dancing'},
-    {label: 'Singing', value: 'sining'},
-    {label: 'Coading', value: 'coading'},
-    {label: 'Swining', value: 'swining'},
-    {label: 'Reading', value: 'reading'},
-  ];
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>

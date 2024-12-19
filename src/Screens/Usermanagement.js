@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TextInput,
   FlatList,
-  TouchableOpacity,
+  TouchableOpacity, 
 } from 'react-native';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';

@@ -279,7 +279,7 @@ const Dashboard = ({navigation}) => {
                   }}>
                   <Text>Filter</Text>
                 </View>
-
+  
                 <View
                   style={{
                     height: 40,

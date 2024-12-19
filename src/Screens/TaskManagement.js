@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +10,7 @@ import {
   TextInput,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-
+import { taskmangementlisting } from '../apiClient/api';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -19,7 +20,9 @@ const TaskManagement = ({navigation}) => {
   const [selected, setSelected] = useState('');
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
-
+  const [datastate, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const dataselect = [
     {key: '1', value: 'Mobiles', disabled: true},
     {key: '2', value: 'Appliances'},
@@ -51,6 +54,25 @@ const TaskManagement = ({navigation}) => {
     updatedCheckedStates[index] = !updatedCheckedStates[index];
     setCheckedStates(updatedCheckedStates);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await taskmangementlisting();
+        console.warn("Fetched Data:", data.data[0].assigned_by_id);
+        setData(data.data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // console.log(datastate.data.assignment_date,"datastate")
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,7 +117,7 @@ const TaskManagement = ({navigation}) => {
             data={data}
             save="value"
             dropdownTextStyles={{color: 'gray'}}
-            boxStyles={{marginHorizontal: 16}}
+            boxStyles={{marginHorizontal: 16,borderBlockColor:'gray'}}
           />
         </View>
 
@@ -137,7 +159,7 @@ const TaskManagement = ({navigation}) => {
               alignContent: 'center',
               alignContent: 'center',
               textAlign: 'center',
-              borderWidth: 0.2,
+              // borderWidth: 0.2,
               // marginRight: 15,
               borderBlockColor: 'gray',
               marginTop: 20,
@@ -162,7 +184,7 @@ const TaskManagement = ({navigation}) => {
             {/* Text Input */}
             <TextInput style={styles.inputBox} placeholder="Search" />
           </View>
-          <View
+          <TouchableOpacity
             style={{
               height: 42,
               width: '85%',
@@ -177,8 +199,40 @@ const TaskManagement = ({navigation}) => {
               marginLeft: 1,
             }}>
             <Text style={{color: 'white'}}>Generate Report</Text>
-          </View>
+          </TouchableOpacity>
         </View>
+
+        <View style={{marginTop: 45, marginHorizontal: 20}}>
+          <Text style={{fontSize: 20, fontWeight: '600'}}>
+            Task titile will be here...
+          </Text>
+        </View>
+
+        {<View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingTop: 30,
+            marginHorizontal: 20,
+          }}>
+          <View>
+            <Text style={{fontWeight: 'bold', fontSize: 18}}>21</Text>
+            <Text style={{fontSize: 16}}>jul</Text>
+          </View>
+          <View>
+            <Text>{datastate[0].assigned_to.name}</Text>
+            {'\n'}
+            <Text>
+              Prority |{' '}
+              <Text style={{fontWeight: 'bold', color: 'green'}}>Low</Text>
+            </Text>
+          </View>
+          <View style={{backgroundColor: '#E2E8F0', padding: 2, marginTop: 3}}>
+            <Text style={{fontSize: 17, color: 'orange', fontWeight: 500}}>
+              In-Process
+            </Text>
+          </View>
+        </View>}
       </View>
     </SafeAreaView>
   );
@@ -291,7 +345,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     shadowRadius: 5,
     elevation: 2,
-    borderWidth: 0.3,
+    // borderWidth: 0.3,
     // width: 200,
     width: '105%',
     height: 40,

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  FlatList,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import { taskmangementlisting } from '../apiClient/api';
+import {taskmangementlisting} from '../apiClient/api';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -18,11 +19,15 @@ import {SelectList} from 'react-native-dropdown-select-list';
 
 const TaskManagement = ({navigation}) => {
   const [selected, setSelected] = useState('');
+  // const [searchResults, setSearchResults] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [datastate, setData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const dataselect = [
     {key: '1', value: 'Mobiles', disabled: true},
     {key: '2', value: 'Appliances'},
@@ -34,6 +39,14 @@ const TaskManagement = ({navigation}) => {
   ];
   const [selectedDate, setSelectedDate] = useState('');
 
+  useEffect(() => {
+    if(selected)
+    {
+      handlesearch(selected)
+    }
+  }, [selected])
+
+
   const data = [
     'All',
     'In-progress',
@@ -44,10 +57,25 @@ const TaskManagement = ({navigation}) => {
     'Revised date',
   ]; // Example data
 
+  const formatDate = dateString => {
+    const date = new Date(dateString); // Convert the string to a Date object
+    const options = {day: 'numeric'}; // Format options: day and short month name (e.g., Dec)
+    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+  };
+
+  const formatmonth = dateString => {
+    const date = new Date(dateString); // Convert the string to a Date object
+    const options = {month: 'short'}; // Format options: day and short month name (e.g., Dec)
+    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+  };
+
   const [checkedStates, setCheckedStates] = useState(
     new Array(data.length).fill(false),
   );
 
+
+  console.warn("datastatedatastatedatastate",datastate);
+  
   // Handle checkbox state toggle
   const handleCheckboxChange = index => {
     const updatedCheckedStates = [...checkedStates];
@@ -59,7 +87,7 @@ const TaskManagement = ({navigation}) => {
     const fetchData = async () => {
       try {
         const data = await taskmangementlisting();
-        console.warn("Fetched Data:", data.data[0].assigned_by_id);
+        console.warn('Fetched Data:', data.data[0].assigned_by_id);
         setData(data.data);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -72,7 +100,16 @@ const TaskManagement = ({navigation}) => {
     fetchData();
   }, []);
 
-  // console.log(datastate.data.assignment_date,"datastate")
+  console.warn('datastate', datastate);
+
+  // console.log(datastate[0].assigned_to.name, 'datastate');
+
+  const handlesearch = async(selectedValue) => {
+    const filtereddata =await taskmangementlisting(selectedValue)
+    setData(filtereddata)
+
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,7 +119,7 @@ const TaskManagement = ({navigation}) => {
             source={require('../assets/images/Picon.png')}
             style={styles.icon}
           />
-          <Text style={styles.text}>Dashboard</Text>
+          <Text style={styles.text}>Task Management</Text>
           <Profile
             onPress="Details"
             navigation={navigation}
@@ -110,14 +147,13 @@ const TaskManagement = ({navigation}) => {
             ))}
           </View>
         </View>
-
         <View>
           <SelectList
             setSelected={val => setSelected(val)}
             data={data}
             save="value"
             dropdownTextStyles={{color: 'gray'}}
-            boxStyles={{marginHorizontal: 16,borderBlockColor:'gray'}}
+            boxStyles={{marginHorizontal: 16, borderBlockColor: 'gray'}}            
           />
         </View>
 
@@ -167,7 +203,9 @@ const TaskManagement = ({navigation}) => {
               borderBlockColor: '#A0AEC0',
               // marginRight:20
             }}>
-            <Text style={{fontSize: 18}}>Clear</Text>
+            <TouchableOpacity>
+              <Text style={{fontSize: 18}}>Clear</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -182,7 +220,12 @@ const TaskManagement = ({navigation}) => {
             />
 
             {/* Text Input */}
-            <TextInput style={styles.inputBox} placeholder="Search" />
+            <TextInput
+              style={styles.inputBox}
+              placeholder="Search"
+              onPress={handlesearch}
+              
+            />
           </View>
           <TouchableOpacity
             style={{
@@ -201,38 +244,69 @@ const TaskManagement = ({navigation}) => {
             <Text style={{color: 'white'}}>Generate Report</Text>
           </TouchableOpacity>
         </View>
+{console.warn(datastate,"datastatedatastate")}
 
-        <View style={{marginTop: 45, marginHorizontal: 20}}>
-          <Text style={{fontSize: 20, fontWeight: '600'}}>
-            Task titile will be here...
-          </Text>
-        </View>
+        <FlatList
+          data={datastate} // Pass users array as data
+          
+          keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+          renderItem={({item}) => (
+            <View>
+              <View style={{marginTop: 45, marginHorizontal: 20}}>
+                <Text style={{fontSize: 20, fontWeight: '600'}}>
+                  Task titile will be here...
+                </Text>
+              </View>
 
-        {<View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingTop: 30,
-            marginHorizontal: 20,
-          }}>
-          <View>
-            <Text style={{fontWeight: 'bold', fontSize: 18}}>21</Text>
-            <Text style={{fontSize: 16}}>jul</Text>
-          </View>
-          <View>
-            <Text>{datastate[0].assigned_to.name}</Text>
-            {'\n'}
-            <Text>
-              Prority |{' '}
-              <Text style={{fontWeight: 'bold', color: 'green'}}>Low</Text>
-            </Text>
-          </View>
-          <View style={{backgroundColor: '#E2E8F0', padding: 2, marginTop: 3}}>
-            <Text style={{fontSize: 17, color: 'orange', fontWeight: 500}}>
-              In-Process
-            </Text>
-          </View>
-        </View>}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: 30,
+                  marginHorizontal: 20,
+                }}>
+                <View>
+                  <Text style={{fontWeight: 'bold', fontSize: 18}}>
+                    {formatDate(item.assignment_date)}
+                  </Text>
+                  <Text style={{fontSize: 16}}>
+                    {formatmonth(item.assignment_date)}
+                  </Text>
+                </View>
+
+                <View>
+                  <Text>{item.assigned_to.name}</Text>
+                  {'\n'}
+                  <Text>
+                    Priority |{' '}
+                    <Text style={{fontWeight: 'bold', color: 'green'}}>
+                      {item.priority}
+                    </Text>
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: '#E2E8F0',
+                    padding: 2,
+                    marginTop: 3,
+                    width: 120,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: 'orange',
+                      fontWeight: 500,
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                    }}>
+                    {item.status.title}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+          ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
+        />
       </View>
     </SafeAreaView>
   );

@@ -20,7 +20,7 @@ const Dashboard = ({navigation}) => {
               source={require('../assets/images/Picon.png')}
               style={styles.icon}
             />
-            <Text style={styles.text}>Dashboard</Text>
+            <Text style={styles.text}>Delegation Bot</Text>
             <Profile
               onPress="Details"
               navigation={navigation}

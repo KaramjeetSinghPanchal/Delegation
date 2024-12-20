@@ -6,13 +6,16 @@ import DelegationBot from '../Screens/DelegationBot'; // Ensure correct import
 import Dashboard from '../Screens/Dashboard'; // Ensure correct import
 import {Image} from 'react-native';
 import TaskManagement from '../Screens/TaskManagement';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Usermanagement from '../Screens/Usermanagement';
 const Tab = createBottomTabNavigator();
 
 const Tabnavigation = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false, // This hides the header globally for all screens
+      }}
+    >
       {/* Dashboard Screen */}
       <Tab.Screen
         name="Dashboard"
@@ -21,8 +24,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/home.png')} // Local image for the icon
-              style={{width: 35, height: 35,marginTop:10}}// Customize size
-              // Customize size
+              style={{width: 35, height: 35, marginTop: 10}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label
@@ -30,7 +32,6 @@ const Tabnavigation = () => {
       />
 
       {/* Delegation Bot Screen */}
-
       <Tab.Screen
         name="DelegationBot"
         component={DelegationBot} // Ensure the component is correctly passed
@@ -38,7 +39,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/delegationbot.png')} // Local image for the icon
-              style={{width: 50, height: 60,marginTop:16}} // Customize size
+              style={{width: 50, height: 60, marginTop: 16}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label
@@ -53,14 +54,14 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/Usermanagementt.png')}
-              style={{width: 39.74, height: 39.74,marginTop:10}}
+              style={{width: 39.74, height: 39.74, marginTop: 10}}
             />
           ),
-          tabBarLabel: () => null,
+          tabBarLabel: () => null, // Hide the label
         }}
       />
 
-  {/* Task Management Screen */}
+      {/* Task Management Screen */}
       <Tab.Screen
         name="Taskmanagement"
         component={TaskManagement} // Ensure the component is correctly passed
@@ -68,8 +69,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/Taskmanagement.png')} // Local image for the icon
-              style={{width: 39.74, height: 39.74,marginTop:10}}// Customize size
-              // Customize size
+              style={{width: 39.74, height: 39.74, marginTop: 10}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label

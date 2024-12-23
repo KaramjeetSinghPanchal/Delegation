@@ -9,7 +9,10 @@ import {
   Image,
   TextInput,
   FlatList,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
+import AddButton from './AddButton';
 import DatePicker from 'react-native-date-picker';
 import {taskmangementlisting} from '../apiClient/api';
 import Profile from '../Components/Profile';
@@ -27,7 +30,9 @@ const TaskManagement = ({navigation}) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [rotation, setRotation] = useState(0);
+  const [screenwidth,setscreenwidth] = useState(Dimensions.get('window').width)
+  const [screenheight,setscreenheight] = useState(Dimensions.get('window').height)
   const dataselect = [
     {key: '1', value: 'Mobiles', disabled: true},
     {key: '2', value: 'Appliances'},
@@ -39,12 +44,22 @@ const TaskManagement = ({navigation}) => {
   ];
   const [selectedDate, setSelectedDate] = useState('');
 
+ 
   useEffect(() => {
-    if(selected)
-    {
-      handlesearch(selected)
+    if (selected) {
+      handlesearch(selected);
     }
-  }, [selected])
+  }, [selected]);
+
+    useEffect(() => {
+      const subscription = Dimensions.addEventListener('change',({window}) =>{
+        setscreenheight(window.height)
+        setscreenwidth(window.width)
+      });
+      return () => {
+        subscription.remove()
+      }
+    }, []);
 
 
   const data = [
@@ -74,8 +89,6 @@ const TaskManagement = ({navigation}) => {
   );
 
 
-  console.warn("datastatedatastatedatastate",datastate);
-  
   // Handle checkbox state toggle
   const handleCheckboxChange = index => {
     const updatedCheckedStates = [...checkedStates];
@@ -100,227 +113,284 @@ const TaskManagement = ({navigation}) => {
     fetchData();
   }, []);
 
-  console.warn('datastate', datastate);
 
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
-  const handlesearch = async(selectedValue) => {
-    const filtereddata =await taskmangementlisting(selectedValue)
-    setData(filtereddata)
-
+  const handlesearch = async selectedValue => {
+    const filtereddata = await taskmangementlisting(selectedValue);
+    setData(filtereddata);
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.main}>
-        <View style={styles.main2}>
-          <Image
-            source={require('../assets/images/Picon.png')}
-            style={styles.icon}
-          />
-          <Text style={styles.text}>Task Management</Text>
-          <Profile
-            onPress="Details"
-            navigation={navigation}
-            style={{marginTop: 10}}
-          />
-        </View>
-        <View style={styles.content}>
-          <View style={styles.checkboxContainer}>
-            {data.map((label, index) => (
-              <View style={styles.checkboxItem} key={index}>
-                {/* TouchableOpacity for custom checkbox */}
-                <TouchableOpacity
-                  style={[
-                    styles.checkbox,
-                    checkedStates[index] && styles.checkedCheckbox,
-                  ]}
-                  onPress={() => handleCheckboxChange(index)}>
-                  {/* Checkmark (only shows when checked) */}
-                  {checkedStates[index] && (
-                    <Text style={styles.checkmark}>✓</Text>
-                  )}
-                </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>{label}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-        <View>
-          <SelectList
-            setSelected={val => setSelected(val)}
-            data={data}
-            save="value"
-            dropdownTextStyles={{color: 'gray'}}
-            boxStyles={{marginHorizontal: 16, borderBlockColor: 'gray'}}            
-          />
-        </View>
-
-        <View style={styles.containerr}>
-          <TouchableOpacity
-            style={styles.datePickerButton}
-            onPress={() => setOpen(true)}>
-            <Text style={styles.buttonText}>
-              {selectedDate ? `${selectedDate}` : 'Due Date'}
+      <ScrollView>
+        <View style={styles.main}>
+          <View style={styles.main2}>
+            <Image
+              source={require('../assets/images/Picon.png')}
+              style={styles.icon}
+            />
+            <Text
+              style={{
+                fontFamily: 'Inter_24pt-SemiBold',
+                fontSize: 20,
+                marginTop: 12,
+                fontWeight: 600,
+              }}>
+              Task Management
             </Text>
-            <View style={{marginHorizontal: 10, marginTop: 8}}>
-              <Icon name="calendar-month" size={25} color="gray" />
-            </View>
-          </TouchableOpacity>
-
-          {/* DatePicker Modal */}
-          <DatePicker
-            modal
-            open={open}
-            date={date}
-            onConfirm={date => {
-              setOpen(false);
-              setDate(date);
-              setSelectedDate(date.toDateString());
-            }}
-            onCancel={() => {
-              setOpen(false);
-            }}
-          />
-
-          <View
-            style={{
-              height: 40,
-              width: '85%',
-              // backgroundColor: 'red',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 4,
-              alignContent: 'center',
-              alignContent: 'center',
-              textAlign: 'center',
-              // borderWidth: 0.2,
-              // marginRight: 15,
-              borderBlockColor: 'gray',
-              marginTop: 20,
-              backgroundColor: '#E2E8F0',
-              borderBlockColor: '#A0AEC0',
-              // marginRight:20
-            }}>
-            <TouchableOpacity>
-              <Text style={{fontSize: 18}}>Clear</Text>
-            </TouchableOpacity>
+            <Profile
+              onPress="Details"
+              navigation={navigation}
+              style={{marginTop: 10}}
+            />
           </View>
-        </View>
+          <View style={styles.content}>
+            <View style={styles.checkboxContainer}>
+              {data.map((label, index) => (
+                <View style={styles.checkboxItem} key={index}>
+                  {/* TouchableOpacity for custom checkbox */}
+                  <TouchableOpacity
+                    style={[
+                      styles.checkbox,
+                      checkedStates[index] && styles.checkedCheckbox,
+                    ]}
+                    onPress={() => handleCheckboxChange(index)}>
+                    {/* Checkmark (only shows when checked) */}
+                    {checkedStates[index] && (
+                      <Text style={styles.checkmark}>✓</Text>
+                    )}
+                  </TouchableOpacity>
+                  <Text
+                    style={{fontFamily: 'Inter_28pt-Thin', marginRight: 10}}>
+                    {label}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+          <View style={{backgroundColor: '#FFFFFF', marginTop: 15}}>
+            <SelectList
+              setSelected={val => setSelected(val)}
+              data={data}
+              save="value"
+              dropdownStyles={{color: '#A0AEC0', marginHorizontal: 15}}
+              dropdownTextStyles={{color: '#A0AEC0'}}
+              boxStyles={{
+                marginHorizontal: 16,
+                backgroundColor: '#F8F9FA',
+                borderColor: '#E2E8F0',
+                borderWidth: 1,
+              }}
+            />
+          </View>
 
-        <View style={styles.containerrr}>
-          <View style={styles.inputContainer}>
-            {/* Search Icon */}
-            <Icon
+          <View style={styles.containerree}>
+
+            <View style={styles.containerr}>
+              <TouchableOpacity
+               style={[styles.datePickerButton, { width: screenwidth * 0.4 }]}
+                onPress={() => setOpen(true)}>
+                <Text style={styles.buttonText}>
+                  {selectedDate ? `${selectedDate}` : 'Due Date'}
+                </Text>
+                <View style={{marginHorizontal: 10, marginTop: 8}}>
+                  <Icon name="calendar-month" size={20} color="gray" />
+                </View>
+              </TouchableOpacity>
+
+              {/* DatePicker Modal */}
+              <DatePicker
+                modal
+                open={open}
+                date={date}
+                onConfirm={date => {
+                  setOpen(false);
+                  setDate(date);
+                  setSelectedDate(date.toDateString());
+                }}
+                onCancel={() => {
+                  setOpen(false);
+                }}
+              />
+              {/* clear button */}
+              <View
+                style={{
+                  height: 40,
+                  width: 155,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 2,
+                  borderWidth: 2,
+                  borderColor: '#E2E8F0', // Border color for all sides
+                  marginTop: 20,
+                  backgroundColor: '#FAF8F9',
+                  width: screenwidth * 0.4-25,
+                  marginLeft:19
+                }}>
+                <TouchableOpacity>
+                  <Text style={{fontSize: 13}}>Clear</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            
+          </View>
+
+          <View style={styles.containerrr}>
+            <View style={styles.inputContainer}>
+              {/* Search Icon */}
+              {/* <Icon
               name="search"
               size={27}
               color="black"
               style={{marginLeft: 10}}
-            />
+            /> */}
 
-            {/* Text Input */}
-            <TextInput
-              style={styles.inputBox}
-              placeholder="Search"
-              onPress={handlesearch}
-              
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              height: 42,
-              width: '85%',
-              backgroundColor: '#0cbcb9',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 6,
-              alignContent: 'center',
-              alignContent: 'center',
-              textAlign: 'center',
-              marginLeft: 1,
-            }}>
-            <Text style={{color: 'white'}}>Generate Report</Text>
-          </TouchableOpacity>
-        </View>
-{console.warn(datastate,"datastatedatastate")}
-
-        <FlatList
-          data={datastate} // Pass users array as data
-          
-          keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
-          renderItem={({item}) => (
-            <View>
-              <View style={{marginTop: 45, marginHorizontal: 20}}>
-                <Text style={{fontSize: 20, fontWeight: '600'}}>
-                  Task titile will be here...
-                </Text>
-              </View>
-
-              <View
+              <Image source={require('../assets/images/Vector.png')} />
+              {/* Text Input */}
+              <TextInput
+                style={styles.inputBox}
+                placeholder="Search"
+                onPress={handlesearch}
+              />
+            </View>
+            <TouchableOpacity
+              style={{
+                height: 37,
+                width: 155,
+                backgroundColor: '#0cbcb9',
+                borderRadius: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 6,
+                alignContent: 'center',
+                alignContent: 'center',
+                textAlign: 'center',
+                // marginLeft: 15,
+              }}>
+              <Text
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: 30,
-                  marginHorizontal: 20,
+                  color: 'white',
+                  width: 107,
+                  height: 17,
+                  fontFamily: 'inter',
                 }}>
-                <View>
-                  <Text style={{fontWeight: 'bold', fontSize: 18}}>
-                    {formatDate(item.assignment_date)}
-                  </Text>
-                  <Text style={{fontSize: 16}}>
-                    {formatmonth(item.assignment_date)}
-                  </Text>
-                </View>
+                Generate Report
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {console.warn(datastate, 'datastatedatastate')}
 
-                <View>
-                  <Text>{item.assigned_to.name}</Text>
-                  {'\n'}
-                  <Text>
-                    Priority |{' '}
-                    <Text style={{fontWeight: 'bold', color: 'green'}}>
-                      {item.priority}
-                    </Text>
+          <FlatList
+            data={datastate} // Pass users array as data
+            keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+            renderItem={({item}) => (
+              <View>
+                <View
+                  style={{
+                    marginTop: 45,
+                    marginHorizontal: 30,
+                    // backgroundColor: '#E5EDF2',
+                    width: '50%',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontFamily: 'Inter_28pt-Bold',
+                      fontWeight: 600,
+                    }}>
+                    Task Title will be here...
                   </Text>
                 </View>
                 <View
                   style={{
-                    backgroundColor: '#E2E8F0',
-                    padding: 2,
-                    marginTop: 3,
-                    width: 120,
+                    height: 0,
+                    width: '90%',
+                    borderWidth: 1,
+                    marginHorizontal: 30,
+                    borderColor: '#E5EDF2',
+                    marginTop: 5,
+                  }}></View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: 30,
+                    marginHorizontal: 30,
+                    // borderWidth:2,
+                    width: '85%',
+                    borderRadius: 5,
                   }}>
-                  <Text
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter_28pt-Bold',
+                        fontSize: 16,
+                        fontWeight: 600,
+                      }}>
+                      {formatDate(item.assignment_date)}
+                    </Text>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 11}}>
+                      {formatmonth(item.assignment_date)}
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                      {item.assigned_to.name}
+                    </Text>
+                    {'\n'}
+                    <Text>
+                      Priority |{' '}
+                      <Text style={{fontWeight: 'bold', color: 'green'}}>
+                        {item.priority}
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
                     style={{
-                      fontSize: 15,
-                      color: 'orange',
-                      fontWeight: 500,
-                      justifyContent: 'center',
-                      alignSelf: 'center',
+                      backgroundColor: 'rgba(254, 152, 22, 0.12)',
+                      padding: 2,
+                      marginTop: 3,
+                      width: 120,
                     }}>
-                    {item.status.title}
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: '#FE9816',
+                        fontWeight: '500',
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        opacity: 1,
+                      }}>
+                      {item.status.title}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
-          ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
-        />
-      </View>
+            )}
+            ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
+          />
+        </View>
+      </ScrollView>
+
+      <AddButton />
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F5F7FA',
   },
   content: {
-    marginTop: 12,
+    marginTop: 20,
     marginHorizontal: 15,
+    backgroundColor: '#FFFFFF',
   },
   checkboxContainer: {
     flexDirection: 'row', // This ensures the checkboxes are aligned horizontally
@@ -335,11 +405,11 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Space below each checkbox (for wrapping)
   },
   checkbox: {
-    width: 17,
-    height: 17,
+    width: 12,
+    height: 12,
     borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 5,
+    borderRadius: 2,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 5,
@@ -355,6 +425,7 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
+    fontFamily: 'Inter_28pt-Thin',
   },
   button: {
     backgroundColor: '#4CAF50',
@@ -365,12 +436,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#A0AEC0',
-    fontSize: 16,
+    fontSize: 13,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     marginHorizontal: 10,
     borderBlockColor: '#A0AEC0',
+    fontFamily: 'Inter_18pt-Regular',
   },
   main: {
     flex: 1,
@@ -379,66 +451,95 @@ const styles = StyleSheet.create({
   main2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 90,
+    height: 60,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   text: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 20,
+    // fontWeight: 'bold',
+    // marginTop: 20,
   },
 
   icon: {
-    height: 35,
-    width: 30,
+    height: 30,
+    width: 25,
     marginTop: 10,
     marginHorizontal: 10,
   },
   containerr: {
     width: 180,
-    height: 40,
+    height: 100,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FFFFFF',
+
     // marginTop:50
+  },
+  containerree: {
+    width: '100%',
+    height: 90,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    // borderWidth:2
   },
   containerrr: {
     width: 180,
     height: 40,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
-    marginTop: 50,
+    backgroundColor: '#F8F9FA',
+    marginTop: 35,
   },
   datePickerButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'black',
     borderRadius: 5,
     shadowColor: '#000',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    shadowRadius: 5,
-    elevation: 2,
-    // borderWidth: 0.3,
+    // shadowRadius: 5,
+    // elevation: 2,
+    borderWidth: 1.5,
     // width: 200,
     width: '105%',
     height: 40,
     marginHorizontal: 20,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#F8F9FA',
     marginTop: 20,
-    borderBlockColor: '#A0AEC0',
+    borderColor: '#E2E8F0',
   },
   inputContainer: {
-    flexDirection: 'row', // Align Icon and TextInput horizontally
-    alignItems: 'center', // Center vertically within the container
-    height: 45,
-    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 38,
+    width: 180,
     marginHorizontal: 25,
     borderRadius: 5,
-    // borderWidth:1,
-    backgroundColor: '#E2E8F0',
-    position: 'relative', // This ensures the icon can be positioned absolutely inside the container
-    borderBlockColor: '#E2E8F0',
+    borderWidth: 1,
+    backgroundColor: '#F8F9FA',
+    position: 'relative',
+    borderColor: '#E2E8F0',
+  },
+  inputBox: {
+    marginLeft: 12,
+    width: 155,
+  },
+  floatingButton: {
+    position: 'absolute', // Keeps the button fixed
+    right: 20, // Position the button on the right
+    bottom: 40, // Position the button at the bottom (fixed to bottom)
+    backgroundColor: '#0cbcb9', // Button color
+    borderRadius: 100, // Rounded corners
+    justifyContent: 'center', // Center content horizontally
+    alignItems: 'center', // Center content vertically
+    shadowColor: '#000', // Button shadow
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5, // For Android shadow
+    height: 57, // Make the button's height the same as its width
+    width: 57, // Fixed width and height for circular button
   },
 });
 

@@ -8,6 +8,7 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
+import AddButton from './AddButton';
 import {useEffect} from 'react';
 import React from 'react';
 import {useState} from 'react';
@@ -18,6 +19,7 @@ import {delegationtask} from '../apiClient/api';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
+  
   const data = [
     'In-Progress',
     'To Be Accepted',
@@ -354,9 +356,7 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.floatingButton}>
-        <Icon name="add" size={40} color="white" />
-      </TouchableOpacity>
+      <AddButton/>
     </SafeAreaView>
   );
 };
@@ -366,7 +366,7 @@ export default Dashboard;
 const styles = StyleSheet.create({
   containermain: {
     flex: 1,
-    backgroundColor: '#CACACA',
+    backgroundColor: '#F5F7FA',
     paddingTop: 20, // Adds space from the top (adjust as needed)
   },
   main: {

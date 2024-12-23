@@ -24,7 +24,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/home.png')} // Local image for the icon
-              style={{width: 35, height: 35, marginTop: 10}} // Customize size
+              style={{width: 22.7, height: 22.7, marginTop: 10}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label
@@ -39,7 +39,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/delegationbot.png')} // Local image for the icon
-              style={{width: 50, height: 60, marginTop: 16}} // Customize size
+              style={{width: 50, height: 50, marginTop: 16}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label
@@ -54,7 +54,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/Usermanagementt.png')}
-              style={{width: 39.74, height: 39.74, marginTop: 10}}
+              style={{width: 27.52, height: 27.52, marginTop: 10}}
             />
           ),
           tabBarLabel: () => null, // Hide the label
@@ -69,7 +69,7 @@ const Tabnavigation = () => {
           tabBarIcon: () => (
             <Image
               source={require('../assets/images/Taskmanagement.png')} // Local image for the icon
-              style={{width: 39.74, height: 39.74, marginTop: 10}} // Customize size
+              style={{width: 27.52, height: 27.52, marginTop: 10}} // Customize size
             />
           ),
           tabBarLabel: () => null, // Hide the label

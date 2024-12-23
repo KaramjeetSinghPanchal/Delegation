@@ -21,8 +21,8 @@ export default Profile;
 
 const styles = StyleSheet.create({
   icon: {
-    height: 40,
-    width: 40,
+    height: 35,
+    width: 35,
     // marginTop: 10,
     marginHorizontal: 10,
   },

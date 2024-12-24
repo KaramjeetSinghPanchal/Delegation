@@ -31,8 +31,12 @@ const TaskManagement = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [rotation, setRotation] = useState(0);
-  const [screenwidth,setscreenwidth] = useState(Dimensions.get('window').width)
-  const [screenheight,setscreenheight] = useState(Dimensions.get('window').height)
+  const [screenwidth, setscreenwidth] = useState(
+    Dimensions.get('window').width,
+  );
+  const [screenheight, setscreenheight] = useState(
+    Dimensions.get('window').height,
+  );
   const dataselect = [
     {key: '1', value: 'Mobiles', disabled: true},
     {key: '2', value: 'Appliances'},
@@ -44,24 +48,32 @@ const TaskManagement = ({navigation}) => {
   ];
   const [selectedDate, setSelectedDate] = useState('');
 
- 
   useEffect(() => {
     if (selected) {
       handlesearch(selected);
     }
   }, [selected]);
 
-    useEffect(() => {
-      const subscription = Dimensions.addEventListener('change',({window}) =>{
-        setscreenheight(window.height)
-        setscreenwidth(window.width)
-      });
-      return () => {
-        subscription.remove()
-      }
-    }, []);
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({window}) => {
+      setscreenheight(window.height);
+      setscreenwidth(window.width);
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
+  const calculatedWidth = screenwidth * 0.4 + 9;
 
+  // Optionally cap the width to a maximum value (e.g., max 80% of the screen width)
+  const maxWidth = screenwidth * 0.3 + 80;
+  const minWidth = screenwidth * 0.3;
+
+  const finalWidth = Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+
+  const isLandscape = screenwidth>screenheight;
+  
   const data = [
     'All',
     'In-progress',
@@ -88,7 +100,6 @@ const TaskManagement = ({navigation}) => {
     new Array(data.length).fill(false),
   );
 
-
   // Handle checkbox state toggle
   const handleCheckboxChange = index => {
     const updatedCheckedStates = [...checkedStates];
@@ -100,7 +111,6 @@ const TaskManagement = ({navigation}) => {
     const fetchData = async () => {
       try {
         const data = await taskmangementlisting();
-        console.warn('Fetched Data:', data.data[0].assigned_by_id);
         setData(data.data);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -112,7 +122,6 @@ const TaskManagement = ({navigation}) => {
 
     fetchData();
   }, []);
-
 
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
@@ -186,10 +195,9 @@ const TaskManagement = ({navigation}) => {
           </View>
 
           <View style={styles.containerree}>
-
             <View style={styles.containerr}>
               <TouchableOpacity
-               style={[styles.datePickerButton, { width: screenwidth * 0.4 }]}
+                style={[styles.datePickerButton, {width: finalWidth}]}
                 onPress={() => setOpen(true)}>
                 <Text style={styles.buttonText}>
                   {selectedDate ? `${selectedDate}` : 'Due Date'}
@@ -217,7 +225,7 @@ const TaskManagement = ({navigation}) => {
               <View
                 style={{
                   height: 40,
-                  width: 155,
+                  // width: 155,
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 2,
@@ -225,27 +233,30 @@ const TaskManagement = ({navigation}) => {
                   borderColor: '#E2E8F0', // Border color for all sides
                   marginTop: 20,
                   backgroundColor: '#FAF8F9',
-                  width: screenwidth * 0.4-25,
-                  marginLeft:19
+                  width: finalWidth,
+                  marginLeft: 10,
                 }}>
                 <TouchableOpacity>
                   <Text style={{fontSize: 13}}>Clear</Text>
                 </TouchableOpacity>
               </View>
             </View>
-            
           </View>
 
           <View style={styles.containerrr}>
-            <View style={styles.inputContainer}>
-              {/* Search Icon */}
-              {/* <Icon
-              name="search"
-              size={27}
-              color="black"
-              style={{marginLeft: 10}}
-            /> */}
-
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: 38,
+                width: finalWidth,
+                marginHorizontal: 25,
+                borderRadius: 5,
+                borderWidth: 1,
+                backgroundColor: '#F8F9FA',
+                position: 'relative',
+                borderColor: '#E2E8F0',
+              }}>
               <Image source={require('../assets/images/Vector.png')} />
               {/* Text Input */}
               <TextInput
@@ -266,7 +277,7 @@ const TaskManagement = ({navigation}) => {
                 alignContent: 'center',
                 alignContent: 'center',
                 textAlign: 'center',
-                // marginLeft: 15,
+                marginLeft: isLandscape?185:14,
               }}>
               <Text
                 style={{
@@ -279,7 +290,6 @@ const TaskManagement = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          {console.warn(datastate, 'datastatedatastate')}
 
           <FlatList
             data={datastate} // Pass users array as data
@@ -377,7 +387,7 @@ const TaskManagement = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton />
+      <AddButton  isLandscape={isLandscape} />
     </SafeAreaView>
   );
 };

@@ -3,9 +3,10 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-const AddButton = () => {
+const AddButton = ({isLandscape}) => {
+  
   return (
-    <TouchableOpacity style={styles.floatingButton}>
+    <TouchableOpacity style={[styles.floatingButton,{right: isLandscape?190:20 }]}>
     <Icon name="add" size={35} color="white" />
   </TouchableOpacity>
   )
@@ -16,7 +17,7 @@ export default AddButton
 const styles = StyleSheet.create({
     floatingButton: {
         position: 'absolute', // Keeps the button fixed
-        right: 20, // Position the button on the right
+        // Position the button on the right
         bottom: 40, // Position the button at the bottom (fixed to bottom)
         backgroundColor: '#0cbcb9', // Button color
         borderRadius: 100, // Rounded corners

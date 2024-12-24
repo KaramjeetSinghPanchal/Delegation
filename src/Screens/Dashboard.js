@@ -19,13 +19,12 @@ import {delegationtask} from '../apiClient/api';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
-  
   const data = [
     'In-Progress',
     'To Be Accepted',
     'In-progress',
     'Completed',
-    'In-Draft'
+    'In-Draft',
   ]; // Example data
 
   const [selectedDate, setSelectedDate] = useState('');
@@ -33,8 +32,8 @@ const Dashboard = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [task, settask] = useState({});
 
-  const widthAndHeight = 170;
-  const seriess = [145, 321, 123, 789, 537];
+  const widthAndHeight = 180;
+  const series = [123, 321, 123, 789, 537];
   const sliceColor = ['#fbd203', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00'];
 
   useEffect(() => {
@@ -61,8 +60,6 @@ const Dashboard = ({navigation}) => {
     fetchUsers();
   }, []);
 
-  console.warn('tssask', task);
-
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -83,9 +80,8 @@ const Dashboard = ({navigation}) => {
           <View style={styles.firstBoxmain}>
             <ScrollView horizontal={true}>
               {' '}
-              <View style={styles.firstBox}>
-                <Text
-                  style={{color: 'gray', fontSize: 18, marginHorizontal: 10}}>
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id} {'\n'}{' '} */}
                   In-Progress
                   <Text
@@ -93,13 +89,16 @@ const Dashboard = ({navigation}) => {
                       fontSize: 24,
                       fontWeight: 'bold',
                       color: 'black',
+                      fontFamily: '',
                     }}>
                     {'\n'} {task.inProgressCount}
                   </Text>
                 </Text>
-              </View>
-              <View style={styles.firstBox}>
-                <Text style={{color: 'gray', fontSize: 18}}>
+              </TouchableOpacity>
+
+
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   Overdue
                   <Text
@@ -111,9 +110,11 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.inOverDueCount}
                   </Text>
                 </Text>
-              </View>
-              <View style={styles.firstBox}>
-                <Text style={{color: 'gray', fontSize: 18}}>
+              </TouchableOpacity>
+
+
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   Draft Count
                   <Text
@@ -125,9 +126,11 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.inDraftCount}
                   </Text>
                 </Text>
-              </View>
-              <View style={styles.firstBox}>
-                <Text style={{color: 'gray', fontSize: 18}}>
+              </TouchableOpacity>
+
+
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   To Be Completed
                   <Text
@@ -139,9 +142,9 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.taskToBeAcceptedCount}
                   </Text>
                 </Text>
-              </View>
-              <View style={styles.firstBox}>
-                <Text style={{color: 'gray', fontSize: 18}}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   In Draft
                   <Text
@@ -153,9 +156,9 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.inDraftCount}
                   </Text>
                 </Text>
-              </View>
-              <View style={styles.firstBox}>
-                <Text style={{color: 'gray', fontSize: 18}}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.firstBox}>
+                <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   Completed
                   <Text
@@ -167,28 +170,31 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.completeCount}
                   </Text>
                 </Text>
-              </View>
+              </TouchableOpacity>
             </ScrollView>
           </View>
 
           <View style={styles.secondBoxmain}>
             <View style={styles.secondBox}>
               <Text
-                style={{color: '#1E2633', fontSize: 20, fontWeight: 'bold'}}>
+                style={{
+                  color: '#1E2633',
+                  fontSize: 18,
+                  fontFamily: 'Inter_18pt-ExtraBold',
+                  fontWeight: 700,
+                }}>
                 Task Report {'\n'}{' '}
               </Text>
 
               <View
                 style={{justifyContent: 'space-between', flexDirection: 'row'}}>
                 <View style={styles.containerchart}>
-               
                   <PieChart
                     widthAndHeight={widthAndHeight}
-                    series={seriess}
+                    series={series}
                     sliceColor={sliceColor}
-                    innerRadius="100%"
-                    padAngle={0.03}
-                    
+                    coverRadius={0.45}
+                    coverFill={'#FFF'}
                   />
                 </View>
 
@@ -229,11 +235,12 @@ const Dashboard = ({navigation}) => {
             <View style={styles.thirdBox}>
               <Text
                 style={{
-                  color: '#1E2633',
-                  fontSize: 20,
+                  color: '#2D3748',
+                  fontSize: 18,
                   fontWeight: 'bold',
                   width: 1010,
                   height: 50,
+                  fontFamily:'Inter_28pt-SemiBold'
                 }}>
                 Weekly Filter {'\n'}
               </Text>
@@ -273,31 +280,32 @@ const Dashboard = ({navigation}) => {
                     borderRadius: 4,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderRadius: 4,
+                    borderRadius: 5,
                     alignContent: 'center',
                     alignContent: 'center',
                     textAlign: 'center',
                     marginLeft: 5,
+                  
                   }}>
-                  <Text>Filter</Text>
+                  <Text style={{color:'#FFFFFF',fontFamily:'Inter_28pt-Regular'}}>Filter</Text>
                 </View>
-  
+
                 <View
                   style={{
                     height: 40,
                     width: 50,
-                    // backgroundColor: 'red',
+                    backgroundColor: '#F8F9FA',
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: 4,
                     alignContent: 'center',
                     alignContent: 'center',
                     textAlign: 'center',
-                    borderWidth: 0.2,
+                    borderWidth: 1,
                     marginLeft: 5,
-                    borderBlockColor: 'gray',
+                    borderColor: '#E2E8F0',
                   }}>
-                  <Text style={{fontSize: 18}}>Clear</Text>
+                  <Text style={{fontSize: 14,fontFamily:'Inter_28pt-Regular'}}>Clear</Text>
                 </View>
 
                 <View
@@ -311,52 +319,157 @@ const Dashboard = ({navigation}) => {
                     alignContent: 'center',
                     alignContent: 'center',
                     textAlign: 'center',
-                    borderWidth: 0.2,
+                    borderWidth: 1,
                     marginLeft: 7,
-                    borderBlockColor: 'gray',
+                    backgroundColor: '#F8F9FA',
+                    borderColor: '#E2E8F0',
                   }}>
-                  <Icon name="search" size={28} color="gray" />
+                  <Icon name="search" size={25} color="#000000" />
                 </View>
               </View>
 
               <View style={{marginTop: 10}}>
-                <Text style={{fontSize: 23, fontWeight: '600'}}>
+                <Text style={{fontSize: 17, fontWeight: '700',fontFamily:'Inter_28pt-SemiBold',color:'#2D3748'}}>
                   In-Progress
                 </Text>
               </View>
 
               <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: 10,
-                }}>
-                <View>
-                  <Text style={{fontWeight: 'bold', fontSize: 20}}>21</Text>
-                </View>
-                <View>
-                  <Text>Sachin Sharma</Text>
-                  {'\n'}
-                  <Text>
-                    Prority |{' '}
-                    <Text style={{fontWeight: 'bold', color: 'green'}}>
-                      Low
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: 30,
+                    marginHorizontal: 30,
+                    // borderWidth:2,
+                    width: '85%',
+                    borderRadius: 5,
+                  
+                  }}>
+                  <View 
+                  style={{  backgroundColor:'#EAFAFA',
+                    height:45,
+                    width:45,
+                    // borderColor:'red',
+                    // borderWidth:2
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter_28pt-Bold',
+                        fontSize: 16,
+                        fontWeight: 600,
+                      
+                      }}>
+                      {/* {formatDate(item.assignment_date)} */}3
                     </Text>
-                  </Text>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
+                      {/* {formatmonth(item.assignment_date)} */}Jul
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                      {/* {item.assigned_to.name} */}karm
+                    </Text>
+                    {'\n'}
+                    <Text>
+                      Priority |{' '}
+                      <Text style={{fontWeight: 'bold', color: 'green'}}>
+                        {/* {item.priority} */}Low
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#0CBCB9',
+                        fontWeight: '500',
+                        fontFamily:'Inter_28pt-Medium',
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        opacity: 1,
+                        marginTop:3
+                      }}>
+                      {/* {item.status.title} */}View Details
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text
-                    style={{fontSize: 17, color: '#0cbcb9', fontWeight: 500}}>
-                    View Details
-                  </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: 30,
+                    marginHorizontal: 30,
+                    // borderWidth:2,
+                    width: '85%',
+                    borderRadius: 5,
+                  
+                  }}>
+                  <View 
+                  style={{  backgroundColor:'#EAFAFA',
+                    height:45,
+                    width:45,
+                    // borderColor:'red',
+                    // borderWidth:2
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter_28pt-Bold',
+                        fontSize: 16,
+                        fontWeight: 600,
+                      
+                      }}>
+                      {/* {formatDate(item.assignment_date)} */}3
+                    </Text>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
+                      {/* {formatmonth(item.assignment_date)} */}Jul
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                      {/* {item.assigned_to.name} */}karm
+                    </Text>
+                    {'\n'}
+                    <Text>
+                      Priority |{' '}
+                      <Text style={{fontWeight: 'bold', color: 'green'}}>
+                        {/* {item.priority} */}Low
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#0CBCB9',
+                        fontWeight: '500',
+                        fontFamily:'Inter_28pt-Medium',
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        opacity: 1,
+                        marginTop:3
+                      }}>
+                      {/* {item.status.title} */}View Details
+                    </Text>
+                  </View>
                 </View>
-              </View>
             </View>
           </View>
         </View>
       </ScrollView>
 
-      <AddButton/>
+      <AddButton />
     </SafeAreaView>
   );
 };
@@ -377,7 +490,7 @@ const styles = StyleSheet.create({
   main2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 90,
+    height: 85,
     width: '100%',
     backgroundColor: 'white',
     // borderWidth: 2,
@@ -392,17 +505,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
     padding: 10,
     overflow: 'hidden', // Ensure content doesn't overflow
+    // borderColor:"black",
+    // borderWidth:2
   },
   text: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: 600,
     marginTop: 20,
+    fontFamily: 'Inter_24pt-SemiBold',
+    color: '#2D3748',
   },
   firstBox: {
     height: 81,
     width: 219.6,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     padding: 10,
     marginLeft: 10,
   },
@@ -418,7 +535,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   secondBoxmain: {
-    paddingTop: 20,
+    paddingTop: 30,
     paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -449,31 +566,43 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   listText: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#333',
+    fontFamily:'Inter_28pt-Medium'
   },
-  container: {
+  textthe: {
+    color: '#A0AEC0',
+    fontSize: 14,
+    marginHorizontal: 10,
+    fontFamily: 'Inter_18pt-Medium',
+  },
+  container: {                                                                              
     width: 180,
     height: 40,
     justifyContent: 'space-between',
     flexDirection: 'row',
     backgroundColor: '#f9f9f9',
+    borderColor:'red',
+    // borderWidth:5,
+    // marginBottom:15
   },
   datePickerButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F8F9FA',
     borderRadius: 5,
     shadowColor: '#000',
     justifyContent: 'space-between',
     flexDirection: 'row',
     shadowRadius: 5,
     elevation: 2,
-    borderWidth: 0.3,
+    borderWidth: 1,
     width: 200,
     height: 40,
+    // borderColor:'#F8F9FA'
+    borderColor:'#E2E8F0'
   },
   buttonText: {
     fontSize: 16,
-    color: '#333',
+    color: '#A0AEC0',
     textAlign: 'center',
     height: 26,
     justifyContent: 'center',
@@ -493,7 +622,7 @@ const styles = StyleSheet.create({
     width: '45%', // Adjust width for pie chart
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:-80
+    marginTop: -80,
   },
   title: {
     fontSize: 18,

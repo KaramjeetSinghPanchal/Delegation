@@ -39,24 +39,25 @@ const Dashboard = ({navigation}) => {
      
 
         <View style={styles.admin}>
-          <Text style={{fontSize: 32, fontWeight: 600, color: '#0CBCB9'}}>
+          <Text style={{fontSize: 26, fontWeight: 600, color: '#0CBCB9',fontFamily:'Inter_28pt-SemiBold'}}>
             Hello Admin
           </Text>
           <View>
-            <Text style={{fontSize: 26, fontWeight: 600}}>
+            <Text style={{fontSize: 22, fontWeight: 600,fontFamily:'Inter_28pt-SemiBold'}}>
               How Can I Help You Today?
             </Text>
           </View>
         </View>
-
+   
+   <View style={{height:'auto',width:313,borderColor:'red',borderWidth:1,justifyContent:'center',alignItems:'center',alignSelf:'center'}}>
         <View style={styles.setthree}>
-          <View style={{marginLeft: 20}}>
+          <View >
             {' '}
-            <Image source={require('../assets/images/Group1.png')} style={{height:40, width:40}}  />
+            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
           </View>
           <View style={{marginRight: 60}}>
             {' '}
-            <Text style={{fontSize: 16, marginLeft: 50, color: 'black'}}>
+            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
               Provide an update on the status of every task that was created
               this week
             </Text>
@@ -64,13 +65,13 @@ const Dashboard = ({navigation}) => {
         </View>
 
         <View style={styles.setthree}>
-          <View style={{marginLeft: 20}}>
+          <View >
             {' '}
-            <Image source={require('../assets/images/Group2.png')} style={{height:40, width:40}} />
+            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
           </View>
           <View style={{marginRight: 60}}>
             {' '}
-            <Text style={{fontSize: 16, marginLeft: 50}}>
+            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
               Provide an update on the status of every task that was created
               this week
             </Text>
@@ -78,33 +79,20 @@ const Dashboard = ({navigation}) => {
         </View>
 
         <View style={styles.setthree}>
-          <View style={{marginLeft: 20}}>
+          <View >
             {' '}
-            <Image source={require('../assets/images/Group3.png')} style={{height:40, width:40}}/>
+            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
           </View>
           <View style={{marginRight: 60}}>
             {' '}
-            <Text style={{fontSize: 16, marginLeft: 50}}>
+            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
               Provide an update on the status of every task that was created
               this week
             </Text>
           </View>
         </View>
-
-        <View style={styles.setthree}>
-          <View style={{marginLeft: 20}}>
-            {' '}
-            <Image source={require('../assets/images/Group1.png')} style={{height:40, width:40}}/>
-          </View>
-          <View style={{marginRight: 60}}>
-            {' '}
-            <Text style={{fontSize: 16, marginLeft: 50}}>
-              Provide an update on the status of every task that was created
-              this week
-            </Text>
-          </View>
         </View>
-
+       
         <View
           style={{
             height: 70,
@@ -195,7 +183,7 @@ export default Dashboard;
 const styles = StyleSheet.create({
   containermain: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     paddingTop: 20, // Adds space from the top (adjust as needed)
   },
   main: {
@@ -251,6 +239,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    // justifyContent:'center'
+    width:330,
+    height:65,
+    // borderColor:'red',
+    // borderWidth:1,
+    justifyContent:'center',
+    alignItems:'center',
+    alignSelf:'center',
+    marginLeft:55,
+    // backgroundColor:'#FFFFFF'
   },
 });

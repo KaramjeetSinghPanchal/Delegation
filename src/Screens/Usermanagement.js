@@ -6,19 +6,23 @@ import {
   SafeAreaView,
   TextInput,
   FlatList,
-  TouchableOpacity, 
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
+import Lanscape from './Lanscape';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
+import AddButton from './AddButton';
 const Usermanagement = () => {
   const [users, setUsers] = useState([]);
+  const isLandscape = Lanscape();
+  console.warn(isLandscape,"LanscapeLanscape");
+  
 
   useEffect(() => {
-    console.warn('usermanagement');
-
     const fetchUsers = async () => {
       try {
         console.warn('Fetching users...');
@@ -27,7 +31,7 @@ const Usermanagement = () => {
 
         if (data && data.data) {
           // Assuming data.data contains the array of users
-         
+
           setUsers(data.data.data); // Set the users array to state
         } else {
           console.warn('No users data found.');
@@ -42,6 +46,7 @@ const Usermanagement = () => {
 
   return (
     <SafeAreaView style={styles.containermain}>
+      <ScrollView>
       <View style={styles.main}>
         <View style={styles.main2}>
           <Image
@@ -74,13 +79,26 @@ const Usermanagement = () => {
             renderItem={({item}) => (
               <View style={styles.userContainer}>
                 <View>
-                  <Text style={styles.userName}>{item?.name}</Text>
-                  <Text style={styles.email}>{item?.email}</Text>
+                  <Text
+                    style={[styles.userName,{fontFamily: 'Inter_28pt-Medium',fontSize:isLandscape?20 :14,
+                    },
+                    ]}>
+                    {item?.name}
+                  </Text>
+                  <Text
+                    style={[styles.email, {fontFamily: 'Inter_28pt-Regular',fontSize:isLandscape?18 :12}]}>
+                    {item?.email}
+                  </Text>
                 </View>
                 <TouchableOpacity
                   onPress={() => console.log(`View details of ${item.name}`)}>
-                  <Text style={styles.viewDetailsText}>View Details</Text>
-                  
+                  <Text
+                    style={[
+                      styles.viewDetailsText,
+                      {fontFamily: 'Inter_28pt-Medium',fontSize:isLandscape?16 :12},
+                    ]}>
+                    View Details
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -88,6 +106,8 @@ const Usermanagement = () => {
           />
         </View>
       </View>
+      </ScrollView>
+      <AddButton/>
     </SafeAreaView>
   );
 };
@@ -159,27 +179,26 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', 
-    paddingVertical: 10, 
-    paddingHorizontal: 20, 
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     // borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    height:90,
-    width:'100%'
+    height: 90,
+    width: '100%',
   },
   userName: {
-    fontSize: 18,
     fontWeight: '400',
   },
   email: {
-    fontSize: 14,
+ 
     fontWeight: '400',
-    color:'gray'
+    color: 'gray',
   },
   viewDetailsText: {
     color: '#0CBCB9',
-    fontSize: 16,
-    fontWeight:400
+   
+    fontWeight: 400,
     // fontSize:400
   },
 });

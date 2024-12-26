@@ -23,7 +23,6 @@ const Dashboard = ({navigation}) => {
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
-  console.warn(screenheight, screenwidth, 'get spaces');
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({window}) => {
@@ -36,7 +35,6 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   const isLandscape = screenwidth > screenheight;
-  console.warn(isLandscape, 'isLandscape');
 
   return (
     <SafeAreaView style={styles.containermain}>

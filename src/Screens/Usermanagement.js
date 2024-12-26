@@ -107,7 +107,7 @@ const Usermanagement = () => {
         </View>
       </View>
       </ScrollView>
-      <AddButton/>
+      <AddButton isLandscape={isLandscape}/>
     </SafeAreaView>
   );
 };

@@ -18,6 +18,7 @@ import {delegationtask} from '../apiClient/api';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Lanscape from './Lanscape';
 const Dashboard = ({navigation}) => {
   const data = [
     'In-Progress',
@@ -26,6 +27,9 @@ const Dashboard = ({navigation}) => {
     'Completed',
     'In-Draft',
   ]; // Example data
+  const isLandscape = Lanscape()
+  console.warn(isLandscape,);
+  
 
   const [selectedDate, setSelectedDate] = useState('');
   const [date, setDate] = useState(new Date());
@@ -245,9 +249,9 @@ const Dashboard = ({navigation}) => {
                 Weekly Filter {'\n'}
               </Text>
 
-              <View style={styles.container}>
-                <TouchableOpacity
-                  style={styles.datePickerButton}
+              <View style={[styles.container,{ width:80}]}>
+                <TouchableOpacity 
+                  style={[styles.datePickerButton,{ width: isLandscape?280:200}]}
                   onPress={() => setOpen(true)}>
                   <Text style={styles.buttonText}>
                     {selectedDate ? `${selectedDate}` : 'Select Date'}
@@ -275,7 +279,7 @@ const Dashboard = ({navigation}) => {
                 <View
                   style={{
                     height: 40,
-                    width: 60,
+                    width: isLandscape?160:60,
                     backgroundColor: '#0cbcb9',
                     borderRadius: 4,
                     alignItems: 'center',
@@ -293,7 +297,7 @@ const Dashboard = ({navigation}) => {
                 <View
                   style={{
                     height: 40,
-                    width: 50,
+                    width: isLandscape?160:50,
                     backgroundColor: '#F8F9FA',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -311,7 +315,7 @@ const Dashboard = ({navigation}) => {
                 <View
                   style={{
                     height: 40,
-                    width: 40,
+                    width: isLandscape?160:40,
                     // backgroundColor: 'red',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -469,7 +473,7 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton />
+      <AddButton isLandscape={isLandscape} />
     </SafeAreaView>
   );
 };
@@ -577,7 +581,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_18pt-Medium',
   },
   container: {                                                                              
-    width: 180,
+   
     height: 40,
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -595,10 +599,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 2,
     borderWidth: 1,
-    width: 200,
+   
     height: 40,
-    // borderColor:'#F8F9FA'
-    borderColor:'#E2E8F0'
+    borderColor:'#F8F9FA'
+   
   },
   buttonText: {
     fontSize: 16,

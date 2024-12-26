@@ -5,12 +5,39 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {SelectList} from 'react-native-dropdown-select-list';
+import Inputbox from '../Components/Inputbox';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
+  const data = ['Query', 'Task'];
+  const [screenheight, setscreenheight] = useState(
+    Dimensions.get('window').height,
+  );
+  const [screenwidth, setscreenwidth] = useState(
+    Dimensions.get('window').width,
+  );
+  console.warn(screenheight, screenwidth, 'get spaces');
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({window}) => {
+      setscreenheight(window.height);
+      setscreenwidth(window.width);
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const isLandscape = screenwidth > screenheight;
+  console.warn(isLandscape, 'isLandscape');
+
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -32,75 +59,177 @@ const Dashboard = ({navigation}) => {
         <View style={styles.center}>
           <Image
             source={require('../assets/images/Bot.png')}
-            style={{width: 150, height: 209}}
+            style={{width: 93.46, height: 130}}
           />
         </View>
 
-     
-
         <View style={styles.admin}>
-          <Text style={{fontSize: 26, fontWeight: 600, color: '#0CBCB9',fontFamily:'Inter_28pt-SemiBold'}}>
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: 600,
+              color: '#0CBCB9',
+              fontFamily: 'Inter_28pt-SemiBold',
+            }}>
             Hello Admin
           </Text>
           <View>
-            <Text style={{fontSize: 22, fontWeight: 600,fontFamily:'Inter_28pt-SemiBold'}}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: 600,
+                fontFamily: 'Inter_28pt-SemiBold',
+              }}>
               How Can I Help You Today?
             </Text>
           </View>
         </View>
-   
-   <View style={{height:'auto',width:313,borderColor:'red',borderWidth:1,justifyContent:'center',alignItems:'center',alignSelf:'center'}}>
-        <View style={styles.setthree}>
-          <View >
-            {' '}
-            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
-          </View>
-          <View style={{marginRight: 60}}>
-            {' '}
-            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
-              Provide an update on the status of every task that was created
-              this week
-            </Text>
-          </View>
-        </View>
 
-        <View style={styles.setthree}>
-          <View >
-            {' '}
-            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
-          </View>
-          <View style={{marginRight: 60}}>
-            {' '}
-            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
-              Provide an update on the status of every task that was created
-              this week
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.setthree}>
-          <View >
-            {' '}
-            <Image source={require('../assets/images/Group1.png')} style={{height:32, width:30.61,marginBottom:15}}  />
-          </View>
-          <View style={{marginRight: 60}}>
-            {' '}
-            <Text style={{fontSize: 14, marginLeft: 20, color: 'black',fontFamily:'Inter_28pt-Regular'}}>
-              Provide an update on the status of every task that was created
-              this week
-            </Text>
-          </View>
-        </View>
-        </View>
-       
         <View
           style={{
-            height: 70,
-            borderWidth: '1',
-            width: '90%',
-            backgroundColor: 'white',
+            height: 216,
+            width: isLandscape ? 580 : 323,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginTop: 30,
+            backgroundColor: '#F5F7FA',
+            // borderColor:'red',
+            // borderWidth:1,
+            marginRight:isLandscape?100:0
+          }}>
+          <View
+            style={{
+              width: isLandscape ? 550 : 323,
+              height: 65,
+              backgroundColor: '#FFFFFF',
+            }}>
+            <View style={styles.setthree}>
+              <View>
+                {' '}
+                <Image
+                  source={require('../assets/images/Group1.png')}
+                  style={{
+                    height: 32,
+                    width: 30.61,
+                    marginBottom: 30,
+                    marginRight: isLandscape ? 300 : 0,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  marginLeft: isLandscape ? -270 : 0,
+                  marginRight: isLandscape ? 0 : 60,
+                }}>
+                {' '}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                    color: 'black',
+                    fontFamily: 'Inter_28pt-Regular',
+                    marginBottom: 30,
+                    color: '#2D3748',
+                  }}>
+                  Provide an update on the status of every task that was created
+                  this week
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              height: 65,
+              margin: 10,
+              backgroundColor: '#FFFFFF',
+              width: isLandscape ? 550 : 323,
+            }}>
+            <View style={styles.setthree}>
+              <View>
+                {' '}
+                <Image
+                  source={require('../assets/images/Group1.png')}
+                  style={{
+                    height: 32,
+                    width: 30.61,
+                    marginBottom: 15,
+                    marginRight: isLandscape ? 200 : 0,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  marginLeft: isLandscape ? -170 : 0,
+                  marginRight: isLandscape ? 0 : 60,
+                }}>
+                {' '}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                    color: 'black',
+                    fontFamily: 'Inter_28pt-Regular',
+                    marginBottom: 12,
+                    color: '#2D3748',
+                  }}>
+                  Provide an update on the status of every task that was created
+                  this week
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              width: isLandscape ? 550 : 323,
+              height: 65,
+              backgroundColor: '#FFFFFF',
+            }}>
+            <View style={styles.setthree}>
+              <View>
+                {' '}
+                <Image
+                  source={require('../assets/images/Group1.png')}
+                  style={{
+                    height: 32,
+                    width: 30.61,
+                    marginBottom: 15,
+                    marginRight: isLandscape ? 200 : 0,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  marginLeft: isLandscape ? -170 : 0,
+                  marginRight: isLandscape ? 0 : 60,
+                }}>
+                {' '}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                    color: 'black',
+                    fontFamily: 'Inter_28pt-Regular',
+                    marginBottom: 12,
+                    color: '#2D3748',
+                  }}>
+                  Provide an update on the status of every task that was created
+                  this week
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <View
+          style={{
+            height: 53,
+
+            backgroundColor: '#FAFAFA',
             marginHorizontal: 20,
-            marginRight: 20,
+            marginLeft: 40,
             marginTop: 20,
             borderRadius: 15,
             flexDirection: 'row',
@@ -109,71 +238,151 @@ const Dashboard = ({navigation}) => {
             source={require('../assets/images/gymone.jpeg')}
             style={{
               borderRadius: 100,
-              height: 45,
-              width: 45,
+              height: 25,
+              width: 25,
               marginVertical: 10,
               marginHorizontal: 10,
             }}
           />
-          <View style={{marginTop: 10}}>
-            <Text style={{fontSize: 12}}>You</Text>
+
+          <TouchableOpacity style={{marginTop: 10, marginLeft: 10}}>
+            <Text style={{fontSize: 10, fontFamily: 'Inter_28pt-Regular'}}>
+              You
+            </Text>
             {'\n'}
-            <Text style={{marginTop: 5, fontSize: 18}}>hello</Text>
-          </View>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 14,
+                fontFamily: 'Inter_28pt-Regular',
+              }}>
+              hello
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View
           style={{
-            height: 70,
-            borderWidth: '1',
-            width: '90%',
+            height: 53,
+            width: isLandscape ? 580 : 323,
+
             backgroundColor: 'white',
             marginHorizontal: 20,
-            marginRight: 20,
             marginTop: 20,
             borderRadius: 15,
             flexDirection: 'row',
+            marginLeft: 40,
           }}>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              backgroundColor: '#0CBCB9',
-              borderRadius: 100,
-              marginVertical: 10,
-              marginHorizontal: 10,
-            }}>
+          <View>
             <Image
-              source={require('../assets/images/Rbot.png')}
+              source={require('../assets/images/fullrobot.png')}
               style={{
-                height: 20,
-                width: 20,
+                height: 25,
+                width: 25,
                 marginVertical: 10,
                 marginHorizontal: 10,
               }}
             />
           </View>
           <View style={{marginTop: 10}}>
-            <Text style={{fontSize: 12}}>You</Text>
+            <Text style={{fontSize: 10, fontFamily: 'Inter_28pt-Regular'}}>
+              Delegation Bot
+            </Text>
             {'\n'}
-            <Text style={{marginTop: 5, fontSize: 17}}>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 13,
+                fontFamily: 'Inter_28pt-Regular',
+              }}>
               Hello! How can i assist you today?
             </Text>
           </View>
         </View>
-        </ScrollView>
 
-        {/* <DropDownPicker
-          items={items}
-          open={isOpen}
-          setOpen={() => setIsOpen(!isOpen)}
-          value={currentValue}
-          setValue={val => setCurrentValue(val)}
-          maxHeight={200}
-          autoScroll
-        /> */}
-     
-    
+        {/* AI chat Box */}
+        <View
+          style={{
+            height: 49,
+            width: '90%',
+            borderWidth: 1,
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginTop: 20,
+            flexDirection: 'row', // Ensures horizontal layout
+            justifyContent: 'flex-start', // Aligns items to the start
+            borderRadius: 20,
+            borderColor: '#E2E8F0',
+            backgroundColor: '#F8F9FA',
+          }}>
+          {/* SelectList takes 30% width */}
+          <SelectList
+            data={data}
+            placeholder="Task"
+            style={{
+              height: 46,
+              width: '30%', // 30% width for the SelectList
+            }}
+            dropdownStyles={{
+              width: 100, // Adjust dropdown width if necessary
+              height: 80,
+            }}
+            boxStyles={{borderColor: 'white'}}
+          />
+
+          {/* Vertical Bar between SelectList and Inputbox */}
+          <Text style={{fontSize: 30, marginTop: 5, marginLeft: -15}}>|</Text>
+
+          {/* Inputbox takes 50% width */}
+
+          <Inputbox
+            style={{
+              height: 46,
+              width: '68%', // Adjust width to 40% to give space for circles
+              marginLeft: 33, // Margin to separate Inputbox from the vertical bar
+            }}
+          />
+
+          {/* First Circle */}
+          <TouchableOpacity
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 100,
+              backgroundColor: '#DEE5ED',
+              marginTop: 10,
+              marginLeft: -62,
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: 5,
+              }}>
+              <Icon name="mic" size={25} color="#9AACC2" />
+            </View>
+          </TouchableOpacity>
+          {/* Second Circle */}
+          <TouchableOpacity
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 100,
+              backgroundColor: '#1E2633',
+              marginTop: 10,
+              marginLeft: 5,
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: 5,
+              }}>
+              <Icon name="arrow-upward" size={24} color="white" />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -194,7 +403,7 @@ const styles = StyleSheet.create({
   main2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 90,
+    height: 85,
     width: '100%',
     backgroundColor: 'white',
     // borderWidth: 2,
@@ -211,9 +420,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // Ensure content doesn't overflow
   },
   text: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: 700,
     marginTop: 20,
+    color: '#2D3748',
+    fontFamily: 'Inter_18pt-SemiBold',
   },
 
   icon: {
@@ -229,7 +440,7 @@ const styles = StyleSheet.create({
     flex: 1, // This ensures the container takes up the full screen
     justifyContent: 'center', // Vertically centers the content
     alignItems: 'center',
-    marginTop: -35,
+    marginTop: -10,
   },
   admin: {
     justifyContent: 'center',
@@ -239,14 +450,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    width:330,
-    height:65,
+    width: 330,
+    height: 65,
     // borderColor:'red',
     // borderWidth:1,
-    justifyContent:'center',
-    alignItems:'center',
-    alignSelf:'center',
-    marginLeft:55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginLeft: 55,
     // backgroundColor:'#FFFFFF'
   },
 });

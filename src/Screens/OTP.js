@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity,SafeAreaView, ScrollView} from 'react-native';
 import React from 'react';
 import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
@@ -9,12 +9,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Navigation from '../navigation/Navigation';
 import {useNavigation} from '@react-navigation/native';
+import Lanscape from './Lanscape';
 const OTP = ({navigation}) => {
   const navigate = useNavigation();
+  const isLandscape =Lanscape()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View
         style={{
           position: 'absolute',
@@ -43,25 +46,28 @@ const OTP = ({navigation}) => {
       </View>
 
       <Inputname
-        style={{fontSize: 18, paddingTop: 30, marginLeft: -51}}
+        style={{fontSize: 18, paddingTop: 350}}
         name={'Email Address / Mobile Number'}
+        isLandscape={isLandscape}
       />
       <Inputbox
         style={{
-          width: 290,
+          width:isLandscape?'90%':290,
           height: 50,
           borderColor: '#ccc',
           borderWidth: 1,
           paddingLeft: 5,
           borderRadius: 5,
           left: 10,
+          marginLeft:25
         }}
         placeholder="Enter your email address"
       />
-      <View style={{left:10}}>
-        <Button name={'Send OTP'} />
+      <View >
+        <Button name={'Send OTP'} isLandscape={isLandscape} />
       </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -79,10 +85,12 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 30,
     fontFamily: 'bold',
-    marginLeft: -150,
-    paddingTop: 20,
+    position:'absolute',
+    top:280
   },
   logoimage: {
     paddingTop: 50,
+    position:'absolute',
+    top:130
   },
 });

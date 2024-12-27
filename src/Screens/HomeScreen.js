@@ -78,11 +78,7 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.scrollViewContent,
-          {marginLeft: isLandscape ? 50 : 30},
-        ]}>
+      <ScrollView>
         <View style={styles.logoimage}>
           <Image source={require('../assets/images/logo-black.png')} />
         </View>
@@ -94,18 +90,19 @@ const HomeScreen = ({navigation}) => {
           style={{
             fontSize: 18,
             paddingTop: 20,
-            marginLeft: isLandscape ? -170 : -75,
+            marginLeft: isLandscape ? 0 : 0,
           }}
           name={'Email Address / Mobile Number'}
         />
         <Inputbox
           style={{
-            width: isLandscape ? 390 : 290,
+            width: isLandscape ? '90%' : 290,
             height: 50,
             borderColor: '#ccc',
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
+            marginLeft:35
           }}
           value={phone_email}
           onChangeText={setUsername}
@@ -116,19 +113,20 @@ const HomeScreen = ({navigation}) => {
           style={{
             fontSize: 18,
             paddingTop: 20,
-            marginLeft: isLandscape ? -210 : -160,
+            marginLeft: isLandscape ? 0 : 0,
           }}
           name={'Password'}
         />
 
         <Inputbox
           style={{
-            width: isLandscape ? 390 : 290,
+            width: isLandscape ? '90%': 290,
             height: 50,
             borderColor: '#ccc',
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
+            marginLeft:35
           }}
           iconn={
             <Icon
@@ -136,7 +134,7 @@ const HomeScreen = ({navigation}) => {
               size={25}
               color="#0cbcb9"
               onPress={handleicon}
-              style={{paddingTop:6}}
+              style={{paddingTop:6,marginRight:40}}
             />
           }
           value={password}
@@ -148,7 +146,7 @@ const HomeScreen = ({navigation}) => {
  
         <TouchableOpacity onPress={() => navigation.navigate('Forgetpassword')}>
           <Text
-            style={{color: '#0cbcb9', paddingTop: 20, left: isLandscape?110:60, fontSize: 17}}>
+            style={{color: '#0cbcb9', paddingTop: 20, left: isLandscape?531:155, fontSize: 17}}>
             Forget Password?
           </Text>
         </TouchableOpacity>
@@ -172,7 +170,8 @@ const HomeScreen = ({navigation}) => {
               paddingTop: 20,
               justifyContent: 'center',
               alignItems: 'center',
-              marginRight:50
+              // marginLeft:80,
+              alignSelf:'center'
             }}
             onPress={() => navigation.navigate('OTP')}>
             Login With OTP
@@ -207,7 +206,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   logoimage: {
-    marginLeft: -20,
-    marginBottom:50
+    marginLeft: 0,
+    marginBottom:10,
+    paddingTop:100
   },
 });

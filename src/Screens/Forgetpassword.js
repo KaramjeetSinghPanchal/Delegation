@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import React from 'react';
 import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
@@ -9,13 +9,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Navigation from '../navigation/Navigation';
 import {useNavigation} from '@react-navigation/native';
+import Lanscape from './Lanscape';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const Forgetpassword = ({navigation}) => {
+  const isLandscape = Lanscape()
   const navigate = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <View style={{position:'absolute',bottom:600,left:50,flexDirection:'row'}}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+      <View style={{position:'absolute',top:isLandscape?40:10,left:10,flexDirection:'row'}}>
         <Icon
           name={'arrow-back'}
           size={25}
@@ -29,27 +33,29 @@ const Forgetpassword = ({navigation}) => {
         <Image source={require('../assets/images/logo-black.png')} />
       </View>
       <View>
-        <Text style={styles.signin}>Forgot Password?</Text>
+        <Text style={[styles.signin]}>Forgot Password?</Text>
       </View>
 
       <Inputname
-        style={{fontSize: 18, paddingTop: 30, marginLeft: -158}}
+        style={{fontSize: 18, paddingTop: 40}}
         name={'Email Address'}
       />
       <Inputbox
         style={{
-          width: 290,
+          width:isLandscape?'90%': 290,
           height: 50,
           borderColor: '#ccc',
           borderWidth: 1,
           paddingLeft: 5,
           borderRadius: 5,
+          marginLeft:35
         }}
         placeholder="Enter your email address"
       />
 
-      <Button name={'Reset Password'} />
-    </View>
+      <Button name={'Reset Password'} isLandscape={isLandscape}/>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -67,10 +73,11 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 30,
     fontFamily: 'bold',
-    marginLeft: -60,
-    paddingTop: 20,
+   
+    paddingTop: 240,
   },
   logoimage: {
-    paddingTop: 50,
+    position:'absolute',
+    top:120
   },
 });

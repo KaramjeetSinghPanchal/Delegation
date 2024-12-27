@@ -5,7 +5,7 @@ const Button = ({name,onPress,style,isLandscape}) => {
 
   
   return (
-    <TouchableOpacity style={[styles.button,style,{width:isLandscape?400:290}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button,style,{width:isLandscape?'95%':290}]} onPress={onPress}>
       <Text style={styles.buttonText}>{name}</Text>
     </TouchableOpacity>
   );

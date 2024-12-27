@@ -11,6 +11,7 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import AddButton from './AddButton';
 import DatePicker from 'react-native-date-picker';
@@ -28,6 +29,7 @@ const TaskManagement = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [datastate, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [current,setcurrent] = useState(0)
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [rotation, setRotation] = useState(0);
@@ -64,6 +66,10 @@ const TaskManagement = ({navigation}) => {
     };
   }, []);
 
+  
+
+  const newpage = current +1
+
   const calculatedWidth = screenwidth * 0.4 + 9;
 
   // Optionally cap the width to a maximum value (e.g., max 80% of the screen width)
@@ -72,8 +78,8 @@ const TaskManagement = ({navigation}) => {
 
   const finalWidth = Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
 
-  const isLandscape = screenwidth>screenheight;
-  
+  const isLandscape = screenwidth > screenheight;
+
   const data = [
     'All',
     'In-progress',
@@ -107,21 +113,43 @@ const TaskManagement = ({navigation}) => {
     setCheckedStates(updatedCheckedStates);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await taskmangementlisting();
-        setData(data.data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to fetch data');
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      const fetchedData = await taskmangementlisting(current); // Fetch the current page of data
+      console.warn(fetchedData, "Fetched Data-->"); // Debugging output to check the fetched data format
+  
+      // Check if 'data' exists and it's an array
+      if (fetchedData && Array.isArray(fetchedData.data)) {
+        if (fetchedData.data.length > 0) {
+          // Append the new data if it's not empty
+          setData((prevData) => [...prevData, ...fetchedData.data]);
+        } else {
+          // No data available on this page
+          console.log("No more data to load on page", current);
+        }
+      } else {
+        console.error('Fetched data is not in expected format:', fetchedData);
       }
-    };
-
+  
+      // Check if we're on the last page
+      if (!fetchedData.next_page_url) {
+        console.log("No more pages to load.");
+      } else {
+        // Increment current page only if there is a next page
+        setcurrent((prev) => prev + 1);
+      }
+  
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch data');
+    } finally {
+      setLoading(false); // Turn off loading spinner
+    }
+  };
+  
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [current]);
 
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
@@ -277,7 +305,7 @@ const TaskManagement = ({navigation}) => {
                 alignContent: 'center',
                 alignContent: 'center',
                 textAlign: 'center',
-                marginLeft: isLandscape?185:14,
+                marginLeft: isLandscape ? 185 : 14,
               }}>
               <Text
                 style={{
@@ -290,11 +318,10 @@ const TaskManagement = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-
           <FlatList
             data={datastate} // Pass users array as data
             keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
-            renderItem={({item}) => (
+            renderItem={({item,index}) => (
               <View>
                 <View
                   style={{
@@ -321,6 +348,13 @@ const TaskManagement = ({navigation}) => {
                     borderColor: '#E5EDF2',
                     marginTop: 5,
                   }}></View>
+                  {/* <Text
+          style={{
+            fontSize: 18,
+            fontFamily: 'Inter_28pt-Bold',
+          }}>
+          Task Index: {index}
+        </Text> */}
 
                 <View
                   style={{
@@ -355,7 +389,16 @@ const TaskManagement = ({navigation}) => {
                     {'\n'}
                     <Text>
                       Priority |{' '}
-                      <Text style={{fontWeight: 'bold', color: 'green'}}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          color:
+                            item.priority === 'Low'
+                              ? '#38AA3A' 
+                              : item.priority === 'Medium'
+                              ? '#FE9816' 
+                              : '#E31B1B', 
+                        }}>
                         {item.priority}
                       </Text>
                     </Text>
@@ -370,11 +413,16 @@ const TaskManagement = ({navigation}) => {
                     <Text
                       style={{
                         fontSize: 15,
-                        color: '#FE9816',
+                        color:
+                          item.status.title == 'Pending'
+                            ? '#FE9816'
+                            : '#38AA3A',
                         fontWeight: '500',
                         justifyContent: 'center',
                         alignSelf: 'center',
                         opacity: 1,
+                        marginTop: 5,
+                        borderRadius: 10,
                       }}>
                       {item.status.title}
                     </Text>
@@ -382,12 +430,16 @@ const TaskManagement = ({navigation}) => {
                 </View>
               </View>
             )}
-            ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
+            ListEmptyComponent={<Text style={{marginTop:100,justifyContent:'center',alignSelf:'center'}}>No users available</Text>}
+            onEndReached={fetchData}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={() => (loading ? <ActivityIndicator size="large" /> : null)} // Show loading indicator at the bottom
+
           />
         </View>
       </ScrollView>
 
-      <AddButton  isLandscape={isLandscape} />
+      <AddButton isLandscape={isLandscape} />
     </SafeAreaView>
   );
 };

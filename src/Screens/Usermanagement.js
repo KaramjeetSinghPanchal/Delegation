@@ -27,7 +27,7 @@ const Usermanagement = () => {
       try {
         console.warn('Fetching users...');
         const data = await listing(); // Call the listing function from API
-        console.warn(data, 'datadata');
+
 
         if (data && data.data) {
           // Assuming data.data contains the array of users

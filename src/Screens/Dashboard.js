@@ -15,11 +15,20 @@ import {useState} from 'react';
 import Profile from '../Components/Profile';
 import PieChart from 'react-native-pie-chart';
 import {delegationtask} from '../apiClient/api';
+
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
 const Dashboard = ({navigation}) => {
+  const widthAndHeight = 250;
+
+  const series = [
+    {value: 430, color: '#fbd203'},
+    {value: 321, color: '#ffb300'},
+    {value: 185, color: '#ff9100'},
+    {value: 123, color: '#ff6c00'},
+  ];
   const data = [
     'In-Progress',
     'To Be Accepted',
@@ -27,18 +36,13 @@ const Dashboard = ({navigation}) => {
     'Completed',
     'In-Draft',
   ]; // Example data
-  const isLandscape = Lanscape()
-  console.warn(isLandscape,);
-  
+  const isLandscape = Lanscape();
+  console.warn(isLandscape);
 
   const [selectedDate, setSelectedDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [task, settask] = useState({});
-
-  const widthAndHeight = 180;
-  const series = [123, 321, 123, 789, 537];
-  const sliceColor = ['#fbd203', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00'];
 
   useEffect(() => {
     console.warn('usermanagement');
@@ -47,7 +51,7 @@ const Dashboard = ({navigation}) => {
       try {
         console.warn('Fetching users...');
         const data = await delegationtask(); // Call the listing function from API
-        console.warn(data, 'datadata');
+  
 
         if (data && data.data) {
           // Assuming data.data contains the array of users
@@ -99,8 +103,6 @@ const Dashboard = ({navigation}) => {
                   </Text>
                 </Text>
               </TouchableOpacity>
-
-
               <TouchableOpacity style={styles.firstBox}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
@@ -115,8 +117,6 @@ const Dashboard = ({navigation}) => {
                   </Text>
                 </Text>
               </TouchableOpacity>
-
-
               <TouchableOpacity style={styles.firstBox}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
@@ -131,8 +131,6 @@ const Dashboard = ({navigation}) => {
                   </Text>
                 </Text>
               </TouchableOpacity>
-
-
               <TouchableOpacity style={styles.firstBox}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
@@ -192,13 +190,15 @@ const Dashboard = ({navigation}) => {
 
               <View
                 style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <View style={styles.containerchart}>
+                {/* <View style={styles.containerchart}>
+                
+                </View> */}
+
+                <View style={styles.containerttt}>
                   <PieChart
                     widthAndHeight={widthAndHeight}
                     series={series}
-                    sliceColor={sliceColor}
-                    coverRadius={0.45}
-                    coverFill={'#FFF'}
+                    cover={0.45}
                   />
                 </View>
 
@@ -244,14 +244,17 @@ const Dashboard = ({navigation}) => {
                   fontWeight: 'bold',
                   width: 1010,
                   height: 50,
-                  fontFamily:'Inter_28pt-SemiBold'
+                  fontFamily: 'Inter_28pt-SemiBold',
                 }}>
                 Weekly Filter {'\n'}
               </Text>
 
-              <View style={[styles.container,{ width:80}]}>
-                <TouchableOpacity 
-                  style={[styles.datePickerButton,{ width: isLandscape?280:200}]}
+              <View style={[styles.container, {width: 80}]}>
+                <TouchableOpacity
+                  style={[
+                    styles.datePickerButton,
+                    {width: isLandscape ? 280 : 200},
+                  ]}
                   onPress={() => setOpen(true)}>
                   <Text style={styles.buttonText}>
                     {selectedDate ? `${selectedDate}` : 'Select Date'}
@@ -279,7 +282,7 @@ const Dashboard = ({navigation}) => {
                 <View
                   style={{
                     height: 40,
-                    width: isLandscape?160:60,
+                    width: isLandscape ? 160 : 60,
                     backgroundColor: '#0cbcb9',
                     borderRadius: 4,
                     alignItems: 'center',
@@ -289,15 +292,20 @@ const Dashboard = ({navigation}) => {
                     alignContent: 'center',
                     textAlign: 'center',
                     marginLeft: 5,
-                  
                   }}>
-                  <Text style={{color:'#FFFFFF',fontFamily:'Inter_28pt-Regular'}}>Filter</Text>
+                  <Text
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Inter_28pt-Regular',
+                    }}>
+                    Filter
+                  </Text>
                 </View>
 
                 <View
                   style={{
                     height: 40,
-                    width: isLandscape?160:50,
+                    width: isLandscape ? 160 : 50,
                     backgroundColor: '#F8F9FA',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -309,13 +317,16 @@ const Dashboard = ({navigation}) => {
                     marginLeft: 5,
                     borderColor: '#E2E8F0',
                   }}>
-                  <Text style={{fontSize: 14,fontFamily:'Inter_28pt-Regular'}}>Clear</Text>
+                  <Text
+                    style={{fontSize: 14, fontFamily: 'Inter_28pt-Regular'}}>
+                    Clear
+                  </Text>
                 </View>
 
                 <View
                   style={{
                     height: 40,
-                    width: isLandscape?160:40,
+                    width: isLandscape ? 160 : 40,
                     // backgroundColor: 'red',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -333,141 +344,137 @@ const Dashboard = ({navigation}) => {
               </View>
 
               <View style={{marginTop: 10}}>
-                <Text style={{fontSize: 17, fontWeight: '700',fontFamily:'Inter_28pt-SemiBold',color:'#2D3748'}}>
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: '700',
+                    fontFamily: 'Inter_28pt-SemiBold',
+                    color: '#2D3748',
+                  }}>
                   In-Progress
                 </Text>
               </View>
 
               <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingTop: 30,
-                    marginHorizontal: 30,
-                    // borderWidth:2,
-                    width: '85%',
-                    borderRadius: 5,
-                  
-                  }}>
-                  <View 
-                  style={{  backgroundColor:'#EAFAFA',
-                    height:45,
-                    width:45,
-                    // borderColor:'red',
-                    // borderWidth:2
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: 'Inter_28pt-Bold',
-                        fontSize: 16,
-                        fontWeight: 600,
-                      
-                      }}>
-                      {/* {formatDate(item.assignment_date)} */}3
-                    </Text>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
-                      {/* {formatmonth(item.assignment_date)} */}Jul
-                    </Text>
-                  </View>
-
-                  <View>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
-                      {/* {item.assigned_to.name} */}karm
-                    </Text>
-                    {'\n'}
-                    <Text>
-                      Priority |{' '}
-                      <Text style={{fontWeight: 'bold', color: 'green'}}>
-                        {/* {item.priority} */}Low
-                      </Text>
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: '#0CBCB9',
-                        fontWeight: '500',
-                        fontFamily:'Inter_28pt-Medium',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        opacity: 1,
-                        marginTop:3
-                      }}>
-                      {/* {item.status.title} */}View Details
-                    </Text>
-                  </View>
-                </View>
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: 30,
+                  marginHorizontal: 30,
+                  // borderWidth:2,
+                  width: '85%',
+                  borderRadius: 5,
+                }}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingTop: 30,
-                    marginHorizontal: 30,
-                    // borderWidth:2,
-                    width: '85%',
-                    borderRadius: 5,
-                  
-                  }}>
-                  <View 
-                  style={{  backgroundColor:'#EAFAFA',
-                    height:45,
-                    width:45,
+                    backgroundColor: '#EAFAFA',
+                    height: 45,
+                    width: 45,
                     // borderColor:'red',
                     // borderWidth:2
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: 'Inter_28pt-Bold',
-                        fontSize: 16,
-                        fontWeight: 600,
-                      
-                      }}>
-                      {/* {formatDate(item.assignment_date)} */}3
-                    </Text>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
-                      {/* {formatmonth(item.assignment_date)} */}Jul
-                    </Text>
-                  </View>
-
-                  <View>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
-                      {/* {item.assigned_to.name} */}karm
-                    </Text>
-                    {'\n'}
-                    <Text>
-                      Priority |{' '}
-                      <Text style={{fontWeight: 'bold', color: 'green'}}>
-                        {/* {item.priority} */}Low
-                      </Text>
-                    </Text>
-                  </View>
-                  <View
+                  }}>
+                  <Text
                     style={{
-                      
+                      fontFamily: 'Inter_28pt-Bold',
+                      fontSize: 16,
+                      fontWeight: 600,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: '#0CBCB9',
-                        fontWeight: '500',
-                        fontFamily:'Inter_28pt-Medium',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        opacity: 1,
-                        marginTop:3
-                      }}>
-                      {/* {item.status.title} */}View Details
-                    </Text>
-                  </View>
+                    {/* {formatDate(item.assignment_date)} */}3
+                  </Text>
+                  <Text
+                    style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
+                    {/* {formatmonth(item.assignment_date)} */}Jul
+                  </Text>
                 </View>
+
+                <View>
+                  <Text style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                    {/* {item.assigned_to.name} */}karm
+                  </Text>
+                  {'\n'}
+                  <Text>
+                    Priority |{' '}
+                    <Text style={{fontWeight: 'bold', color: 'green'}}>
+                      {/* {item.priority} */}Low
+                    </Text>
+                  </Text>
+                </View>
+                <View style={{}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#0CBCB9',
+                      fontWeight: '500',
+                      fontFamily: 'Inter_28pt-Medium',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      opacity: 1,
+                      marginTop: 3,
+                    }}>
+                    {/* {item.status.title} */}View Details
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: 30,
+                  marginHorizontal: 30,
+                  // borderWidth:2,
+                  width: '85%',
+                  borderRadius: 5,
+                }}>
+                <View
+                  style={{
+                    backgroundColor: '#EAFAFA',
+                    height: 45,
+                    width: 45,
+                    // borderColor:'red',
+                    // borderWidth:2
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter_28pt-Bold',
+                      fontSize: 16,
+                      fontWeight: 600,
+                    }}>
+                    {/* {formatDate(item.assignment_date)} */}3
+                  </Text>
+                  <Text
+                    style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
+                    {/* {formatmonth(item.assignment_date)} */}Jul
+                  </Text>
+                </View>
+
+                <View>
+                  <Text style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                    {/* {item.assigned_to.name} */}karm
+                  </Text>
+                  {'\n'}
+                  <Text>
+                    Priority |{' '}
+                    <Text style={{fontWeight: 'bold', color: 'green'}}>
+                      {/* {item.priority} */}Low
+                    </Text>
+                  </Text>
+                </View>
+                <View style={{}}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#0CBCB9',
+                      fontWeight: '500',
+                      fontFamily: 'Inter_28pt-Medium',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      opacity: 1,
+                      marginTop: 3,
+                    }}>
+                    {/* {item.status.title} */}View Details
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -503,14 +510,14 @@ const styles = StyleSheet.create({
 
   listContainer: {
     width: '45%', // Adjust width for the list container
-    marginTop: 10,
-    height: 300, // Fixed height for the list container, adjust as needed
+    height: 222, // Fixed height for the list container, adjust as needed
     borderRadius: 10,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#FFFFFF',
     padding: 10,
     overflow: 'hidden', // Ensure content doesn't overflow
-    // borderColor:"black",
-    // borderWidth:2
+
+    marginTop: -23,
+    marginLeft: 46,
   },
   text: {
     fontSize: 20,
@@ -532,7 +539,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   secondBox: {
-    height: 400,
+    height: 225,
     width: '100%',
     borderRadius: 10,
     backgroundColor: 'white',
@@ -545,7 +552,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   thirdBoxmain: {
-    paddingTop: 10,
+    marginTop: 70,
     paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -572,7 +579,7 @@ const styles = StyleSheet.create({
   listText: {
     fontSize: 13,
     color: '#333',
-    fontFamily:'Inter_28pt-Medium'
+    fontFamily: 'Inter_28pt-Medium',
   },
   textthe: {
     color: '#A0AEC0',
@@ -580,13 +587,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontFamily: 'Inter_18pt-Medium',
   },
-  container: {                                                                              
-   
+  container: {
     height: 40,
     justifyContent: 'space-between',
     flexDirection: 'row',
     backgroundColor: '#f9f9f9',
-    borderColor:'red',
+    borderColor: 'red',
     // borderWidth:5,
     // marginBottom:15
   },
@@ -599,10 +605,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 2,
     borderWidth: 1,
-   
+
     height: 40,
-    borderColor:'#F8F9FA'
-   
+    borderColor: '#F8F9FA',
   },
   buttonText: {
     fontSize: 16,
@@ -626,7 +631,9 @@ const styles = StyleSheet.create({
     width: '45%', // Adjust width for pie chart
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -80,
+    marginBottom: 150,
+    height: 150,
+    backgroundColor: 'red',
   },
   title: {
     fontSize: 18,
@@ -663,5 +670,13 @@ const styles = StyleSheet.create({
   },
   roundedIcon: {
     borderRadius: 100,
+  },
+  containerttt: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  titlettt: {
+    fontSize: 24,
+    margin: 10,
   },
 });

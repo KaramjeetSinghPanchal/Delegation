@@ -1,8 +1,11 @@
 // api.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
+
 const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
 // Login function using FormData
+
 export const loginUser = async (phone_email, password) => {
   console.warn(phone_email, password, 'balle');
 
@@ -132,15 +135,18 @@ export const delegationtask = async () => {
 
 
 
-export const taskmangementlisting = async () => {
+export const taskmangementlisting = async (page=0) => {
   const token = await gettoken();
-  const response = await fetch(`${baseUrl}task-listing`, {
+  const response = await fetch(`${baseUrl}task-listing?page=${page}`, {
+    
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   });
+  // console.warn(response,"responsee");
+  
 
   if (!response.ok) {
     console.warn('Failed to fetch error', response.status);

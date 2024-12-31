@@ -5,7 +5,6 @@ import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import HomeScreen from '../Screens/HomeScreen';
 import Forgetpassword from '../Screens/Forgetpassword';
 import OTP from '../Screens/OTP';

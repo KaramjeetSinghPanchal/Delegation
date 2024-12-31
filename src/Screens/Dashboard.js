@@ -21,7 +21,7 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
 const Dashboard = ({navigation}) => {
-  const widthAndHeight = 250;
+  const widthAndHeight = 160;
 
   const series = [
     {value: 430, color: '#fbd203'},

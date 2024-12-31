@@ -11,40 +11,34 @@ export const loginUser = async (phone_email, password) => {
 
   try {
     console.log('Sending request to:', `${baseUrl}user-login`);
-
-    // Create FormData object to append the form fields
+  
     const formData = new FormData();
     formData.append('phone_email', phone_email);
     formData.append('password', password);
-
-    // Make the fetch request
+  
     const response = await fetch(`${baseUrl}user-login`, {
       method: 'POST',
       body: formData,
     });
-
-    // Check if the response is OK (status 200-299)
+  
     if (!response.ok) {
       const errorResponse = await response.json();
       console.error('Error response:', errorResponse);
-      throw new Error(
-        errorResponse.message || 'Login failed. Please try again.',
-      );
+      throw new Error(errorResponse.message || 'Login failed. Please try again.');
     }
-
-    // If the response is successful, parse the JSON response
+  
     const data = await response.json();
-
+  
     if (data.data.token) {
-      await AsyncStorage.setItem('authToken', data.data.token); // Store token in localStorage
+      console.log('Saving token to AsyncStorage');
+      await AsyncStorage.setItem('authToken', data.data.token);
       console.log('Token saved to AsyncStorage:', data.data.token);
     } else {
       console.error('No token found in response');
     }
-
+  
     return data;
   } catch (error) {
-    // Handle errors
     console.error('Error during fetch request:', error);
     throw new Error(error.message || 'An error occurred. Please try again.');
   }

@@ -7,6 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  TextInput,
+  FlatList,
 } from 'react-native';
 import React from 'react';
 import {useState, useEffect} from 'react';
@@ -17,6 +19,8 @@ import Inputbox from '../Components/Inputbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
   const data = ['Query', 'Task'];
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
   const [screenheight, setscreenheight] = useState(
     Dimensions.get('window').height,
   );
@@ -35,6 +39,16 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   const isLandscape = screenwidth > screenheight;
+
+  const sendmessage = () => {
+    if (message.trim() !== '') {
+      setMessages([
+        ...messages,
+        {id: messages.length.toString(), text: message}, // Add new message to array
+      ]);
+      setMessage(''); // Clear the input field
+    }
+  };
 
   return (
     <SafeAreaView style={styles.containermain}>
@@ -94,7 +108,7 @@ const Dashboard = ({navigation}) => {
             backgroundColor: '#F5F7FA',
             // borderColor:'red',
             // borderWidth:1,
-            marginRight:isLandscape?100:0
+            marginRight: isLandscape ? 100 : 0,
           }}>
           <View
             style={{
@@ -220,7 +234,7 @@ const Dashboard = ({navigation}) => {
             </View>
           </View>
         </View>
-
+        {/* 
         <View
           style={{
             height: 53,
@@ -296,7 +310,19 @@ const Dashboard = ({navigation}) => {
               Hello! How can i assist you today?
             </Text>
           </View>
-        </View>
+        </View> */}
+
+        <FlatList
+          data={messages}
+          renderItem={({item}) => (
+            <View style={styles.messageContainer}>
+              <Text style={styles.messageText}>{item.text}</Text>
+            </View>
+          )}
+          keyExtractor={item => item.id}
+          // inverted // So new messages appear at the bottom
+          style={styles.messageList}
+        />
 
         {/* AI chat Box */}
         <View
@@ -333,12 +359,14 @@ const Dashboard = ({navigation}) => {
 
           {/* Inputbox takes 50% width */}
 
-          <Inputbox
+          <TextInput
             style={{
               height: 46,
               width: '68%', // Adjust width to 40% to give space for circles
-              marginLeft: 33, // Margin to separate Inputbox from the vertical bar
+              marginLeft: 0, // Margin to separate Inputbox from the vertical bar
             }}
+            value={message}
+            onChangeText={text => setMessage(text)}
           />
 
           {/* First Circle */}
@@ -360,7 +388,8 @@ const Dashboard = ({navigation}) => {
               <Icon name="mic" size={25} color="#9AACC2" />
             </View>
           </TouchableOpacity>
-          {/* Second Circle */}
+
+          {/* arrow Circle */}
           <TouchableOpacity
             style={{
               height: 35,
@@ -369,7 +398,8 @@ const Dashboard = ({navigation}) => {
               backgroundColor: '#1E2633',
               marginTop: 10,
               marginLeft: 5,
-            }}>
+            }}
+            onPress={sendmessage}>
             <View
               style={{
                 justifyContent: 'center',
@@ -397,6 +427,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 1,
     // marginTop:20
+  },
+  messageContainer: {
+    height: 25,
+
+    backgroundColor: '#FAFAFA',
+    marginHorizontal: 20,
+    marginLeft: 40,
+    marginTop: 0,
+    borderRadius: 15,
+    flexDirection: 'row',
   },
   main2: {
     flexDirection: 'row',

@@ -167,7 +167,7 @@ const TaskManagement = ({navigation}) => {
   const fetchData = async (status = 'All') => {
     setLoading(true); // Start loading
     try {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Simulate delay
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
 
       const fetchedData = await taskmangementlisting(current, statusMapping[status]);
 

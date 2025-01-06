@@ -6,23 +6,25 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
 // import { Button } from '@react-navigation/elements';
 import Button from '../Components/Button';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 const Details = ({navigation}) => {
-  const [isOpen,setOpen] = useState(false)
-  const [currentValue,setCurrentValue] = useState()
-  
+  const [isOpen, setOpen] = useState(false);
+  const [currentValue, setCurrentValue] = useState();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
-        <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}>
           <Icon name="arrow-back" size={30} />
         </TouchableOpacity>
         <View>
@@ -35,7 +37,7 @@ const Details = ({navigation}) => {
       <ScrollView>
         <Inputname
           name={'DueDate'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.input}
@@ -45,7 +47,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Assigned Date'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -55,7 +57,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Completion Date'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -65,7 +67,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Revised Date'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -75,7 +77,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Status'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox, styles.add]}
@@ -85,7 +87,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Title'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox]}
@@ -95,7 +97,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Description'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox, styles.description]}
@@ -105,7 +107,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Attachment'}
-          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
         />
       </ScrollView>
 
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   main: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderColor:''
+    borderColor: '',
   },
   container: {
     flex: 1,
@@ -150,15 +152,15 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     borderRadius: 5,
     marginLeft: 45,
-    fontFamily:'Inter_28pt-Regular',
-    fontSize:12
+    fontFamily: 'Inter_28pt-Regular',
+    fontSize: 12,
   },
   add: {
     // fontWeight: 'bold',
     // fontSize: 18,
-    fontFamily:'Inter_18pt-Bold',
-    fontSize:12,
-    fontWeight:600
+    fontFamily: 'Inter_18pt-Bold',
+    fontSize: 12,
+    fontWeight: 600,
   },
   description: {
     height: 50,

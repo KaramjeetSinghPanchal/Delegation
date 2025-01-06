@@ -81,6 +81,7 @@ const Dashboard = ({navigation}) => {
             <Profile
               onPress="Details"
               navigation={navigation}
+             
               style={{marginTop: 10}}
             />
           </View>

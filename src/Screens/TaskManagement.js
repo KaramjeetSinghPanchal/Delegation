@@ -82,7 +82,19 @@ const TaskManagement = ({navigation}) => {
     'Pending',
     'Rejected',
     'Revised date',
-  ]; 
+  ];
+  
+
+  const statusMapping = {
+    'All':'',
+    'In-Draft': '1',
+    'In-progress': '2',
+    'In-Completed': '4',
+    'Completed':'3',
+    'Pending': '8',
+    'Rejected': '7',
+    'Revised Date': '9',
+  };
 
   // const data = [
   //   { id: 1, label: 'All' },
@@ -117,18 +129,54 @@ const TaskManagement = ({navigation}) => {
   };
 
   // Fetch data function with delay
-  const fetchData = async () => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 5000)); 
+  // const fetchData = async () => {
+  //   try {
+  //     await new Promise(resolve => setTimeout(resolve, 5000)); 
 
-      const fetchedData = await taskmangementlisting(current);
+  //     const fetchedData = await taskmangementlisting(current);
+
+  //     if (fetchedData && Array.isArray(fetchedData.data)) {
+  //       if (fetchedData.data.length > 0) {
+  //         settotal(fetchedData.data.total);
+  //         setData(prevData => [...prevData, ...fetchedData.data]); 
+  //         if (!fetchedData.next_page_url) {
+  //           setHasMoreData(false); 
+  //         } else {
+  //           setcurrent(prev => prev + 1);
+  //         }
+  //       } else {
+  //         console.log('No more data to load.');
+  //       }
+  //     } else {
+  //       console.error(
+  //         'Fetched data is not in the expected format:',
+  //         fetchedData,
+  //       );
+  //     }
+
+  //     // **Green Comment: Only increment the current page if more data is available**
+    
+  //   } catch (err) {
+  //     console.error('Error fetching data:', err);
+  //     setError('Failed to fetch data');
+  //   } finally {
+  //     setLoading(false); // Turn off loading spinner when done
+  //   }
+  // };
+
+  const fetchData = async (status = 'All') => {
+    setLoading(true); // Start loading
+    try {
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Simulate delay
+
+      const fetchedData = await taskmangementlisting(current, statusMapping[status]);
 
       if (fetchedData && Array.isArray(fetchedData.data)) {
         if (fetchedData.data.length > 0) {
           settotal(fetchedData.data.total);
-          setData(prevData => [...prevData, ...fetchedData.data]); 
+          setData(prevData => [...prevData, ...fetchedData.data]);
           if (!fetchedData.next_page_url) {
-            setHasMoreData(false); 
+            setHasMoreData(false);
           } else {
             setcurrent(prev => prev + 1);
           }
@@ -136,20 +184,22 @@ const TaskManagement = ({navigation}) => {
           console.log('No more data to load.');
         }
       } else {
-        console.error(
-          'Fetched data is not in the expected format:',
-          fetchedData,
-        );
+        console.error('Fetched data is not in the expected format:', fetchedData);
       }
-
-      // **Green Comment: Only increment the current page if more data is available**
-    
     } catch (err) {
       console.error('Error fetching data:', err);
       setError('Failed to fetch data');
     } finally {
-      setLoading(false); // Turn off loading spinner when done
+      setLoading(false); // End loading
     }
+  };
+
+
+  const handleSelectChange = (val) => {
+    setSelected(val); // Set selected status
+    setData([]); // Clear previous data
+    setcurrent(1); // Reset to the first page
+    fetchData(val); // Fetch new filtered data
   };
 
   const isfooterComponent = useCallback(() => {
@@ -161,7 +211,7 @@ const TaskManagement = ({navigation}) => {
 
   useEffect(() => {
     fetchData();
-  }, [current]);
+  }, []);
 
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
@@ -219,19 +269,19 @@ const TaskManagement = ({navigation}) => {
             </View>
           </View>
           <View style={{backgroundColor: '#FFFFFF', marginTop: 15}}>
-            <SelectList
-              setSelected={val => setSelected(val)}
-              data={data}
-              save="value"
-              dropdownStyles={{color: '#A0AEC0', marginHorizontal: 15}}
-              dropdownTextStyles={{color: '#A0AEC0'}}
-              boxStyles={{
-                marginHorizontal: 16,
-                backgroundColor: '#F8F9FA',
-                borderColor: '#E2E8F0',
-                borderWidth: 1,
-              }}
-            />
+          <SelectList
+        setSelected={handleSelectChange}
+        data={['All', 'In-progress', 'Completed', 'In-Draft', 'Pending', 'Rejected', 'Revised date']}
+        save="value"
+        dropdownStyles={{ color: '#A0AEC0', marginHorizontal: 15 }}
+        dropdownTextStyles={{ color: '#A0AEC0' }}
+        boxStyles={{
+          marginHorizontal: 16,
+          backgroundColor: '#F8F9FA',
+          borderColor: '#E2E8F0',
+          borderWidth: 1,
+        }}
+      />
           </View>
 
           <View style={styles.containerree}>
@@ -262,7 +312,7 @@ const TaskManagement = ({navigation}) => {
                 }}
               />
               {/* clear button */}
-              <View
+              <TouchableOpacity
                 style={{
                   height: 40,
                   // width: 155,
@@ -279,7 +329,7 @@ const TaskManagement = ({navigation}) => {
                 <TouchableOpacity>
                   <Text style={{fontSize: 13}}>Clear</Text>
                 </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -444,7 +494,7 @@ const TaskManagement = ({navigation}) => {
                 </View>
               </View>
             )}
-            ListEmptyComponent={<Text>No tasks available</Text>} // Show message when no tasks are available
+            ListEmptyComponent={<Text style={{justifyContent:'center',alignSelf:'center',marginTop:80}}>No tasks available</Text>} // Show message when no tasks are available
             onEndReached={fetchData} // Trigger pagination when end is reached
             onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
             ListFooterComponent={isfooterComponent}

@@ -129,9 +129,11 @@ export const delegationtask = async () => {
 
 
 
-export const taskmangementlisting = async (page=0) => {
+export const taskmangementlisting = async (currentPage,status) => {
+  console.warn(status);
+  
   const token = await gettoken();
-  const response = await fetch(`${baseUrl}task-listing?page=${page}`, {
+  const response = await fetch(`${baseUrl}task-listing?page=${currentPage}&status=${status}`, {
     
     method: 'GET',
     headers: {
@@ -139,7 +141,7 @@ export const taskmangementlisting = async (page=0) => {
       'Content-Type': 'application/json',
     },
   });
-  // console.warn(response,"responsee");
+  console.warn(response,"responsee");
   
 
   if (!response.ok) {

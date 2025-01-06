@@ -13,6 +13,7 @@ import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
 // import { Button } from '@react-navigation/elements';
 import Button from '../Components/Button';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 const Details = ({navigation}) => {
   const [isOpen,setOpen] = useState(false)
   const [currentValue,setCurrentValue] = useState()
@@ -34,7 +35,7 @@ const Details = ({navigation}) => {
       <ScrollView>
         <Inputname
           name={'DueDate'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.input}
@@ -44,7 +45,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Assigned Date'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -54,7 +55,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Completion Date'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -64,7 +65,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Revised Date'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={styles.inputbox}
@@ -74,17 +75,17 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Status'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox, styles.add]}
           placeholder="In-Progress"
-          placeholderTextColor="orange"
+          placeholderTextColor="#FE9816"
         />
 
         <Inputname
           name={'Title'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox]}
@@ -94,7 +95,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Description'}
-          style={{fontSize: 18, paddingTop: 20, marginLeft: 15}}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
         <Inputbox
           style={[styles.inputbox, styles.description]}
@@ -104,12 +105,7 @@ const Details = ({navigation}) => {
 
         <Inputname
           name={'Attachment'}
-          style={{
-            fontSize: 18,
-            paddingTop: 20,
-            marginLeft: 15,
-            fontWeight: 600,
-          }}
+          style={{fontWeight:600, paddingTop: 20, marginLeft: 15}}
         />
       </ScrollView>
 
@@ -118,7 +114,7 @@ const Details = ({navigation}) => {
         style={{
           justifyContent: 'center',
           alignItem: 'center',
-          marginLeft: 15,
+          marginLeft: 50,
           width: 370,
         }}
       />
@@ -132,31 +128,37 @@ const styles = StyleSheet.create({
   main: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderColor:''
   },
   container: {
     flex: 1,
   },
   input: {
-    width: 370,
-    height: 50,
-    borderColor: '#ccc',
+    width: '85%',
+    height: 40,
+    borderColor: '#DFEAF2',
     borderWidth: 1,
     paddingLeft: 5,
     borderRadius: 5,
     marginLeft: 45,
   },
   inputbox: {
-    width: 370,
-    height: 50,
-    borderColor: '#ccc',
+    width: '85%',
+    height: 40,
+    borderColor: '#DFEAF2',
     borderWidth: 1,
     paddingLeft: 5,
     borderRadius: 5,
     marginLeft: 45,
+    fontFamily:'Inter_28pt-Regular',
+    fontSize:12
   },
   add: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    // fontWeight: 'bold',
+    // fontSize: 18,
+    fontFamily:'Inter_18pt-Bold',
+    fontSize:12,
+    fontWeight:600
   },
   description: {
     height: 50,

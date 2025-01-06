@@ -4,7 +4,7 @@ import React from 'react'
 const Inputname = ({style,name}) => {
   return (
     <View>
-      <Text style={style}>{name}</Text>
+      <Text style={[style,{fontFamily:'Inter_18pt-Bold',color:'#232323'}]}>{name}</Text>
     </View>
   )
 }

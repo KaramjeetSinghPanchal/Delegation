@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
   const data = ['Query', 'Task'];
   const [message, setMessage] = useState('');
+  // const [check,setcheck] = useState([])
   const [messages, setMessages] = useState([]);
   const [screenheight, setscreenheight] = useState(
     Dimensions.get('window').height,
@@ -44,9 +45,13 @@ const Dashboard = ({navigation}) => {
     if (message.trim() !== '') {
       setMessages([
         ...messages,
-        {id: messages.length.toString(), text: message}, // Add new message to array
+        {
+          id: messages.length.toString(),
+          text: message,
+          image: require('../assets/images/gymone.jpeg'), // Correct way to pass local image
+        },
       ]);
-      setMessage(''); // Clear the input field
+      setMessage('');
     }
   };
 
@@ -75,165 +80,171 @@ const Dashboard = ({navigation}) => {
           />
         </View>
 
-        <View style={styles.admin}>
-          <Text
-            style={{
-              fontSize: 26,
-              fontWeight: 600,
-              color: '#0CBCB9',
-              fontFamily: 'Inter_28pt-SemiBold',
-            }}>
-            Hello Admin
-          </Text>
+        {messages.length > 0 ? (
+          ''
+        ) : (
           <View>
-            <Text
+            <View style={styles.admin}>
+              <Text
+                style={{
+                  fontSize: 26,
+                  fontWeight: 600,
+                  color: '#0CBCB9',
+                  fontFamily: 'Inter_28pt-SemiBold',
+                }}>
+                Hello Admin
+              </Text>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 600,
+                    fontFamily: 'Inter_28pt-SemiBold',
+                  }}>
+                  How Can I Help You Today?
+                </Text>
+              </View>
+            </View>
+
+            <View
               style={{
-                fontSize: 22,
-                fontWeight: 600,
-                fontFamily: 'Inter_28pt-SemiBold',
+                height: 216,
+                width: isLandscape ? 580 : 323,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginTop: 30,
+                backgroundColor: '#F5F7FA',
+                // borderColor:'red',
+                // borderWidth:1,
+                marginRight: isLandscape ? 100 : 0,
               }}>
-              How Can I Help You Today?
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            height: 216,
-            width: isLandscape ? 580 : 323,
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginTop: 30,
-            backgroundColor: '#F5F7FA',
-            // borderColor:'red',
-            // borderWidth:1,
-            marginRight: isLandscape ? 100 : 0,
-          }}>
-          <View
-            style={{
-              width: isLandscape ? 550 : 323,
-              height: 65,
-              backgroundColor: '#FFFFFF',
-            }}>
-            <View style={styles.setthree}>
-              <View>
-                {' '}
-                <Image
-                  source={require('../assets/images/Group1.png')}
-                  style={{
-                    height: 32,
-                    width: 30.61,
-                    marginBottom: 30,
-                    marginRight: isLandscape ? 300 : 0,
-                  }}
-                />
-              </View>
               <View
                 style={{
-                  marginLeft: isLandscape ? -270 : 0,
-                  marginRight: isLandscape ? 0 : 60,
+                  width: isLandscape ? 550 : 323,
+                  height: 65,
+                  backgroundColor: '#FFFFFF',
                 }}>
-                {' '}
-                <Text
-                  style={{
-                    fontSize: 14,
-                    marginLeft: 20,
-                    color: 'black',
-                    fontFamily: 'Inter_28pt-Regular',
-                    marginBottom: 30,
-                    color: '#2D3748',
-                  }}>
-                  Provide an update on the status of every task that was created
-                  this week
-                </Text>
+                <View style={styles.setthree}>
+                  <View>
+                    {' '}
+                    <Image
+                      source={require('../assets/images/Group1.png')}
+                      style={{
+                        height: 32,
+                        width: 30.61,
+                        marginBottom: 30,
+                        marginRight: isLandscape ? 300 : 0,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      marginLeft: isLandscape ? -270 : 0,
+                      marginRight: isLandscape ? 0 : 60,
+                    }}>
+                    {' '}
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 20,
+                        color: 'black',
+                        fontFamily: 'Inter_28pt-Regular',
+                        marginBottom: 30,
+                        color: '#2D3748',
+                      }}>
+                      Provide an update on the status of every task that was
+                      created this week
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  height: 65,
+                  margin: 10,
+                  backgroundColor: '#FFFFFF',
+                  width: isLandscape ? 550 : 323,
+                }}>
+                <View style={styles.setthree}>
+                  <View>
+                    {' '}
+                    <Image
+                      source={require('../assets/images/Group1.png')}
+                      style={{
+                        height: 32,
+                        width: 30.61,
+                        marginBottom: 15,
+                        marginRight: isLandscape ? 200 : 0,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      marginLeft: isLandscape ? -170 : 0,
+                      marginRight: isLandscape ? 0 : 60,
+                    }}>
+                    {' '}
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 20,
+                        color: 'black',
+                        fontFamily: 'Inter_28pt-Regular',
+                        marginBottom: 12,
+                        color: '#2D3748',
+                      }}>
+                      Provide an update on the status of every task that was
+                      created this week
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  width: isLandscape ? 550 : 323,
+                  height: 65,
+                  backgroundColor: '#FFFFFF',
+                }}>
+                <View style={styles.setthree}>
+                  <View>
+                    {' '}
+                    <Image
+                      source={require('../assets/images/Group1.png')}
+                      style={{
+                        height: 32,
+                        width: 30.61,
+                        marginBottom: 15,
+                        marginRight: isLandscape ? 200 : 0,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      marginLeft: isLandscape ? -170 : 0,
+                      marginRight: isLandscape ? 0 : 60,
+                    }}>
+                    {' '}
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 20,
+                        color: 'black',
+                        fontFamily: 'Inter_28pt-Regular',
+                        marginBottom: 12,
+                        color: '#2D3748',
+                      }}>
+                      Provide an update on the status of every task that was
+                      created this week
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           </View>
-
-          <View
-            style={{
-              height: 65,
-              margin: 10,
-              backgroundColor: '#FFFFFF',
-              width: isLandscape ? 550 : 323,
-            }}>
-            <View style={styles.setthree}>
-              <View>
-                {' '}
-                <Image
-                  source={require('../assets/images/Group1.png')}
-                  style={{
-                    height: 32,
-                    width: 30.61,
-                    marginBottom: 15,
-                    marginRight: isLandscape ? 200 : 0,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  marginLeft: isLandscape ? -170 : 0,
-                  marginRight: isLandscape ? 0 : 60,
-                }}>
-                {' '}
-                <Text
-                  style={{
-                    fontSize: 14,
-                    marginLeft: 20,
-                    color: 'black',
-                    fontFamily: 'Inter_28pt-Regular',
-                    marginBottom: 12,
-                    color: '#2D3748',
-                  }}>
-                  Provide an update on the status of every task that was created
-                  this week
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View
-            style={{
-              width: isLandscape ? 550 : 323,
-              height: 65,
-              backgroundColor: '#FFFFFF',
-            }}>
-            <View style={styles.setthree}>
-              <View>
-                {' '}
-                <Image
-                  source={require('../assets/images/Group1.png')}
-                  style={{
-                    height: 32,
-                    width: 30.61,
-                    marginBottom: 15,
-                    marginRight: isLandscape ? 200 : 0,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  marginLeft: isLandscape ? -170 : 0,
-                  marginRight: isLandscape ? 0 : 60,
-                }}>
-                {' '}
-                <Text
-                  style={{
-                    fontSize: 14,
-                    marginLeft: 20,
-                    color: 'black',
-                    fontFamily: 'Inter_28pt-Regular',
-                    marginBottom: 12,
-                    color: '#2D3748',
-                  }}>
-                  Provide an update on the status of every task that was created
-                  this week
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        )}
         {/* 
         <View
           style={{
@@ -316,6 +327,12 @@ const Dashboard = ({navigation}) => {
           data={messages}
           renderItem={({item}) => (
             <View style={styles.messageContainer}>
+              {item.image && (
+                <Image
+                  source={item.image} // Directly pass the image reference from require()
+                  style={styles.messageimage}
+                />
+              )}
               <Text style={styles.messageText}>{item.text}</Text>
             </View>
           )}
@@ -332,7 +349,9 @@ const Dashboard = ({navigation}) => {
             borderWidth: 1,
             justifyContent: 'center',
             alignSelf: 'center',
-            marginTop: 20,
+            marginTop: 350,
+            // position:'absolute',
+            // bottom:-210,
             flexDirection: 'row', // Ensures horizontal layout
             justifyContent: 'flex-start', // Aligns items to the start
             borderRadius: 20,
@@ -429,14 +448,26 @@ const styles = StyleSheet.create({
     // marginTop:20
   },
   messageContainer: {
-    height: 25,
-
+    height: 35,
     backgroundColor: '#FAFAFA',
     marginHorizontal: 20,
     marginLeft: 40,
     marginTop: 0,
     borderRadius: 15,
     flexDirection: 'row',
+  },
+  messageText: {
+    fontSize: 13,
+    fontFamily: 'Inter_28pt-Regular',
+    marginTop: 15,
+  },
+  messageimage: {
+    borderRadius: 100,
+    height: 25,
+    width: 25,
+    marginVertical: -10,
+    marginHorizontal: 10,
+    marginTop: 10,
   },
   main2: {
     flexDirection: 'row',

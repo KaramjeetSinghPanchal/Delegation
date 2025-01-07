@@ -96,15 +96,6 @@ const TaskManagement = ({navigation}) => {
     'Revised Date': '9',
   };
 
-  // const data = [
-  //   { id: 1, label: 'All' },
-  //   { id: 2, label: 'In-progress' },
-  //   { id: 3, label: 'Completed' },
-  //   { id: 4, label: 'In-Draft' },
-  //   { id: 5, label: 'Pending' },
-  //   { id: 6, label: 'Rejected' },
-  //   { id: 7, label: 'Revised date' },
-  // ];
   const formatDate = dateString => {
     const date = new Date(dateString); // Convert the string to a Date object
     const options = {day: 'numeric'}; // Format options: day and short month name (e.g., Dec)
@@ -128,42 +119,7 @@ const TaskManagement = ({navigation}) => {
     setCheckedStates(updatedCheckedStates);
   };
 
-  // Fetch data function with delay
-  // const fetchData = async () => {
-  //   try {
-  //     await new Promise(resolve => setTimeout(resolve, 5000)); 
-
-  //     const fetchedData = await taskmangementlisting(current);
-
-  //     if (fetchedData && Array.isArray(fetchedData.data)) {
-  //       if (fetchedData.data.length > 0) {
-  //         settotal(fetchedData.data.total);
-  //         setData(prevData => [...prevData, ...fetchedData.data]); 
-  //         if (!fetchedData.next_page_url) {
-  //           setHasMoreData(false); 
-  //         } else {
-  //           setcurrent(prev => prev + 1);
-  //         }
-  //       } else {
-  //         console.log('No more data to load.');
-  //       }
-  //     } else {
-  //       console.error(
-  //         'Fetched data is not in the expected format:',
-  //         fetchedData,
-  //       );
-  //     }
-
-  //     // **Green Comment: Only increment the current page if more data is available**
-    
-  //   } catch (err) {
-  //     console.error('Error fetching data:', err);
-  //     setError('Failed to fetch data');
-  //   } finally {
-  //     setLoading(false); // Turn off loading spinner when done
-  //   }
-  // };
-
+  
   const fetchData = async (status = 'All') => {
     setLoading(true); // Start loading
     try {
@@ -382,6 +338,7 @@ const TaskManagement = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
+
           <FlatList
             data={datastate} // Pass users array as data
             keyExtractor={(item) => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
@@ -499,6 +456,7 @@ const TaskManagement = ({navigation}) => {
             onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
             ListFooterComponent={isfooterComponent}
           />
+          
         </View>
       </ScrollView>
 

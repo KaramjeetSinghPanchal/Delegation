@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import AddButton from './AddButton';
-import {useEffect} from 'react';
+import {useEffect, useCallback} from 'react';
 import React from 'react';
 import {useState} from 'react';
 import Profile from '../Components/Profile';
@@ -22,6 +24,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
 const Dashboard = ({navigation}) => {
   const widthAndHeight = 160;
+  const [listing, setlisting] = useState([]);
+  const [hasMoreData, setHasMoreData] = useState(true); // Track if more data is available
+  const [status,setstatus] = useState([])
 
   const series = [
     {value: 430, color: '#fbd203'},
@@ -45,13 +50,10 @@ const Dashboard = ({navigation}) => {
   const [task, settask] = useState({});
 
   useEffect(() => {
-    console.warn('usermanagement');
-
     const fetchUsers = async () => {
       try {
         console.warn('Fetching users...');
         const data = await delegationtask(); // Call the listing function from API
-  
 
         if (data && data.data) {
           // Assuming data.data contains the array of users
@@ -68,9 +70,58 @@ const Dashboard = ({navigation}) => {
     fetchUsers();
   }, []);
 
+  const formatDate = dateString => {
+    const date = new Date(dateString); // Convert the string to a Date object
+    const options = {day: 'numeric'}; // Format options: day and short month name (e.g., Dec)
+    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+  };
+
+  const formatmonth = dateString => {
+    const date = new Date(dateString); // Convert the string to a Date object
+    const options = {month: 'short'}; // Format options: day and short month name (e.g., Dec)
+    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+  };
+
+  const listingdata = async status => {
+    // Alert.alert(status)
+    console.warn(status,"status=>>");
+    
+    const data = await delegationtask(status); // Call the listing function from API
+    // console.warn('======>>>>>', data.data.taskData.data[0].assigned_by_id);
+    setHasMoreData(false);
+    setlisting(data?.data?.taskData?.data);
+    setstatus(listing[0].status.id)
+  };
+
+
+
+  const isfooterComponent = useCallback(() => {
+    if (hasMoreData) {
+      return <ActivityIndicator size="large" style={{marginVertical: 36}} />;
+    }
+    return null; // No footer if loading is false or no more data
+  }, [hasMoreData]);
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'Low':
+        return '#38AA3A'; // Green
+      case 'Medium':
+        return '#FE9816'; // Orange
+      case 'High':
+        return '#E31B1B'; // Red
+      default:
+        return '#000'; // Default color
+    }
+  };
+  
+  const getStatusColor = (statusTitle) => {
+    return statusTitle === 'Pending' ? '#FE9816' : '#38AA3A'; // Status-specific colors
+  };
+
   return (
     <SafeAreaView style={styles.containermain}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView>
         <View style={styles.main}>
           <View style={styles.main2}>
             <Image
@@ -81,7 +132,6 @@ const Dashboard = ({navigation}) => {
             <Profile
               onPress="Details"
               navigation={navigation}
-             
               style={{marginTop: 10}}
             />
           </View>
@@ -89,7 +139,9 @@ const Dashboard = ({navigation}) => {
           <View style={styles.firstBoxmain}>
             <ScrollView horizontal={true}>
               {' '}
-              <TouchableOpacity style={styles.firstBox}>
+              <TouchableOpacity
+                style={styles.firstBox}
+                onPress={() => listingdata(2)}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id} {'\n'}{' '} */}
                   In-Progress
@@ -103,8 +155,62 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.inProgressCount}
                   </Text>
                 </Text>
+
+                <Image source={require('../assets/images/iconprogress.png')} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox}>
+             
+              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(1)}>
+                <Text style={styles.textthe}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  In-Draft
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inDraftCount}
+                  </Text>
+                </Text>
+
+                <Image
+                  source={require('../assets/images/iconprogreesgray.png')}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(3)}>
+                <Text style={styles.textthe}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  Completed
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.taskToBeAcceptedCount}
+                  </Text>
+                </Text>
+
+                <Image source={require('../assets/images/iconCompleted.png')} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(8)}>
+                <Text style={styles.textthe}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  To Be Accepted
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.inDraftCount}
+                  </Text>
+                </Text>
+
+                <Image source={require('../assets/images/Acceptedblue.png')} />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(5)}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
                   Overdue
@@ -117,62 +223,10 @@ const Dashboard = ({navigation}) => {
                     {'\n'} {task.inOverDueCount}
                   </Text>
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox}>
-                <Text style={styles.textthe}>
-                  {/* {item?.data?.assigned_by_id}  */}
-                  Draft Count
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {'\n'} {task.inDraftCount}
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox}>
-                <Text style={styles.textthe}>
-                  {/* {item?.data?.assigned_by_id}  */}
-                  To Be Completed
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {'\n'} {task.taskToBeAcceptedCount}
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox}>
-                <Text style={styles.textthe}>
-                  {/* {item?.data?.assigned_by_id}  */}
-                  In Draft
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {'\n'} {task.inDraftCount}
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox}>
-                <Text style={styles.textthe}>
-                  {/* {item?.data?.assigned_by_id}  */}
-                  Completed
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {'\n'} {task.completeCount}
-                  </Text>
-                </Text>
+
+                <Image
+                  source={require('../assets/images/iconprogressred.png')}
+                />
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -280,7 +334,7 @@ const Dashboard = ({navigation}) => {
                   }}
                 />
 
-                <View
+                <TouchableOpacity
                   style={{
                     height: 40,
                     width: isLandscape ? 160 : 60,
@@ -294,16 +348,18 @@ const Dashboard = ({navigation}) => {
                     textAlign: 'center',
                     marginLeft: 5,
                   }}>
-                  <Text
-                    style={{
-                      color: '#FFFFFF',
-                      fontFamily: 'Inter_28pt-Regular',
-                    }}>
-                    Filter
-                  </Text>
-                </View>
+                  <TouchableOpacity>
+                    <Text
+                      style={{
+                        color: '#FFFFFF',
+                        fontFamily: 'Inter_28pt-Regular',
+                      }}>
+                      Filter
+                    </Text>
+                  </TouchableOpacity>
+                </TouchableOpacity>
 
-                <View
+                <TouchableOpacity
                   style={{
                     height: 40,
                     width: isLandscape ? 160 : 50,
@@ -322,13 +378,12 @@ const Dashboard = ({navigation}) => {
                     style={{fontSize: 14, fontFamily: 'Inter_28pt-Regular'}}>
                     Clear
                   </Text>
-                </View>
+                </TouchableOpacity>
 
-                <View
+                <TouchableOpacity
                   style={{
                     height: 40,
                     width: isLandscape ? 160 : 40,
-                    // backgroundColor: 'red',
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: 4,
@@ -341,7 +396,7 @@ const Dashboard = ({navigation}) => {
                     borderColor: '#E2E8F0',
                   }}>
                   <Icon name="search" size={25} color="#000000" />
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View style={{marginTop: 10}}>
@@ -352,130 +407,140 @@ const Dashboard = ({navigation}) => {
                     fontFamily: 'Inter_28pt-SemiBold',
                     color: '#2D3748',
                   }}>
-                  In-Progress
+{
+  status === 2
+    ? 'In-Progress'
+    : status === 1
+    ? 'Draft'
+    : status === 3
+    ? 'Completed'
+    : status === 8
+    ? 'To Be Accepted'
+     : status === 5
+    ? 'Overdue'
+    : '' // Default case if none of the conditions match
+}
                 </Text>
               </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: 30,
-                  marginHorizontal: 30,
-                  // borderWidth:2,
-                  width: '85%',
-                  borderRadius: 5,
-                }}>
+              {/* Listing */}
+              <FlatList
+            data={listing} // Pass users array as data
+            keyExtractor={(item) => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+            renderItem={({item, index}) => (
+              <View>
                 <View
                   style={{
-                    backgroundColor: '#EAFAFA',
-                    height: 45,
-                    width: 45,
-                    // borderColor:'red',
-                    // borderWidth:2
+                    marginTop: 45,
+                    marginHorizontal: 30,
+                    // backgroundColor: '#E5EDF2',
+                    width: '50%',
                   }}>
                   <Text
                     style={{
+                      fontSize: 18,
                       fontFamily: 'Inter_28pt-Bold',
-                      fontSize: 16,
                       fontWeight: 600,
                     }}>
-                    {/* {formatDate(item.assignment_date)} */}3
-                  </Text>
-                  <Text
-                    style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
-                    {/* {formatmonth(item.assignment_date)} */}Jul
+                    Task Title will be here...
                   </Text>
                 </View>
-
-                <View>
-                  <Text style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
-                    {/* {item.assigned_to.name} */}karm
-                  </Text>
-                  {'\n'}
-                  <Text>
-                    Priority |{' '}
-                    <Text style={{fontWeight: 'bold', color: 'green'}}>
-                      {/* {item.priority} */}Low
-                    </Text>
-                  </Text>
-                </View>
-                <View style={{}}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#0CBCB9',
-                      fontWeight: '500',
-                      fontFamily: 'Inter_28pt-Medium',
-                      justifyContent: 'center',
-                      alignSelf: 'center',
-                      opacity: 1,
-                      marginTop: 3,
-                    }}>
-                    {/* {item.status.title} */}View Details
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: 30,
-                  marginHorizontal: 30,
-                  // borderWidth:2,
-                  width: '85%',
-                  borderRadius: 5,
-                }}>
                 <View
                   style={{
-                    backgroundColor: '#EAFAFA',
-                    height: 45,
-                    width: 45,
-                    // borderColor:'red',
-                    // borderWidth:2
+                    height: 0,
+                    width: '90%',
+                    borderWidth: 1,
+                    marginHorizontal: 30,
+                    borderColor: '#E5EDF2',
+                    marginTop: 5,
+                  }}></View>
+                {/* <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: 'Inter_28pt-Bold',
                   }}>
-                  <Text
-                    style={{
-                      fontFamily: 'Inter_28pt-Bold',
-                      fontSize: 16,
-                      fontWeight: 600,
-                    }}>
-                    {/* {formatDate(item.assignment_date)} */}3
-                  </Text>
-                  <Text
-                    style={{fontFamily: 'Inter_28pt-Regular', fontSize: 12}}>
-                    {/* {formatmonth(item.assignment_date)} */}Jul
-                  </Text>
-                </View>
+                  Task Index: {index}
+                </Text> */}
 
-                <View>
-                  <Text style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
-                    {/* {item.assigned_to.name} */}karm
-                  </Text>
-                  {'\n'}
-                  <Text>
-                    Priority |{' '}
-                    <Text style={{fontWeight: 'bold', color: 'green'}}>
-                      {/* {item.priority} */}Low
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: 30,
+                    marginHorizontal: 30,
+                    // borderWidth:2,
+                    width: '85%',
+                    borderRadius: 5,
+                  }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter_28pt-Bold',
+                        fontSize: 16,
+                        fontWeight: 600,
+                      }}>
+                      {formatDate(item.assignment_date)}
                     </Text>
-                  </Text>
-                </View>
-                <View style={{}}>
-                  <Text
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 11}}>
+                      {formatmonth(item.assignment_date)}
+                    </Text>
+                  </View>
+
+                  <View>
+                    <Text
+                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                      {item?.assigned_to?.name}
+                    </Text>
+                    {'\n'}
+                    <Text>
+                      Priority |{' '}
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          color:
+                            item.priority === 'Low'
+                              ? '#38AA3A'
+                              : item.priority === 'Medium'
+                              ? '#FE9816'
+                              : '#E31B1B',
+                        }}>
+                        {item.priority}
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
                     style={{
-                      fontSize: 14,
-                      color: '#0CBCB9',
-                      fontWeight: '500',
-                      fontFamily: 'Inter_28pt-Medium',
-                      justifyContent: 'center',
-                      alignSelf: 'center',
-                      opacity: 1,
+                      backgroundColor: 'rgba(254, 152, 22, 0.12)',
+                      padding: 2,
                       marginTop: 3,
+                      width: 120,
                     }}>
-                    {/* {item.status.title} */}View Details
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color:
+                          item.status.title == 'Pending'
+                            ? '#FE9816'
+                            : '#38AA3A',
+                        fontWeight: '500',
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        opacity: 1,
+                        marginTop: 5,
+                        borderRadius: 10,
+                      }}>
+                      {item.status.title}
+                    </Text>
+                  </View>
                 </View>
               </View>
+            )}
+            ListEmptyComponent={<Text style={{justifyContent:'center',alignSelf:'center',marginTop:80}}>No tasks available</Text>} // Show message when no tasks are available
+            onEndReached={listingdata} // Trigger pagination when end is reached
+            onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
+            ListFooterComponent={isfooterComponent}
+          />
             </View>
           </View>
         </View>
@@ -534,6 +599,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 10,
     marginLeft: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   firstBoxmain: {
     paddingTop: 20,
@@ -679,5 +746,75 @@ const styles = StyleSheet.create({
   titlettt: {
     fontSize: 24,
     margin: 10,
+  },
+  listItemContainer: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 10,
+    elevation: 2, // Optional: to give shadow to each item
+  },
+  taskTitleContainer: {
+    marginBottom: 10,
+  },
+  taskTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter_28pt-Bold',
+    fontWeight: '600',
+  },
+  dividerLine: {
+    height: 1,
+    width: '90%',
+    borderWidth: 1,
+    marginVertical: 5,
+    borderColor: '#E5EDF2',
+  },
+  taskInfoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 15,
+  },
+  assignmentDate: {
+    fontFamily: 'Inter_28pt-Bold',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  assignmentMonth: {
+    fontFamily: 'Inter_28pt-Regular',
+    fontSize: 11,
+  },
+  assignedTo: {
+    fontFamily: 'Inter_28pt-Medium',
+    fontSize: 14,
+  },
+  priorityText: {
+    fontSize: 14,
+    fontWeight: 'normal',
+  },
+  priority: {
+    fontWeight: 'bold',
+  },
+  statusContainer: {
+    backgroundColor: 'rgba(254, 152, 22, 0.12)',
+    padding: 5,
+    marginTop: 3,
+    width: 120,
+    borderRadius: 8,
+  },
+  statusText: {
+    fontSize: 15,
+    fontWeight: '500',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 5,
+  },
+  emptyMessage: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 80,
+    fontSize: 18,
+    color: '#6C757D',
   },
 });

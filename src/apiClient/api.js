@@ -83,10 +83,10 @@ export const listing = async () => {
   }
 };
 
-export const delegationtask = async () => {
+export const delegationtask = async (status) => {
   try {
     const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
-    const response = await fetch(`${baseUrl}delegation-get-task`, {
+    const response = await fetch(`${baseUrl}delegation-get-task?status=${status}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -107,25 +107,6 @@ export const delegationtask = async () => {
     throw error; // Re-throw the error to be caught in the useEffect
   }
 };
-
-// export const taskmangementlisting = async (selectedId) => {
-//   const token = await gettoken();
-//   const response = await fetch(`${baseUrl}task-listing&&status=${selectedId}`, {
-//     method: 'GET',
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       'Content-Type': 'application/json',
-//     },
-//   });
-
-//   if (!response.ok) {
-//     console.warn('Failed to fetch error', response.status);
-//     throw new Error('Failed to fetch data');
-//   }
-
-//   const data = await response.json();
-//   return data.data;
-// };
 
 
 

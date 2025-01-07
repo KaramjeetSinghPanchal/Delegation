@@ -4,432 +4,151 @@ import {
   View,
   Image,
   SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
   TextInput,
   FlatList,
+  TouchableOpacity,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import React from 'react';
-import {useState, useEffect} from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Profile from '../Components/Profile';
-import DropDownPicker from 'react-native-dropdown-picker';
-import {SelectList} from 'react-native-dropdown-select-list';
-import Inputbox from '../Components/Inputbox';
+import { SelectList } from 'react-native-dropdown-select-list';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const Dashboard = ({navigation}) => {
+
+const Dashboard = ({ navigation }) => {
   const data = ['Query', 'Task'];
+  const flatListRef = useRef(null); // Reference to FlatList for scrolling
+
   const [message, setMessage] = useState('');
-  // const [check,setcheck] = useState([])
   const [messages, setMessages] = useState([]);
-  const [screenheight, setscreenheight] = useState(
-    Dimensions.get('window').height,
-  );
-  const [screenwidth, setscreenwidth] = useState(
-    Dimensions.get('window').width,
-  );
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
 
   useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({window}) => {
-      setscreenheight(window.height);
-      setscreenwidth(window.width);
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+      setScreenWidth(window.width);
     });
     return () => {
       subscription.remove();
     };
   }, []);
 
-  const isLandscape = screenwidth > screenheight;
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
 
-  const sendmessage = () => {
+  const sendMessage = () => {
     if (message.trim() !== '') {
-      setMessages([
-        ...messages,
-        {
-          id: messages.length.toString(),
-          text: message,
-          image: require('../assets/images/gymone.jpeg'), // Correct way to pass local image
-        },
-      ]);
+      const userMessage = {
+        id: messages.length.toString(),
+        text: message,
+        sender: 'user', // This indicates it's the user's message
+        image: require('../assets/images/gymone.jpeg'),
+      };
+
+      // Add the user message to the state
+      setMessages([...messages, userMessage]);
+
+      // Clear the message input
       setMessage('');
+
+      // Simulate a bot response after a short delay
+      setTimeout(() => {
+        const botMessage = {
+          id: (messages.length + 1).toString(),
+          text: ['Hii'],
+          sender: 'bot', // This indicates it's the bot's message
+          image: require('../assets/images/Bot.png'), // Bot's image
+        };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+      }, 1500); // Bot responds after 1.5 seconds
     }
   };
 
   return (
-    <SafeAreaView style={styles.containermain}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+    <SafeAreaView style={styles.container}>
+      {/* Wrapper to handle Keyboard Avoiding */}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
         <View style={styles.main}>
-          <View style={styles.main2}>
-            <Image
-              source={require('../assets/images/Picon.png')}
-              style={styles.icon}
-            />
-            <Text style={styles.text}>Delegation Bot</Text>
-            <Profile
-              onPress="Details"
-              navigation={navigation}
-              style={{marginTop: 10}}
-            />
+          {/* Header Section */}
+          <View style={styles.header}>
+            <Image source={require('../assets/images/Picon.png')} style={styles.icon} />
+            <Text style={styles.title}>Delegation Bot</Text>
+            <Profile onPress="Details" navigation={navigation} style={{ marginTop: 10 }} />
           </View>
         </View>
 
+        {/* Bot Image */}
         <View style={styles.center}>
-          <Image
-            source={require('../assets/images/Bot.png')}
-            style={{width: 93.46, height: 130}}
-          />
+          <Image source={require('../assets/images/Bot.png')} style={styles.botImage} />
         </View>
 
-        {messages.length > 0 ? (
-          ''
-        ) : (
-          <View>
-            <View style={styles.admin}>
-              <Text
-                style={{
-                  fontSize: 26,
-                  fontWeight: 600,
-                  color: '#0CBCB9',
-                  fontFamily: 'Inter_28pt-SemiBold',
-                }}>
-                Hello Admin
-              </Text>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 600,
-                    fontFamily: 'Inter_28pt-SemiBold',
-                  }}>
-                  How Can I Help You Today?
-                </Text>
-              </View>
-            </View>
-
-            <View
-              style={{
-                height: 216,
-                width: isLandscape ? 580 : 323,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-                marginTop: 30,
-                backgroundColor: '#F5F7FA',
-                // borderColor:'red',
-                // borderWidth:1,
-                marginRight: isLandscape ? 100 : 0,
-              }}>
-              <View
-                style={{
-                  width: isLandscape ? 550 : 323,
-                  height: 65,
-                  backgroundColor: '#FFFFFF',
-                }}>
-                <View style={styles.setthree}>
-                  <View>
-                    {' '}
-                    <Image
-                      source={require('../assets/images/Group1.png')}
-                      style={{
-                        height: 32,
-                        width: 30.61,
-                        marginBottom: 30,
-                        marginRight: isLandscape ? 300 : 0,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      marginLeft: isLandscape ? -270 : 0,
-                      marginRight: isLandscape ? 0 : 60,
-                    }}>
-                    {' '}
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        marginLeft: 20,
-                        color: 'black',
-                        fontFamily: 'Inter_28pt-Regular',
-                        marginBottom: 30,
-                        color: '#2D3748',
-                      }}>
-                      Provide an update on the status of every task that was
-                      created this week
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  height: 65,
-                  margin: 10,
-                  backgroundColor: '#FFFFFF',
-                  width: isLandscape ? 550 : 323,
-                }}>
-                <View style={styles.setthree}>
-                  <View>
-                    {' '}
-                    <Image
-                      source={require('../assets/images/Group1.png')}
-                      style={{
-                        height: 32,
-                        width: 30.61,
-                        marginBottom: 15,
-                        marginRight: isLandscape ? 200 : 0,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      marginLeft: isLandscape ? -170 : 0,
-                      marginRight: isLandscape ? 0 : 60,
-                    }}>
-                    {' '}
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        marginLeft: 20,
-                        color: 'black',
-                        fontFamily: 'Inter_28pt-Regular',
-                        marginBottom: 12,
-                        color: '#2D3748',
-                      }}>
-                      Provide an update on the status of every task that was
-                      created this week
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  width: isLandscape ? 550 : 323,
-                  height: 65,
-                  backgroundColor: '#FFFFFF',
-                }}>
-                <View style={styles.setthree}>
-                  <View>
-                    {' '}
-                    <Image
-                      source={require('../assets/images/Group1.png')}
-                      style={{
-                        height: 32,
-                        width: 30.61,
-                        marginBottom: 15,
-                        marginRight: isLandscape ? 200 : 0,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      marginLeft: isLandscape ? -170 : 0,
-                      marginRight: isLandscape ? 0 : 60,
-                    }}>
-                    {' '}
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        marginLeft: 20,
-                        color: 'black',
-                        fontFamily: 'Inter_28pt-Regular',
-                        marginBottom: 12,
-                        color: '#2D3748',
-                      }}>
-                      Provide an update on the status of every task that was
-                      created this week
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
+        {/* Greeting Text when no messages */}
+        {messages.length === 0 && (
+          <View style={styles.adminMessage}>
+            <Text style={styles.greetingText}>Hello Admin</Text>
+            <Text style={styles.assistanceText}>How Can I Help You Today?</Text>
           </View>
         )}
-        {/* 
-        <View
-          style={{
-            height: 53,
 
-            backgroundColor: '#FAFAFA',
-            marginHorizontal: 20,
-            marginLeft: 40,
-            marginTop: 20,
-            borderRadius: 15,
-            flexDirection: 'row',
-          }}>
-          <Image
-            source={require('../assets/images/gymone.jpeg')}
-            style={{
-              borderRadius: 100,
-              height: 25,
-              width: 25,
-              marginVertical: 10,
-              marginHorizontal: 10,
-            }}
-          />
-
-          <TouchableOpacity style={{marginTop: 10, marginLeft: 10}}>
-            <Text style={{fontSize: 10, fontFamily: 'Inter_28pt-Regular'}}>
-              You
-            </Text>
-            {'\n'}
-            <Text
-              style={{
-                marginTop: 5,
-                fontSize: 14,
-                fontFamily: 'Inter_28pt-Regular',
-              }}>
-              hello
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            height: 53,
-            width: isLandscape ? 580 : 323,
-
-            backgroundColor: 'white',
-            marginHorizontal: 20,
-            marginTop: 20,
-            borderRadius: 15,
-            flexDirection: 'row',
-            marginLeft: 40,
-          }}>
-          <View>
-            <Image
-              source={require('../assets/images/fullrobot.png')}
-              style={{
-                height: 25,
-                width: 25,
-                marginVertical: 10,
-                marginHorizontal: 10,
-              }}
-            />
-          </View>
-          <View style={{marginTop: 10}}>
-            <Text style={{fontSize: 10, fontFamily: 'Inter_28pt-Regular'}}>
-              Delegation Bot
-            </Text>
-            {'\n'}
-            <Text
-              style={{
-                marginTop: 5,
-                fontSize: 13,
-                fontFamily: 'Inter_28pt-Regular',
-              }}>
-              Hello! How can i assist you today?
-            </Text>
-          </View>
-        </View> */}
-
+        {/* Chat Messages List */}
         <FlatList
+          ref={flatListRef}
           data={messages}
-          renderItem={({item}) => (
-            <View style={styles.messageContainer}>
-              {item.image && (
-                <Image
-                  source={item.image} // Directly pass the image reference from require()
-                  style={styles.messageimage}
-                />
-              )}
-              <Text style={styles.messageText}>{item.text}</Text>
+          renderItem={({ item }) => (
+            <View style={[
+              styles.messageContainer, 
+              item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer
+            ]}>
+              {item.image && <Image source={item.image} style={styles.messageImage} />}
+              
+              <Text style={[styles.messageText,{marginRight:item.text.length<50?0:15}]}><Text style={styles.messageTextt}>{ item.sender === 'bot' ? 'Bot' : 'User'}</Text>{'\n'}{item.text}</Text>
             </View>
           )}
-          keyExtractor={item => item.id}
-          // inverted // So new messages appear at the bottom
+          keyExtractor={(item) => item.id.toString()}
           style={styles.messageList}
+          contentContainerStyle={styles.messageContentContainer}
         />
 
-        {/* AI chat Box */}
-        <View
-          style={{
-            height: 49,
-            width: '90%',
-            borderWidth: 1,
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginTop: 350,
-            // position:'absolute',
-            // bottom:-210,
-            flexDirection: 'row', // Ensures horizontal layout
-            justifyContent: 'flex-start', // Aligns items to the start
-            borderRadius: 20,
-            borderColor: '#E2E8F0',
-            backgroundColor: '#F8F9FA',
-          }}>
-          {/* SelectList takes 30% width */}
+        {/* Chat Input Area */}
+        <View style={styles.inputContainer}>
+          {/* Select List for Task */}
           <SelectList
             data={data}
             placeholder="Task"
-            style={{
-              height: 46,
-              width: '30%', // 30% width for the SelectList
-            }}
-            dropdownStyles={{
-              width: 100, // Adjust dropdown width if necessary
-              height: 80,
-            }}
-            boxStyles={{borderColor: 'white'}}
+            style={styles.selectList}
+            dropdownStyles={styles.dropdownStyles}
+            boxStyles={styles.selectListBox}
           />
+          <Text style={styles.verticalBar}>|</Text>
 
-          {/* Vertical Bar between SelectList and Inputbox */}
-          <Text style={{fontSize: 30, marginTop: 5, marginLeft: -15}}>|</Text>
-
-          {/* Inputbox takes 50% width */}
-
+          {/* TextInput for message */}
           <TextInput
-            style={{
-              height: 46,
-              width: '68%', // Adjust width to 40% to give space for circles
-              marginLeft: 0, // Margin to separate Inputbox from the vertical bar
-            }}
+            style={styles.textInput}
             value={message}
-            onChangeText={text => setMessage(text)}
+            onChangeText={(text) => setMessage(text)}
+            onSubmitEditing={sendMessage} // Send message on enter
           />
 
-          {/* First Circle */}
-          <TouchableOpacity
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 100,
-              backgroundColor: '#DEE5ED',
-              marginTop: 10,
-              marginLeft: -62,
-            }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignSelf: 'center',
-                marginTop: 5,
-              }}>
+          {/* Mic Icon */}
+          <TouchableOpacity style={styles.firstCircle}>
+            <View style={styles.iconContainer}>
               <Icon name="mic" size={25} color="#9AACC2" />
             </View>
           </TouchableOpacity>
 
-          {/* arrow Circle */}
-          <TouchableOpacity
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 100,
-              backgroundColor: '#1E2633',
-              marginTop: 10,
-              marginLeft: 5,
-            }}
-            onPress={sendmessage}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignSelf: 'center',
-                marginTop: 5,
-              }}>
+          {/* Send Arrow Icon */}
+          <TouchableOpacity style={styles.arrowCircle} onPress={sendMessage}>
+            <View style={styles.iconContainer}>
               <Icon name="arrow-upward" size={24} color="white" />
             </View>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -437,96 +156,159 @@ const Dashboard = ({navigation}) => {
 export default Dashboard;
 
 const styles = StyleSheet.create({
-  containermain: {
+  container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingTop: 20, // Adds space from the top (adjust as needed)
+    paddingTop: 20,
   },
   main: {
     flex: 1,
     paddingHorizontal: 1,
-    // marginTop:20
   },
-  messageContainer: {
-    height: 35,
-    backgroundColor: '#FAFAFA',
-    marginHorizontal: 20,
-    marginLeft: 40,
-    marginTop: 0,
-    borderRadius: 15,
-    flexDirection: 'row',
-  },
-  messageText: {
-    fontSize: 13,
-    fontFamily: 'Inter_28pt-Regular',
-    marginTop: 15,
-  },
-  messageimage: {
-    borderRadius: 100,
-    height: 25,
-    width: 25,
-    marginVertical: -10,
-    marginHorizontal: 10,
-    marginTop: 10,
-  },
-  main2: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: 85,
     width: '100%',
     backgroundColor: 'white',
-    // borderWidth: 2,
-    backgroundColor: 'white',
   },
-
-  listContainer: {
-    width: '45%', // Adjust width for the list container
-    marginTop: 10,
-    height: 300, // Fixed height for the list container, adjust as needed
-    borderRadius: 10,
-    backgroundColor: '#f1f1f1',
-    padding: 10,
-    overflow: 'hidden', // Ensure content doesn't overflow
-  },
-  text: {
+  title: {
     fontSize: 20,
     fontWeight: 700,
     marginTop: 20,
     color: '#2D3748',
     fontFamily: 'Inter_18pt-SemiBold',
   },
-
   icon: {
     height: 35,
     width: 30,
     marginTop: 10,
     marginHorizontal: 10,
   },
-  roundedIcon: {
-    borderRadius: 100,
-  },
   center: {
-    flex: 1, // This ensures the container takes up the full screen
-    justifyContent: 'center', // Vertically centers the content
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -10,
+    marginTop: -450,
   },
-  admin: {
+  botImage: {
+    width: 93.46,
+    height: 130,
+  },
+  adminMessage: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  setthree: {
+  greetingText: {
+    fontSize: 26,
+    fontWeight: 600,
+    color: '#0CBCB9',
+    fontFamily: 'Inter_28pt-SemiBold',
+  },
+  assistanceText: {
+    fontSize: 22,
+    fontWeight: 600,
+    fontFamily: 'Inter_28pt-SemiBold',
+  },
+  messageContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    width: 330,
-    height: 65,
-    // borderColor:'red',
-    // borderWidth:1,
+    padding: 10,
+    alignItems: 'center',
+    bottom:90
+  },
+  userMessageContainer: {
+    backgroundColor: '#FAFAFA',
+    borderRadius: 50,
+    marginBottom: 10,
+    // alignSelf: 'flex-end',
+  },
+  botMessageContainer: {
+    backgroundColor: '#FAFAFA',
+    borderRadius: 50,
+    marginBottom: 10,
+    // alignSelf: 'flex-start',
+  },
+  messageText: {
+    fontSize: 12,
+    color: '#000000',
+    padding: 10,
+
+  },
+  messageTextt: {
+    fontSize: 9,
+    color: '#1E2633',
+    padding: 10,
+  },
+  messageImage: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  messageList: {
+    flex: 1,
+  },
+  messageContentContainer: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  inputContainer: {
+    height: 50,
+    width: '95%',
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#F8F9FA',
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    position: 'absolute',
+    bottom: 0, // Keep the input at the bottom
+    borderColor:'#E2E8F0',
+    marginLeft:10,
+    borderRadius:50,
+  
+  },
+  selectList: {
+    height: 46,
+    width: '30%',
+  },
+  dropdownStyles: {
+    width: 100,
+    height: 80,
+  },
+  selectListBox: {
+    borderColor: 'white',
+  },
+  verticalBar: {
+    fontSize: 30,
+    marginTop: -5,
+    marginLeft: -15,
+  },
+  textInput: {
+    height: 46,
+    width: '68%',
+    marginLeft: 0,
+  },
+  firstCircle: {
+    height: 35,
+    width: 35,
+    borderRadius: 100,
+    backgroundColor: '#DEE5ED',
+    marginTop: 0,
+    marginLeft: -62,
+  },
+  arrowCircle: {
+    height: 35,
+    width: 35,
+    borderRadius: 100,
+    backgroundColor: '#1E2633',
+    marginTop: 3,
+    marginLeft: 9,
+  },
+  iconContainer: {
+    justifyContent: 'center',
     alignSelf: 'center',
-    marginLeft: 55,
-    // backgroundColor:'#FFFFFF'
+    marginTop: 5,
   },
 });

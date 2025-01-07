@@ -11,22 +11,26 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRef, useState, useEffect } from 'react';
+import {useRef, useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
-import { SelectList } from 'react-native-dropdown-select-list';
+import {SelectList} from 'react-native-dropdown-select-list';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Dashboard = ({ navigation }) => {
+const Dashboard = ({navigation}) => {
   const data = ['Query', 'Task'];
   const flatListRef = useRef(null); // Reference to FlatList for scrolling
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
-  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
+  const [screenHeight, setScreenHeight] = useState(
+    Dimensions.get('window').height,
+  );
+  const [screenWidth, setScreenWidth] = useState(
+    Dimensions.get('window').width,
+  );
 
   useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+    const subscription = Dimensions.addEventListener('change', ({window}) => {
       setScreenHeight(window.height);
       setScreenWidth(window.width);
     });
@@ -37,7 +41,7 @@ const Dashboard = ({ navigation }) => {
 
   useEffect(() => {
     if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
+      flatListRef.current.scrollToEnd({animated: true});
     }
   }, [messages]);
 
@@ -64,7 +68,7 @@ const Dashboard = ({ navigation }) => {
           sender: 'bot', // This indicates it's the bot's message
           image: require('../assets/images/Bot.png'), // Bot's image
         };
-        setMessages((prevMessages) => [...prevMessages, botMessage]);
+        setMessages(prevMessages => [...prevMessages, botMessage]);
       }, 1500); // Bot responds after 1.5 seconds
     }
   };
@@ -72,19 +76,31 @@ const Dashboard = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Wrapper to handle Keyboard Avoiding */}
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
         <View style={styles.main}>
           {/* Header Section */}
           <View style={styles.header}>
-            <Image source={require('../assets/images/Picon.png')} style={styles.icon} />
+            <Image
+              source={require('../assets/images/Picon.png')}
+              style={styles.icon}
+            />
             <Text style={styles.title}>Delegation Bot</Text>
-            <Profile onPress="Details" navigation={navigation} style={{ marginTop: 10 }} />
+            <Profile
+              onPress="Details"
+              navigation={navigation}
+              style={{marginTop: 10}}
+            />
           </View>
         </View>
 
         {/* Bot Image */}
         <View style={styles.center}>
-          <Image source={require('../assets/images/Bot.png')} style={styles.botImage} />
+          <Image
+            source={require('../assets/images/Bot.png')}
+            style={styles.botImage}
+          />
         </View>
 
         {/* Greeting Text when no messages */}
@@ -99,17 +115,39 @@ const Dashboard = ({ navigation }) => {
         <FlatList
           ref={flatListRef}
           data={messages}
-          renderItem={({ item }) => (
-            <View style={[
-              styles.messageContainer, 
-              item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer
-            ]}>
-              {item.image && <Image source={item.image} style={styles.messageImage} />}
-              
-              <Text style={[styles.messageText,{marginRight:item.text.length<50?0:15}]}><Text style={styles.messageTextt}>{ item.sender === 'bot' ? 'Bot' : 'User'}</Text>{'\n'}{item.text}</Text>
+          renderItem={({item}) => (
+            <View
+              style={[
+                styles.messageContainer,
+                {bottom: messages.length < 3 ? 10 : 90},
+                item.sender === 'bot'
+                  ? [
+                      styles.botMessageContainer,
+                      {bottom: messages.length < 3 ? 10 : 90},
+                    ]
+                  : [
+                      styles.userMessageContainer,
+                      {bottom: messages.length < 3 ? 10 : 90},
+                    ],
+              ]}>
+              {item.image && (
+                <Image source={item.image} style={styles.messageImage} />
+              )}
+
+              <Text
+                style={[
+                  styles.messageText,
+                  {marginRight: item.text.length < 50 ? 0 : 15},
+                ]}>
+                <Text style={styles.messageTextt}>
+                  {item.sender === 'bot' ? 'Bot' : 'User'}
+                </Text>
+                {'\n'}
+                {item.text}
+              </Text>
             </View>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           style={styles.messageList}
           contentContainerStyle={styles.messageContentContainer}
         />
@@ -130,7 +168,7 @@ const Dashboard = ({ navigation }) => {
           <TextInput
             style={styles.textInput}
             value={message}
-            onChangeText={(text) => setMessage(text)}
+            onChangeText={text => setMessage(text)}
             onSubmitEditing={sendMessage} // Send message on enter
           />
 
@@ -198,6 +236,7 @@ const styles = StyleSheet.create({
   adminMessage: {
     justifyContent: 'center',
     alignItems: 'center',
+    height: 'auto',
   },
   greetingText: {
     fontSize: 26,
@@ -214,25 +253,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
-    bottom:90
+    // bottom: 90,
   },
   userMessageContainer: {
     backgroundColor: '#FAFAFA',
     borderRadius: 50,
-    marginBottom: 10,
+    // marginBottom: 10,
     // alignSelf: 'flex-end',
   },
   botMessageContainer: {
     backgroundColor: '#FAFAFA',
     borderRadius: 50,
-    marginBottom: 10,
+    // marginBottom: 10,
     // alignSelf: 'flex-start',
   },
   messageText: {
     fontSize: 12,
     color: '#000000',
-    padding: 10,
-
+    padding: 5,
   },
   messageTextt: {
     fontSize: 9,
@@ -264,10 +302,9 @@ const styles = StyleSheet.create({
     borderTopColor: '#E2E8F0',
     position: 'absolute',
     bottom: 0, // Keep the input at the bottom
-    borderColor:'#E2E8F0',
-    marginLeft:10,
-    borderRadius:50,
-  
+    borderColor: '#E2E8F0',
+    marginLeft: 10,
+    borderRadius: 50,
   },
   selectList: {
     height: 46,

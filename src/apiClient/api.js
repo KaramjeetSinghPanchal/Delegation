@@ -1,6 +1,6 @@
 // api.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState } from 'react';
+import {useState} from 'react';
 
 const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
@@ -11,24 +11,26 @@ export const loginUser = async (phone_email, password) => {
 
   try {
     console.log('Sending request to:', `${baseUrl}user-login`);
-  
+
     const formData = new FormData();
     formData.append('phone_email', phone_email);
     formData.append('password', password);
-  
+
     const response = await fetch(`${baseUrl}user-login`, {
       method: 'POST',
       body: formData,
     });
-  
+
     if (!response.ok) {
       const errorResponse = await response.json();
       console.error('Error response:', errorResponse);
-      throw new Error(errorResponse.message || 'Login failed. Please try again.');
+      throw new Error(
+        errorResponse.message || 'Login failed. Please try again.',
+      );
     }
-  
+
     const data = await response.json();
-  
+
     if (data.data.token) {
       console.log('Saving token to AsyncStorage');
       await AsyncStorage.setItem('authToken', data.data.token);
@@ -36,7 +38,7 @@ export const loginUser = async (phone_email, password) => {
     } else {
       console.error('No token found in response');
     }
-  
+
     return data;
   } catch (error) {
     console.error('Error during fetch request:', error);
@@ -83,16 +85,19 @@ export const listing = async () => {
   }
 };
 
-export const delegationtask = async (status) => {
+export const delegationtask = async status => {
   try {
     const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
-    const response = await fetch(`${baseUrl}delegation-get-task?status=${status}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${baseUrl}delegation-get-task?status=${status}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       console.error('Failed to fetch users, status:', response.status);
@@ -108,22 +113,25 @@ export const delegationtask = async (status) => {
   }
 };
 
+export const taskmangementlisting = async ({
+  currentPage,
+  status,
+  searchQuery='aman',
+}) => {
 
-
-export const taskmangementlisting = async (currentPage,status) => {
-  console.warn(status);
-  
   const token = await gettoken();
-  const response = await fetch(`${baseUrl}task-listing?page=${currentPage}&status=${status}`, {
-    
+  let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
+  if (status) fetchUrl += '&status=' + status;
+  if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
+console.warn("---====>",fetchUrl);
+
+  const response = await fetch(fetchUrl, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   });
-  console.warn(response,"responsee");
-  
 
   if (!response.ok) {
     console.warn('Failed to fetch error', response.status);
@@ -131,5 +139,7 @@ export const taskmangementlisting = async (currentPage,status) => {
   }
 
   const data = await response.json();
-  return data.data;
+  console.warn('API response:', data); // Log the full response
+
+  return data.data; // Ensure 'data.data' is the correct structure
 };

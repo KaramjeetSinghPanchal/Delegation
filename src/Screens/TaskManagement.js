@@ -83,16 +83,15 @@ const TaskManagement = ({navigation}) => {
     'Rejected',
     'Revised date',
   ];
-  
 
   const statusMapping = {
-    'All':'',
+    All: '',
     'In-Draft': '1',
     'In-progress': '2',
     'In-Completed': '4',
-    'Completed':'3',
-    'Pending': '8',
-    'Rejected': '7',
+    Completed: '3',
+    Pending: '8',
+    Rejected: '7',
     'Revised Date': '9',
   };
 
@@ -119,13 +118,15 @@ const TaskManagement = ({navigation}) => {
     setCheckedStates(updatedCheckedStates);
   };
 
-  
   const fetchData = async (status = 'All') => {
     setLoading(true); // Start loading
     try {
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
 
-      const fetchedData = await taskmangementlisting(current, statusMapping[status]);
+      const fetchedData = await taskmangementlisting({
+        currentPage: current,
+        status: statusMapping[status],
+      });
 
       if (fetchedData && Array.isArray(fetchedData.data)) {
         if (fetchedData.data.length > 0) {
@@ -140,7 +141,10 @@ const TaskManagement = ({navigation}) => {
           console.log('No more data to load.');
         }
       } else {
-        console.error('Fetched data is not in the expected format:', fetchedData);
+        console.error(
+          'Fetched data is not in the expected format:',
+          fetchedData,
+        );
       }
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -150,8 +154,7 @@ const TaskManagement = ({navigation}) => {
     }
   };
 
-
-  const handleSelectChange = (val) => {
+  const handleSelectChange = val => {
     setSelected(val); // Set selected status
     setData([]); // Clear previous data
     setcurrent(1); // Reset to the first page
@@ -160,7 +163,7 @@ const TaskManagement = ({navigation}) => {
 
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
-      return <ActivityIndicator size="large" style={{ marginVertical: 36 }} />;
+      return <ActivityIndicator size="large" style={{marginVertical: 36}} />;
     }
     return null; // No footer if loading is false or no more data
   }, [hasMoreData]);
@@ -172,9 +175,16 @@ const TaskManagement = ({navigation}) => {
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
   const handlesearch = async selectedValue => {
-    const filtereddata = await taskmangementlisting(selectedValue);
-    setData(filtereddata);
+    console.warn(selectedValue, 'checking value');
+    const filtereddata = await taskmangementlisting({
+      currentPage: 1,
+      searchQuery: selectedValue,
+    });
+    console.warn(filtereddata, 'filtered data');
+    setData(filtereddata.data);
   };
+  console.warn("Daatlisting===>",datastate);
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -225,19 +235,27 @@ const TaskManagement = ({navigation}) => {
             </View>
           </View>
           <View style={{backgroundColor: '#FFFFFF', marginTop: 15}}>
-          <SelectList
-        setSelected={handleSelectChange}
-        data={['All', 'In-progress', 'Completed', 'In-Draft', 'Pending', 'Rejected', 'Revised date']}
-        save="value"
-        dropdownStyles={{ color: '#A0AEC0', marginHorizontal: 15 }}
-        dropdownTextStyles={{ color: '#A0AEC0' }}
-        boxStyles={{
-          marginHorizontal: 16,
-          backgroundColor: '#F8F9FA',
-          borderColor: '#E2E8F0',
-          borderWidth: 1,
-        }}
-      />
+            <SelectList
+              setSelected={handleSelectChange}
+              data={[
+                'All',
+                'In-progress',
+                'Completed',
+                'In-Draft',
+                'Pending',
+                'Rejected',
+                'Revised date',
+              ]}
+              save="value"
+              dropdownStyles={{color: '#A0AEC0', marginHorizontal: 15}}
+              dropdownTextStyles={{color: '#A0AEC0'}}
+              boxStyles={{
+                marginHorizontal: 16,
+                backgroundColor: '#F8F9FA',
+                borderColor: '#E2E8F0',
+                borderWidth: 1,
+              }}
+            />
           </View>
 
           <View style={styles.containerree}>
@@ -341,7 +359,7 @@ const TaskManagement = ({navigation}) => {
 
           <FlatList
             data={datastate} // Pass users array as data
-            keyExtractor={(item) => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+            keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
             renderItem={({item, index}) => (
               <View>
                 <View
@@ -451,12 +469,20 @@ const TaskManagement = ({navigation}) => {
                 </View>
               </View>
             )}
-            ListEmptyComponent={<Text style={{justifyContent:'center',alignSelf:'center',marginTop:80}}>No tasks available</Text>} // Show message when no tasks are available
+            ListEmptyComponent={
+              <Text
+                style={{
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  marginTop: 80,
+                }}>
+                No tasks available
+              </Text>
+            } // Show message when no tasks are available
             onEndReached={fetchData} // Trigger pagination when end is reached
             onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
             ListFooterComponent={isfooterComponent}
           />
-          
         </View>
       </ScrollView>
 

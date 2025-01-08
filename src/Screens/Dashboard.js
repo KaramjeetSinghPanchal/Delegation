@@ -158,6 +158,23 @@ const Dashboard = ({navigation}) => {
 
                 <Image source={require('../assets/images/iconprogress.png')} />
               </TouchableOpacity>
+
+              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(3)}>
+                <Text style={styles.textthe}>
+                  {/* {item?.data?.assigned_by_id}  */}
+                  Completed
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {'\n'} {task.taskToBeAcceptedCount}
+                  </Text>
+                </Text>
+
+                <Image source={require('../assets/images/iconCompleted.png')} />
+              </TouchableOpacity>
              
               <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(1)}>
                 <Text style={styles.textthe}>
@@ -177,22 +194,7 @@ const Dashboard = ({navigation}) => {
                   source={require('../assets/images/iconprogreesgray.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(3)}>
-                <Text style={styles.textthe}>
-                  {/* {item?.data?.assigned_by_id}  */}
-                  Completed
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {'\n'} {task.taskToBeAcceptedCount}
-                  </Text>
-                </Text>
-
-                <Image source={require('../assets/images/iconCompleted.png')} />
-              </TouchableOpacity>
+             
               <TouchableOpacity style={styles.firstBox} onPress={() => listingdata(8)}>
                 <Text style={styles.textthe}>
                   {/* {item?.data?.assigned_by_id}  */}
@@ -621,12 +623,11 @@ const styles = StyleSheet.create({
   },
   thirdBoxmain: {
     marginTop: 70,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   thirdBox: {
-    height: 290,
     width: '100%',
     borderRadius: 10,
     backgroundColor: 'white',

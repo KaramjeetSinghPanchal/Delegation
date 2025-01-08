@@ -12,7 +12,9 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
+import {report} from '../apiClient/api';
 import AddButton from './AddButton';
 import DatePicker from 'react-native-date-picker';
 import {taskmangementlisting} from '../apiClient/api';
@@ -28,6 +30,7 @@ const TaskManagement = ({navigation}) => {
   const [open, setOpen] = useState(false);
 
   const [date, setDate] = useState(new Date());
+
   const [datastate, setData] = useState([]);
   const [error, setError] = useState(null);
   const [current, setcurrent] = useState(0);
@@ -37,6 +40,7 @@ const TaskManagement = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [rotation, setRotation] = useState(0);
   const [total, settotal] = useState();
+  const [getdate, setdate] = useState();
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
@@ -118,41 +122,49 @@ const TaskManagement = ({navigation}) => {
     setCheckedStates(updatedCheckedStates);
   };
 
-  const fetchData = async (status = 'All') => {
+  const fetchData = async (status = 'All', selectedDate) => {
+    console.warn("Date received by fetchData:", selectedDate);
+    
     setLoading(true); // Start loading
+    const formattedDate = selectedDate.toISOString().slice(0, 10);  // Format date to YYYY-MM-DD
+
+    console.warn('Formatted date to send:', formattedDate);
+
+    // You don't need to set the date in the state here, as it’s already set by the DatePicker
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
 
-      const fetchedData = await taskmangementlisting({
-        currentPage: current,
-        status: statusMapping[status],
-      });
+        // Call your API using the formatted date
+        const fetchedData = await taskmangementlisting({
+            currentPage: current,
+            status: statusMapping[status],
+            assigned_date: formattedDate, // Pass the formatted date
+        });
 
-      if (fetchedData && Array.isArray(fetchedData.data)) {
-        if (fetchedData.data.length > 0) {
-          settotal(fetchedData.data.total);
-          setData(prevData => [...prevData, ...fetchedData.data]);
-          if (!fetchedData.next_page_url) {
-            setHasMoreData(false);
-          } else {
-            setcurrent(prev => prev + 1);
-          }
+        if (fetchedData && Array.isArray(fetchedData.data)) {
+            if (fetchedData.data.length > 0) {
+                setData(fetchedData.data);  // Set the filtered data here
+                settotal(fetchedData.data.total);
+                if (!fetchedData.next_page_url) {
+                    setHasMoreData(false);
+                } else {
+                    setcurrent(prev => prev + 1);
+                }
+            } else {
+                console.log('No more data to load.');
+                setData([]);  // Clear data if no results
+            }
         } else {
-          console.log('No more data to load.');
+            console.error('Fetched data is not in the expected format:', fetchedData);
         }
-      } else {
-        console.error(
-          'Fetched data is not in the expected format:',
-          fetchedData,
-        );
-      }
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to fetch data');
+        console.error('Error fetching data:', err);
+        setError('Failed to fetch data');
     } finally {
-      setLoading(false); // End loading
+        setLoading(false); // End loading
     }
-  };
+};
 
   const handleSelectChange = val => {
     setSelected(val); // Set selected status
@@ -160,6 +172,8 @@ const TaskManagement = ({navigation}) => {
     setcurrent(1); // Reset to the first page
     fetchData(val); // Fetch new filtered data
   };
+
+  console.warn('getdategetdate======>', getdate);
 
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
@@ -172,6 +186,9 @@ const TaskManagement = ({navigation}) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    handlesearch();
+  }, [searchQuery]);
   // console.log(datastate[0].assigned_to.name, 'datastate');
 
   const handlesearch = async selectedValue => {
@@ -183,8 +200,16 @@ const TaskManagement = ({navigation}) => {
     console.warn(filtereddata, 'filtered data');
     setData(filtereddata.data);
   };
-  console.warn("Daatlisting===>",datastate);
-  
+
+  const handleReport = async () => {
+    const formattedDate = date.toISOString().slice(0, 10);
+    const fetchreport = await report(formattedDate);
+    console.warn(fetchreport, 'fetchreportdata');
+
+    setData(fetchreport);
+  };
+
+  console.warn(date, 'datedatedatedatedatedate');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -276,15 +301,17 @@ const TaskManagement = ({navigation}) => {
                 modal
                 open={open}
                 date={date}
-                onConfirm={date => {
-                  setOpen(false);
-                  setDate(date);
-                  setSelectedDate(date.toDateString());
+                onConfirm={selectedDate => {
+                  setOpen(false); // Close the date picker modal
+                  setDate(selectedDate); // Update the date state
+                  setSelectedDate(selectedDate.toDateString()); // Update selected date as string
+
+                  // Pass the date to fetchData function
+                  fetchData('', date); // Pass the selected date to fetchData
                 }}
-                onCancel={() => {
-                  setOpen(false);
-                }}
+                onCancel={() => setOpen(false)} // Close modal when cancel is pressed
               />
+
               {/* clear button */}
               <TouchableOpacity
                 style={{
@@ -344,7 +371,8 @@ const TaskManagement = ({navigation}) => {
                 alignContent: 'center',
                 textAlign: 'center',
                 marginLeft: isLandscape ? 185 : 14,
-              }}>
+              }}
+              onPress={handleReport}>
               <Text
                 style={{
                   color: 'white',

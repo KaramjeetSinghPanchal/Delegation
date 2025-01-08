@@ -1,6 +1,8 @@
 // api.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import {useState} from 'react';
+import {Alert} from 'react-native';
 
 const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
@@ -113,33 +115,110 @@ export const delegationtask = async status => {
   }
 };
 
-export const taskmangementlisting = async ({
-  currentPage,
-  status,
-  searchQuery='aman',
-}) => {
+// export const report = async ({formattedDate}) => {
+//   Alert.alert("entered");
+//   console.warn("formattedDate===>", formattedDate);
 
+//   const token = await gettoken();
+//   const url = `${baseUrl}generate-report?report_type=pdf&assigned_date=${formattedDate}`;
+
+//   console.warn("Request URL:", url);
+//   console.warn("Token:", token);
+
+//   const response = await fetch(url, {
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       'Content-Type': 'application/json', // Still sending JSON content type, even if PDF is returned
+//     },
+//   });
+
+//   Alert.alert("before API");
+
+//   if (!response.ok) {
+//     const errorText = await response.text();  // Get raw error response
+//     console.error('Failed to fetch, status:', response.status);
+//     console.error('Error response:', errorText);
+//     return null; // Return null or handle error accordingly
+//   }
+
+//   Alert.alert("beforenear API");
+
+//   const contentType = response.headers.get("Content-Type");
+//   console.warn("Content-Type:", contentType);
+
+//   // If the response is a PDF
+//   if (contentType.includes("application/pdf")) {
+//     const blob = await response.blob(); // Handle binary data (PDF)
+//     console.warn("Received PDF Blob:", blob);
+
+//     return blob;
+//   } else {
+//     const text = await response.text();
+//     console.warn('Raw response:', text);
+//     return text;
+//   }
+// };
+
+export const report = async formattedDate => {
+  console.warn('formattdate', formattedDate);
+
+  const fullUrl = `${baseUrl}generate-report?report_type=pdf&assigned_date=${formattedDate}`;
+  const token = await gettoken(); // Assuming you have a function to get the token
+
+  try {
+    const response = await ReactNativeBlobUtil.fetch('GET', fullUrl, {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    // Here, handle the response (which will be a PDF blob)
+    const pdfBlob = response.blob(); // This is the PDF file as a blob
+
+    // If you need to save the PDF locally or display it, you can use the Blob data.
+    console.log('PDF Blob:', pdfBlob);
+
+    // Optionally save or display the PDF locally using ReactNativeBlobUtil
+    const savedPath =
+      (await ReactNativeBlobUtil.fs.dirs.DocumentDir) + '/report.pdf'; // Example file path
+    await ReactNativeBlobUtil.fs.writeFile(savedPath, pdfBlob, 'base64');
+    console.log('PDF saved at:', savedPath);
+  } catch (error) {
+    console.error('Error fetching the report:', error);
+  }
+};
+
+export const taskmangementlisting = async ({
+  currentPage = 1,
+  status,
+  searchQuery = '', //I can pass here the default value
+  assigned_date,
+}) => {
   const token = await gettoken();
   let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
   if (status) fetchUrl += '&status=' + status;
   if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
-console.warn("---====>",fetchUrl);
+  if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date;  // Make sure assigned_date is added
+
+  console.warn('Listing fetchUrl:', fetchUrl);  // Debug log for the URL
 
   const response = await fetch(fetchUrl, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+      method: 'GET',
+      headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+      },
   });
 
   if (!response.ok) {
-    console.warn('Failed to fetch error', response.status);
-    throw new Error('Failed to fetch data');
+      console.warn('Failed to fetch error', response.status);
+      throw new Error('Failed to fetch data');
   }
 
   const data = await response.json();
-  console.warn('API response:', data); // Log the full response
+
+  console.warn('Listing response:', data);  // Log the full response
 
   return data.data; // Ensure 'data.data' is the correct structure
 };
+

@@ -160,33 +160,55 @@ export const delegationtask = async status => {
 //   }
 // };
 
-export const report = async formattedDate => {
-  console.warn('formattdate', formattedDate);
+export const report = async (formattedDate) => {
+  console.warn('formattedDate', formattedDate);
 
-  const fullUrl = `${baseUrl}generate-report?report_type=pdf&assigned_date=${formattedDate}`;
-  const token = await gettoken(); // Assuming you have a function to get the token
+  // Build the correct URL by adding the missing query parameters
+  const fullUrl = `http://delegation-qa.zapbuild.in/api/generate-report?tab=other-user-task&report_type=pdf&user_id=&assigned_date=${formattedDate}&due_date=&filter_status=&status=&searchQuery=`;
+
+  console.warn("fullUrl", fullUrl);
+
+  const token = await gettoken();  // Assuming gettoken() is an async function that retrieves your token
 
   try {
+    // Fetch the report from the server as binary data
     const response = await ReactNativeBlobUtil.fetch('GET', fullUrl, {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
     });
 
-    // Here, handle the response (which will be a PDF blob)
-    const pdfBlob = response.blob(); // This is the PDF file as a blob
+    // Check if the response status is OK (200)
+    if (response.respInfo.status === 200) {
+      // Get the binary data (PDF)
+      const pdfData = response.data;
+      console.log('PDF Data:', pdfData);
 
-    // If you need to save the PDF locally or display it, you can use the Blob data.
-    console.log('PDF Blob:', pdfBlob);
+      // Define where to save the PDF file (inside DocumentDir)
+      const savedPath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/report.pdf`;
 
-    // Optionally save or display the PDF locally using ReactNativeBlobUtil
-    const savedPath =
-      (await ReactNativeBlobUtil.fs.dirs.DocumentDir) + '/report.pdf'; // Example file path
-    await ReactNativeBlobUtil.fs.writeFile(savedPath, pdfBlob, 'base64');
-    console.log('PDF saved at:', savedPath);
+      // Save the PDF file as a binary file
+      await ReactNativeBlobUtil.fs.writeFile(savedPath, pdfData, 'base64'); // Using 'base64' because it's the expected format for binary data
+      console.log('PDF saved at:', savedPath);
+
+      // Check if the file exists at the saved path
+      const fileExists = await ReactNativeBlobUtil.fs.exists(savedPath);
+
+      if (fileExists) {
+        console.log('PDF file downloaded and exists at:', savedPath);
+        return savedPath;  // Return the path of the saved file
+      } else {
+        console.error('PDF file does not exist at the specified path.');
+        return null;
+      }
+    } else {
+      console.error('Failed to fetch the report:', response.respInfo);
+      return null;
+    }
   } catch (error) {
     console.error('Error fetching the report:', error);
+    return null;
   }
 };
+
 
 export const taskmangementlisting = async ({
   currentPage = 1,

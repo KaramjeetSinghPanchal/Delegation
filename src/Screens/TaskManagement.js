@@ -41,6 +41,9 @@ const TaskManagement = ({navigation}) => {
   const [rotation, setRotation] = useState(0);
   const [total, settotal] = useState();
   const [getdate, setdate] = useState();
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false); // Tracks if download was successful
+  const [errorMessage, setErrorMessage] = useState(null); // To handle errors
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
@@ -100,22 +103,42 @@ const TaskManagement = ({navigation}) => {
   };
 
   const formatDate = dateString => {
-    const date = new Date(dateString); // Convert the string to a Date object
-    const options = {day: 'numeric'}; // Format options: day and short month name (e.g., Dec)
-    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+    console.warn('dateString ===>>>>', dateString);
+
+    // Convert the string to a Date object
+    const date = new Date(dateString);
+
+    // Check if the date is valid
+    if (isNaN(date)) {
+      console.error('Invalid date string:', dateString);
+      return '13-Dec'; // or return a default value like 'Invalid Date'
+    }
+
+    // Format options: show only the numeric day
+    const options = {day: 'numeric'};
+
+    // Format the date using Intl.DateTimeFormat
+    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures it's in English
   };
 
   const formatmonth = dateString => {
-    const date = new Date(dateString); // Convert the string to a Date object
-    const options = {month: 'short'}; // Format options: day and short month name (e.g., Dec)
-    return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures the month is in English
+    // Ensure a proper format, e.g., add time or use a valid format
+    const date = new Date(dateString + 'T00:00:00'); // Adding time part to avoid issues
+
+    // Check if the date is valid (not NaN)
+    if (isNaN(date)) {
+      console.error('Invalid date string:', dateString);
+      return null;
+    }
+
+    const options = {month: 'short'};
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
 
   const [checkedStates, setCheckedStates] = useState(
     new Array(data.length).fill(false),
   );
 
-  // Handle checkbox state toggle
   const handleCheckboxChange = index => {
     const updatedCheckedStates = [...checkedStates];
     updatedCheckedStates[index] = !updatedCheckedStates[index];
@@ -123,63 +146,57 @@ const TaskManagement = ({navigation}) => {
   };
 
   const fetchData = async (status = 'All', selectedDate) => {
-    console.warn("Date received by fetchData:", selectedDate);
-    
-    setLoading(true); // Start loading
-    const formattedDate = selectedDate.toISOString().slice(0, 10);  // Format date to YYYY-MM-DD
+    console.warn('Date received by fetchData:', selectedDate);
 
-    console.warn('Formatted date to send:', formattedDate);
-
-    // You don't need to set the date in the state here, as it’s already set by the DatePicker
-
+    setLoading(true);
+    const formattedDate = selectedDate.toISOString().slice(0, 10);
     try {
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Call your API using the formatted date
-        const fetchedData = await taskmangementlisting({
-            currentPage: current,
-            status: statusMapping[status],
-            assigned_date: formattedDate, // Pass the formatted date
-        });
+      const fetchedData = await taskmangementlisting({
+        currentPage: current,
+        status: statusMapping[status],
+        assigned_date: formattedDate,
+      });
 
-        if (fetchedData && Array.isArray(fetchedData.data)) {
-            if (fetchedData.data.length > 0) {
-                setData(fetchedData.data);  // Set the filtered data here
-                settotal(fetchedData.data.total);
-                if (!fetchedData.next_page_url) {
-                    setHasMoreData(false);
-                } else {
-                    setcurrent(prev => prev + 1);
-                }
-            } else {
-                console.log('No more data to load.');
-                setData([]);  // Clear data if no results
-            }
+      if (fetchedData && Array.isArray(fetchedData.data)) {
+        if (fetchedData.data.length > 0) {
+          setData(fetchedData.data);
+          settotal(fetchedData.data.total);
+          if (!fetchedData.next_page_url) {
+            setHasMoreData(false);
+          } else {
+            setcurrent(prev => prev + 1);
+          }
         } else {
-            console.error('Fetched data is not in the expected format:', fetchedData);
+          console.log('No more data to load.');
+          setData([]);
         }
+      } else {
+        console.error(
+          'Fetched data is not in the expected format:',
+          fetchedData,
+        );
+      }
     } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch data');
     } finally {
-        setLoading(false); // End loading
+      setLoading(false);
     }
-};
-
-  const handleSelectChange = val => {
-    setSelected(val); // Set selected status
-    setData([]); // Clear previous data
-    setcurrent(1); // Reset to the first page
-    fetchData(val); // Fetch new filtered data
   };
 
-  console.warn('getdategetdate======>', getdate);
-
+  const handleSelectChange = val => {
+    setSelected(val);
+    setData([]);
+    setcurrent(1);
+    fetchData(val);
+  };
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
       return <ActivityIndicator size="large" style={{marginVertical: 36}} />;
     }
-    return null; // No footer if loading is false or no more data
+    return null;
   }, [hasMoreData]);
 
   useEffect(() => {
@@ -189,7 +206,6 @@ const TaskManagement = ({navigation}) => {
   useEffect(() => {
     handlesearch();
   }, [searchQuery]);
-  // console.log(datastate[0].assigned_to.name, 'datastate');
 
   const handlesearch = async selectedValue => {
     console.warn(selectedValue, 'checking value');
@@ -200,16 +216,32 @@ const TaskManagement = ({navigation}) => {
     console.warn(filtereddata, 'filtered data');
     setData(filtereddata.data);
   };
+  console.warn('Date me hai kya==>', date);
 
-  const handleReport = async () => {
+  const handleReport = async date => {
+    console.warn('Fetching for date:', date);
+
     const formattedDate = date.toISOString().slice(0, 10);
+    console.warn('Formatted Date:', formattedDate);
+
+    // Start the download process
+    setIsDownloading(true);
+    setDownloadSuccess(false);
+    setErrorMessage(null); // Reset error state
+
     const fetchreport = await report(formattedDate);
-    console.warn(fetchreport, 'fetchreportdata');
 
-    setData(fetchreport);
+    // Check if the report was successfully fetched
+    if (fetchreport) {
+      setDownloadSuccess(true); // Update UI to show success
+      console.log('Report downloaded successfully:', fetchreport);
+    } else {
+      setErrorMessage('Failed to download the report');
+      console.error('Failed to fetch the report');
+    }
+
+    setIsDownloading(false); // Stop loading indicator
   };
-
-  console.warn(date, 'datedatedatedatedatedate');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -358,6 +390,30 @@ const TaskManagement = ({navigation}) => {
               />
             </View>
 
+
+            {isDownloading ? (
+            <View style={{position:'absolute',left:100,top:10}}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text>Downloading report...</Text>
+              </View>
+            ) : null}
+            {/* Display success message when download is complete */}
+            {'\n'}{' '}
+            {downloadSuccess && !isDownloading ? (
+              <View style={{position:'absolute',left:100,top:50}}>
+                <Text style={{color: 'green', fontSize: 16}}>
+                Report Downloaded successfully
+                </Text>
+              </View>
+            ) : null}
+            {/* Display error message if something went wrong */}
+            {errorMessage && !isDownloading ? (
+              <View style={{alignItems: 'center'}}>
+                <Text style={{color: 'red', fontSize: 16}}>{errorMessage}</Text>
+              </View>
+            ) : null}
+
+            
             <TouchableOpacity
               style={{
                 height: 37,
@@ -372,7 +428,10 @@ const TaskManagement = ({navigation}) => {
                 textAlign: 'center',
                 marginLeft: isLandscape ? 185 : 14,
               }}
-              onPress={handleReport}>
+              onPress={() => {
+                console.log('Button pressed');
+                handleReport(date); // Pass the state `date`
+              }}>
               <Text
                 style={{
                   color: 'white',
@@ -387,7 +446,7 @@ const TaskManagement = ({navigation}) => {
 
           <FlatList
             data={datastate} // Pass users array as data
-            keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+            // keyExtractor={item => item?.id?.toString()} // Ensure each item has a unique key (assuming 'id' is present)
             renderItem={({item, index}) => (
               <View>
                 <View
@@ -440,11 +499,11 @@ const TaskManagement = ({navigation}) => {
                         fontSize: 16,
                         fontWeight: 600,
                       }}>
-                      {formatDate(item.assignment_date)}
+                      {formatDate(item?.assignment_date)}
                     </Text>
                     <Text
                       style={{fontFamily: 'Inter_28pt-Regular', fontSize: 11}}>
-                      {formatmonth(item.assignment_date)}
+                      {formatmonth(item?.assignment_date)}
                     </Text>
                   </View>
 
@@ -481,7 +540,7 @@ const TaskManagement = ({navigation}) => {
                       style={{
                         fontSize: 15,
                         color:
-                          item.status.title == 'Pending'
+                          item?.status?.title == 'Pending'
                             ? '#FE9816'
                             : '#38AA3A',
                         fontWeight: '500',
@@ -491,7 +550,7 @@ const TaskManagement = ({navigation}) => {
                         marginTop: 5,
                         borderRadius: 10,
                       }}>
-                      {item.status.title}
+                      {item?.status?.title ? item?.status?.title : 'Pending'}
                     </Text>
                   </View>
                 </View>

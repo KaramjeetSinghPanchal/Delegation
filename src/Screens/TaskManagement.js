@@ -639,7 +639,7 @@ const TaskManagement = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton isLandscape={isLandscape} />
+      <AddButton isLandscape={isLandscape} onPress={()=>{Alert.alert("Welcome to the Delegation Project")}} />
     </SafeAreaView>
   );
 };

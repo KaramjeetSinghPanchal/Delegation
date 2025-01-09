@@ -3,11 +3,11 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-const AddButton = ({isLandscape}) => {
+const AddButton = ({isLandscape,onPress}) => {
   
   return (
     <TouchableOpacity style={[styles.floatingButton,{right: isLandscape?190:20 }]}>
-    <Icon name="add" size={35} color="white" />
+    <Icon name="add" size={35} color="white" onPress={onPress}/>
   </TouchableOpacity>
   )
 }

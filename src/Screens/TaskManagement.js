@@ -44,6 +44,8 @@ const TaskManagement = ({navigation}) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false); // Tracks if download was successful
   const [errorMessage, setErrorMessage] = useState(null); // To handle errors
+  const [message, setMessage] = useState('');
+
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
@@ -127,6 +129,23 @@ const TaskManagement = ({navigation}) => {
     const options = {month: 'short'};
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
+
+
+  useEffect(() => {
+    if (downloadSuccess && !isDownloading) {
+      // Set the message after the download is successful
+      setMessage('Report Downloaded successfully');
+      
+      // Hide the message after 5 seconds
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 5000);
+      
+      // Cleanup the timer if the component unmounts or dependencies change
+      return () => clearTimeout(timer);
+    }
+  }, [downloadSuccess, isDownloading]);
+
 
   const [checkedStates, setCheckedStates] = useState({
     All: false,
@@ -251,6 +270,16 @@ const TaskManagement = ({navigation}) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+
+  const print =()=>{
+    const timer = setTimeout(() => {
+      return 'hello'
+    }, 5000);
+
+    // Cleanup the timer when component unmounts
+    return () => clearTimeout(timer);
+  }
 
   useEffect(() => {
     handlesearch();
@@ -439,7 +468,9 @@ const TaskManagement = ({navigation}) => {
             {downloadSuccess && !isDownloading ? (
               <View style={{position: 'absolute', left: 100, top: 50}}>
                 <Text style={{color: 'green', fontSize: 16}}>
-                  Report Downloaded successfully
+                  {/* Report Downloaded successfully */}
+                    {message}
+                  
                 </Text>
               </View>
             ) : null}

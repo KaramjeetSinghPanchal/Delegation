@@ -73,7 +73,6 @@ const TaskManagement = ({navigation}) => {
 
   const calculatedWidth = screenwidth * 0.4 + 9;
 
-  // Optionally cap the width to a maximum value (e.g., max 80% of the screen width)
   const maxWidth = screenwidth * 0.3 + 80;
   const minWidth = screenwidth * 0.3;
 
@@ -81,15 +80,15 @@ const TaskManagement = ({navigation}) => {
 
   const isLandscape = screenwidth > screenheight;
 
-  const data = [
-    'All',
-    'In-progress',
-    'Completed',
-    'In-Draft',
-    'Pending',
-    'Rejected',
-    'Revised date',
-  ];
+  const data = {
+    All: '',
+    'In-Draft': '1',
+    'In-progress': '2',
+    Completed: '3',
+    Pending: '8',
+    Rejected: '7',
+    'Revised Date': '9',
+  };
 
   const statusMapping = {
     All: '',
@@ -103,21 +102,15 @@ const TaskManagement = ({navigation}) => {
   };
 
   const formatDate = dateString => {
-    console.warn('dateString ===>>>>', dateString);
-
-    // Convert the string to a Date object
     const date = new Date(dateString);
 
-    // Check if the date is valid
     if (isNaN(date)) {
       console.error('Invalid date string:', dateString);
-      return '13-Dec'; // or return a default value like 'Invalid Date'
+      return '13-Dec';
     }
 
-    // Format options: show only the numeric day
     const options = {day: 'numeric'};
 
-    // Format the date using Intl.DateTimeFormat
     return new Intl.DateTimeFormat('en-GB', options).format(date); // 'en-GB' ensures it's in English
   };
 
@@ -135,19 +128,75 @@ const TaskManagement = ({navigation}) => {
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
 
-  const [checkedStates, setCheckedStates] = useState(
-    new Array(data.length).fill(false),
-  );
+  const [checkedStates, setCheckedStates] = useState({
+    All: false,
+    'In-Draft': false,
+    'In-progress': false,
+    Completed: false,
+    Pending: false,
+    Rejected: false,
+    'Revised Date': false,
+  });
 
-  const handleCheckboxChange = index => {
-    const updatedCheckedStates = [...checkedStates];
-    updatedCheckedStates[index] = !updatedCheckedStates[index];
+  const handleCheckboxChange = async (status) => {
+    Alert.alert("hii");
+    console.warn("status======>", status);
+  
+    // Toggle the checkbox state
+    const updatedCheckedStates = {
+      ...checkedStates,
+      [status]: !checkedStates[status],
+    };
     setCheckedStates(updatedCheckedStates);
+  
+    // Get selected statuses (statuses with true value)
+    const selectedStatuses = Object.keys(updatedCheckedStates).filter(
+      (key) => updatedCheckedStates[key]
+    );
+  
+    // If no statuses are selected (i.e., all checkboxes are unchecked)
+    if (selectedStatuses.length === 0) {
+      // Fetch all data without any filters
+      const fetchAllData = await taskmangementlisting({
+        status: '',  // Empty or null for "All" statuses
+      });
+  
+      const result = fetchAllData.data;
+      setData(result);  // Update with all data
+      console.warn("Fetched all data:", result);
+    } else {
+      // If some checkboxes are selected, fetch data for those specific statuses
+      const fetchCheckListing = await taskmangementlisting({
+        status: selectedStatuses.join(','), // Join the selected statuses
+      });
+  
+      const result = fetchCheckListing.data;
+      setData(result);  // Update with filtered data
+      console.warn("Fetched filtered data:", result);
+    }
+  };
+  
+
+  const clearData = async () => {
+    const fetchedData = await taskmangementlisting({});
+
+    if (fetchedData && Array.isArray(fetchedData.data)) {
+      if (fetchedData.data.length > 0) {
+        setData(fetchedData.data);
+        settotal(fetchedData.data.total);
+        if (!fetchedData.next_page_url) {
+          setHasMoreData(false);
+        } else {
+          setcurrent(prev => prev + 1);
+        }
+      } else {
+        console.log('No more data to load.');
+        setData([]);
+      }
+    }
   };
 
   const fetchData = async (status = 'All', selectedDate) => {
-    console.warn('Date received by fetchData:', selectedDate);
-
     setLoading(true);
     const formattedDate = selectedDate.toISOString().slice(0, 10);
     try {
@@ -208,39 +257,31 @@ const TaskManagement = ({navigation}) => {
   }, [searchQuery]);
 
   const handlesearch = async selectedValue => {
-    console.warn(selectedValue, 'checking value');
     const filtereddata = await taskmangementlisting({
       currentPage: 1,
       searchQuery: selectedValue,
     });
-    console.warn(filtereddata, 'filtered data');
     setData(filtereddata.data);
   };
-  console.warn('Date me hai kya==>', date);
 
   const handleReport = async date => {
-    console.warn('Fetching for date:', date);
-
     const formattedDate = date.toISOString().slice(0, 10);
-    console.warn('Formatted Date:', formattedDate);
 
-    // Start the download process
     setIsDownloading(true);
     setDownloadSuccess(false);
-    setErrorMessage(null); // Reset error state
+    setErrorMessage(null);
 
     const fetchreport = await report(formattedDate);
 
-    // Check if the report was successfully fetched
     if (fetchreport) {
-      setDownloadSuccess(true); // Update UI to show success
+      setDownloadSuccess(true);
       console.log('Report downloaded successfully:', fetchreport);
     } else {
       setErrorMessage('Failed to download the report');
       console.error('Failed to fetch the report');
     }
 
-    setIsDownloading(false); // Stop loading indicator
+    setIsDownloading(false);
   };
 
   return (
@@ -269,17 +310,15 @@ const TaskManagement = ({navigation}) => {
           </View>
           <View style={styles.content}>
             <View style={styles.checkboxContainer}>
-              {data.map((label, index) => (
+              {Object.entries(data).map(([label, status], index) => (
                 <View style={styles.checkboxItem} key={index}>
-                  {/* TouchableOpacity for custom checkbox */}
                   <TouchableOpacity
                     style={[
                       styles.checkbox,
-                      checkedStates[index] && styles.checkedCheckbox,
+                      checkedStates[status] && styles.checkedCheckbox,
                     ]}
-                    onPress={() => handleCheckboxChange(index)}>
-                    {/* Checkmark (only shows when checked) */}
-                    {checkedStates[index] && (
+                    onPress={() => handleCheckboxChange(status)}>
+                    {checkedStates[status] && (
                       <Text style={styles.checkmark}>✓</Text>
                     )}
                   </TouchableOpacity>
@@ -328,13 +367,12 @@ const TaskManagement = ({navigation}) => {
                 </View>
               </TouchableOpacity>
 
-              {/* DatePicker Modal */}
               <DatePicker
                 modal
                 open={open}
                 date={date}
                 onConfirm={selectedDate => {
-                  setOpen(false); // Close the date picker modal
+                  setOpen(false);
                   setDate(selectedDate); // Update the date state
                   setSelectedDate(selectedDate.toDateString()); // Update selected date as string
 
@@ -358,7 +396,8 @@ const TaskManagement = ({navigation}) => {
                   backgroundColor: '#FAF8F9',
                   width: finalWidth,
                   marginLeft: 10,
-                }}>
+                }}
+                onPress={clearData}>
                 <TouchableOpacity>
                   <Text style={{fontSize: 13}}>Clear</Text>
                 </TouchableOpacity>
@@ -389,10 +428,8 @@ const TaskManagement = ({navigation}) => {
                 onSubmitEditing={() => handlesearch(searchQuery)} // Call search when user submits input
               />
             </View>
-
-
             {isDownloading ? (
-            <View style={{position:'absolute',left:100,top:10}}>
+              <View style={{position: 'absolute', left: 100, top: 10}}>
                 <ActivityIndicator size="large" color="#0000ff" />
                 <Text>Downloading report...</Text>
               </View>
@@ -400,9 +437,9 @@ const TaskManagement = ({navigation}) => {
             {/* Display success message when download is complete */}
             {'\n'}{' '}
             {downloadSuccess && !isDownloading ? (
-              <View style={{position:'absolute',left:100,top:50}}>
+              <View style={{position: 'absolute', left: 100, top: 50}}>
                 <Text style={{color: 'green', fontSize: 16}}>
-                Report Downloaded successfully
+                  Report Downloaded successfully
                 </Text>
               </View>
             ) : null}
@@ -412,8 +449,6 @@ const TaskManagement = ({navigation}) => {
                 <Text style={{color: 'red', fontSize: 16}}>{errorMessage}</Text>
               </View>
             ) : null}
-
-            
             <TouchableOpacity
               style={{
                 height: 37,

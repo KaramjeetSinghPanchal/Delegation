@@ -87,7 +87,7 @@ export const listing = async () => {
   }
 };
 
-export const delegationtask = async status => {
+export const delegationtask = async (status) => {
   try {
     const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
     const response = await fetch(
@@ -114,6 +114,38 @@ export const delegationtask = async status => {
     throw error; // Re-throw the error to be caught in the useEffect
   }
 };
+
+export const delegationtaskk = async (status,formattedDate) => {
+  try {
+    const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
+    const response = await fetch(
+      `${baseUrl}delegation-get-task?status=${status}&filterByDateRange${formattedDate}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.warn('response data======>',response);
+
+    if (!response.ok) {
+      console.error('Failed to fetch users, status:', response.status);
+      return null; // Return null or handle the error as needed
+    }
+
+    const data = await response.json();
+    console.log('API response new:', data);
+    return data; // Return the data if the request is successful
+  } catch (error) {
+    console.error('Error fetching users listing:', error);
+    throw error; // Re-throw the error to be caught in the useEffect
+  }
+};   
+
+
+
 
 // export const report = async ({formattedDate}) => {
 //   Alert.alert("entered");

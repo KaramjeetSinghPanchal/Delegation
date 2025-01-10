@@ -315,7 +315,7 @@ const TaskManagement = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.main}>
           <View style={styles.main2}>
             <Image

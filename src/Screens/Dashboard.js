@@ -10,6 +10,9 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { delegationtaskk } from '../apiClient/api';
+import Animated from 'react-native-reanimated';
+
 import AddButton from './AddButton';
 import {useEffect, useCallback} from 'react';
 import React from 'react';
@@ -59,6 +62,9 @@ const Dashboard = ({navigation}) => {
           // Assuming data.data contains the array of users
 
           settask(data.data.allCount); // Set the users array to state
+          setlisting(data.data.taskData.data)
+          console.warn("=============>",data?.data?.taskData?.data);
+
         } else {
           console.warn('No users data found.');
         }
@@ -83,14 +89,24 @@ const Dashboard = ({navigation}) => {
   };
 
   const listingdata = async status => {
-    // Alert.alert(status)
     console.warn(status, 'status=>>');
-    const data = await delegationtask(status); // Call the listing function from API
-    // console.warn('======>>>>>', data.data.taskData.data[0].assigned_by_id);
+    const data = await delegationtask(status,''); // Call the listing function from API
     setHasMoreData(false);
     setlisting(data?.data?.taskData?.data);
+    
     setstatus(listing[0].status.id);
   };
+
+  const calenderreport = async(date)=>{
+     console.warn("date==========>",date);
+     const formattedDate = date.toISOString().slice(0, 10);
+     console.warn("formattedDate==========>",formattedDate);
+
+     const data = await delegationtaskk('3',formattedDate);
+     console.warn("Calender report=====>",data.data.taskData.data);
+     
+     setlisting(data?.data?.taskData?.data)
+  }
 
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
@@ -99,22 +115,6 @@ const Dashboard = ({navigation}) => {
     return null; // No footer if loading is false or no more data
   }, [hasMoreData]);
 
-  const getPriorityColor = priority => {
-    switch (priority) {
-      case 'Low':
-        return '#38AA3A'; // Green
-      case 'Medium':
-        return '#FE9816'; // Orange
-      case 'High':
-        return '#E31B1B'; // Red
-      default:
-        return '#000'; // Default color
-    }
-  };
-
-  const getStatusColor = statusTitle => {
-    return statusTitle === 'Pending' ? '#FE9816' : '#38AA3A'; // Status-specific colors
-  };
 
   return (
     <SafeAreaView style={styles.containermain}>
@@ -331,6 +331,7 @@ const Dashboard = ({navigation}) => {
                     setOpen(false);
                     setDate(date);
                     setSelectedDate(date.toDateString());
+                    calenderreport(date)
                   }}
                   onCancel={() => {
                     setOpen(false);
@@ -382,7 +383,7 @@ const Dashboard = ({navigation}) => {
                     Clear
                   </Text>
                 </TouchableOpacity>
-
+                  
                 <TouchableOpacity
                   style={{
                     height: 40,

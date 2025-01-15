@@ -43,7 +43,7 @@ const Usermanagement = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.containermain}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.main}>
           <View style={styles.main2}>
             <Image

@@ -128,6 +128,18 @@ const HomeScreen = ({navigation}) => {
             borderRadius: 5,
             marginLeft:35
           }}
+          // iconn={
+          //   <Icon
+          //     name={isPasswordVisible ? 'visibility-off' : 'visibility'}
+          //     size={25}
+          //     color="#0cbcb9"
+          //     onPress={handleicon}
+          //     style={{paddingTop:6,marginRight:40}}
+          //   />
+
+            
+          // }
+
           iconn={
             <Icon
               name={isPasswordVisible ? 'visibility-off' : 'visibility'}
@@ -136,7 +148,11 @@ const HomeScreen = ({navigation}) => {
               onPress={handleicon}
               style={{paddingTop:6,marginRight:40}}
             />
+
+            
           }
+
+          
           value={password}
           onChangeText={setPassword}
           secureTextEntry

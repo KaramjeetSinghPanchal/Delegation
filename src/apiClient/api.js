@@ -3,50 +3,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import {useState} from 'react';
 import {Alert} from 'react-native';
+import axios from 'axios';
 
 const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
 // Login function using FormData
 
-export const loginUser = async (phone_email, password) => {
-  console.warn(phone_email, password, 'balle');
-
-  try {
-    console.log('Sending request to:', `${baseUrl}user-login`);
-
+export const loginUser = async(phone_email,password)=>{
+    console.warn("Email-Password=>",phone_email,password);
     const formData = new FormData();
     formData.append('phone_email', phone_email);
     formData.append('password', password);
+    console.log('Sending request to:', `${baseUrl}user-login`);
 
     const response = await fetch(`${baseUrl}user-login`, {
       method: 'POST',
-      body: formData,
+      body: formData, // Pass FormData as the body
     });
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      console.error('Error response:', errorResponse);
-      throw new Error(
-        errorResponse.message || 'Login failed. Please try again.',
-      );
-    }
+    console.warn("response==>",response);
 
     const data = await response.json();
+    return data
 
-    if (data.data.token) {
-      console.log('Saving token to AsyncStorage');
-      await AsyncStorage.setItem('authToken', data.data.token);
-      console.log('Token saved to AsyncStorage:', data.data.token);
-    } else {
-      console.error('No token found in response');
-    }
+    
+    
+}
 
-    return data;
-  } catch (error) {
-    console.error('Error during fetch request:', error);
-    throw new Error(error.message || 'An error occurred. Please try again.');
-  }
-};
 
 const gettoken = async () => {
   try {
@@ -160,15 +142,15 @@ export const delegationtask = async status => {
 //   }
 // };
 
-export const report = async (formattedDate) => {
+export const report = async formattedDate => {
   console.warn('formattedDate', formattedDate);
 
   // Build the correct URL by adding the missing query parameters
   const fullUrl = `http://delegation-qa.zapbuild.in/api/generate-report?tab=other-user-task&report_type=pdf&user_id=&assigned_date=${formattedDate}&due_date=&filter_status=&status=&searchQuery=`;
 
-  console.warn("fullUrl", fullUrl);
+  console.warn('fullUrl', fullUrl);
 
-  const token = await gettoken();  // Assuming gettoken() is an async function that retrieves your token
+  const token = await gettoken(); // Assuming gettoken() is an async function that retrieves your token
 
   try {
     // Fetch the report from the server as binary data
@@ -194,7 +176,7 @@ export const report = async (formattedDate) => {
 
       if (fileExists) {
         console.log('PDF file downloaded and exists at:', savedPath);
-        return savedPath;  // Return the path of the saved file
+        return savedPath; // Return the path of the saved file
       } else {
         console.error('PDF file does not exist at the specified path.');
         return null;
@@ -209,7 +191,6 @@ export const report = async (formattedDate) => {
   }
 };
 
-
 export const taskmangementlisting = async ({
   currentPage = 1,
   status,
@@ -220,27 +201,26 @@ export const taskmangementlisting = async ({
   let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
   if (status) fetchUrl += '&status=' + status;
   if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
-  if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date;  // Make sure assigned_date is added
+  if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date; // Make sure assigned_date is added
 
-  console.warn('Listing fetchUrl:', fetchUrl);  // Debug log for the URL
+  console.warn('Listing fetchUrl:', fetchUrl); // Debug log for the URL
 
   const response = await fetch(fetchUrl, {
-      method: 'GET',
-      headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-      },
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
-      console.warn('Failed to fetch error', response.status);
-      throw new Error('Failed to fetch data');
+    console.warn('Failed to fetch error', response.status);
+    throw new Error('Failed to fetch data');
   }
 
   const data = await response.json();
 
-  console.warn('Listing response:', data);  // Log the full response
+  console.warn('Listing response:', data); // Log the full response
 
   return data.data; // Ensure 'data.data' is the correct structure
 };
-

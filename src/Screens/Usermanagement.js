@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import Lanscape from './Lanscape';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -16,6 +17,7 @@ import React from 'react';
 import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
 import AddButton from './AddButton';
+import { AnimatedView } from 'react-native-reanimated/lib/typescript/component/View';
 const Usermanagement = ({navigation}) => {
   const [users, setUsers] = useState([]);
   const isLandscape = Lanscape();
@@ -57,7 +59,7 @@ const Usermanagement = ({navigation}) => {
               style={{marginTop: 10}}
             />
           </View>
-          <View style={styles.inputContainer}>
+          <Animatable.View style={styles.inputContainer} duration={2000} animation={'zoomIn'}>
             {/* Search Icon */}
             <Icon name="search" size={27} color="gray" style={styles.iconS} />
 
@@ -66,7 +68,7 @@ const Usermanagement = ({navigation}) => {
               style={styles.inputBox}
               placeholder="Search For Something"
             />
-          </View>
+          </Animatable.View>
 
           <View style={{marginHorizontal: 20, marginTop: 50}}>
             {/* FlatList to render each user */}

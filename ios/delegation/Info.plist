@@ -24,8 +24,6 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	
-	<!-- App Transport Security Configuration -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -34,7 +32,7 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>delegation-qa.zapbuild.in</key>  <!-- Replace with your domain -->
+			<key>delegation-qa.zapbuild.in</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -43,38 +41,26 @@
 			</dict>
 		</dict>
 	</dict>
-
-	<!-- Font Configuration for Vector Icons -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your app needs access to location.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/FontAwesome.ttf</string>
 		<string>Fonts/Ionicons.ttf</string>
-
 		<string>MaterialIcons.ttf</string>
-
-		<!-- Add any other icon fonts you might use -->
 	</array>
-
-	<!-- Permissions and Capabilities -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your app needs access to location.</string>
-
-	<!-- Launch screen configuration -->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
 	</array>
-
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

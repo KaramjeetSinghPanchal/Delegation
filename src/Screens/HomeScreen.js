@@ -12,6 +12,7 @@ import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
 import {useState} from 'react';
 import Button from '../Components/Button';
+import * as Animatable from 'react-native-animatable';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -79,11 +80,14 @@ const HomeScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={styles.logoimage}>
+        <Animatable.View style={styles.logoimage} animation={'zoomIn'} duration={3000}>
           <Image source={require('../assets/images/logo-black.png')} />
-        </View>
+        </Animatable.View>
         <View>
-          <Text style={[styles.signin,{marginRight:isLandscape?320:230}]}>Sign In</Text>
+          <Animatable.Text style={[styles.signin,{marginRight:isLandscape?320:230}]} 
+          animation="zoomIn"
+          duration={3000}
+          >Sign In</Animatable.Text>
         </View>
 
         <Inputname
@@ -151,8 +155,6 @@ const HomeScreen = ({navigation}) => {
 
             
           }
-
-          
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -168,7 +170,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
 
         <Button name={'Sign In'} onPress={handleSignIn} isLandscape={isLandscape} />
-
+ 
         <View
           style={{
             justifyContent: 'center',

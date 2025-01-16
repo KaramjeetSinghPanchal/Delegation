@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import {useRef, useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -96,19 +97,19 @@ const Dashboard = ({navigation}) => {
         </View>
 
         {/* Bot Image */}
-        <View style={styles.center}>
+        <Animatable.View style={styles.center} animation={'zoomIn'} duration={2000}>
           <Image
             source={require('../assets/images/Bot.png')}
             style={styles.botImage}
           />
-        </View>
+        </Animatable.View>
 
         {/* Greeting Text when no messages */}
         {messages.length === 0 && (
-          <View style={styles.adminMessage}>
+          <Animatable.View style={styles.adminMessage} duration={2000} animation={'zoomIn'}>
             <Text style={styles.greetingText}>Hello Admin</Text>
             <Text style={styles.assistanceText}>How Can I Help You Today?</Text>
-          </View>
+          </Animatable.View>
         )}
 
         {/* Chat Messages List */}
@@ -153,7 +154,7 @@ const Dashboard = ({navigation}) => {
         />
 
         {/* Chat Input Area */}
-        <View style={styles.inputContainer}>
+        <Animatable.View style={styles.inputContainer} animation={'slideInDown'} duration={2000}>
           {/* Select List for Task */}
           <SelectList
             data={data}
@@ -185,7 +186,7 @@ const Dashboard = ({navigation}) => {
               <Icon name="arrow-upward" size={24} color="white" />
             </View>
           </TouchableOpacity>
-        </View>
+        </Animatable.View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -450,
+    marginTop: -350,
   },
   botImage: {
     width: 93.46,

@@ -17,7 +17,7 @@ const Navigation = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen
+          <Stack.Screen 
             name="HomeScreen"
             component={HomeScreen}
             options={{ animation: 'fade' }}

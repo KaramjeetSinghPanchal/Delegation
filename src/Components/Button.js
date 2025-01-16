@@ -1,13 +1,20 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
+import * as Animatable from 'react-native-animatable';
 
 const Button = ({name,onPress,style,isLandscape}) => {
 
   
   return (
-    <TouchableOpacity style={[styles.button,style,{width:isLandscape?'95%':290}]} onPress={onPress}>
+    <Animatable.View
+    style={[styles.button, style, { width: isLandscape ? '95%' : 290 }]}
+    animation={'zoomIn'}
+    duration={2000}
+  >
+    <TouchableOpacity onPress={onPress}>
       <Text style={styles.buttonText}>{name}</Text>
     </TouchableOpacity>
+  </Animatable.View>
   );
 };
 

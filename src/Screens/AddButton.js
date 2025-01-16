@@ -1,14 +1,17 @@
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Animatable from 'react-native-animatable';
 
 
-const AddButton = ({isLandscape,onPress}) => {
+const AddButton = ({isLandscape,onPress,navigation}) => {
   
   return (
+    <Animatable.View animation={'zoomIn'} duration={3000}>
     <TouchableOpacity style={[styles.floatingButton,{right: isLandscape?190:20 }]}>
-    <Icon name="add" size={35} color="white" onPress={onPress}/>
+    <Icon name="add" size={35} color="white" onPress={onPress} navigation={navigation}/>
   </TouchableOpacity>
+  </Animatable.View>
   )
 }
 

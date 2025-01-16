@@ -9,10 +9,10 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
-import { delegationtaskk } from '../apiClient/api';
-import Animated from 'react-native-reanimated';
-
+import {delegationtaskk} from '../apiClient/api';
+import * as Animatable from 'react-native-animatable';
 import AddButton from './AddButton';
 import {useEffect, useCallback} from 'react';
 import React from 'react';
@@ -20,17 +20,18 @@ import {useState} from 'react';
 import Profile from '../Components/Profile';
 import PieChart from 'react-native-pie-chart';
 import {delegationtask} from '../apiClient/api';
-
-// import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
+import Inputbox from '../Components/Inputbox';
 const Dashboard = ({navigation}) => {
   const widthAndHeight = 160;
   const [listing, setlisting] = useState([]);
   const [hasMoreData, setHasMoreData] = useState(true); // Track if more data is available
   const [status, setstatus] = useState([]);
   const [activeStatus, setActiveStatus] = useState(null); // Track active status
+  const [width, setwidth] = useState(40);
+  const [got, setgot] = useState(false);
   const series = [
     {value: 430, color: '#fbd203'},
     {value: 321, color: '#ffb300'},
@@ -62,9 +63,8 @@ const Dashboard = ({navigation}) => {
           // Assuming data.data contains the array of users
 
           settask(data.data.allCount); // Set the users array to state
-          setlisting(data.data.taskData.data)
-          console.warn("=============>",data?.data?.taskData?.data);
-
+          setlisting(data.data.taskData.data);
+          console.warn('=============>', data?.data?.taskData?.data);
         } else {
           console.warn('No users data found.');
         }
@@ -90,23 +90,23 @@ const Dashboard = ({navigation}) => {
 
   const listingdata = async status => {
     console.warn(status, 'status=>>');
-    const data = await delegationtask(status,''); // Call the listing function from API
+    const data = await delegationtask(status, ''); // Call the listing function from API
     setHasMoreData(false);
     setlisting(data?.data?.taskData?.data);
-    
+
     setstatus(listing[0].status.id);
   };
 
-  const calenderreport = async(date)=>{
-     console.warn("date==========>",date);
-     const formattedDate = date.toISOString().slice(0, 10);
-     console.warn("formattedDate==========>",formattedDate);
+  const calenderreport = async date => {
+    console.warn('date==========>', date);
+    const formattedDate = date.toISOString().slice(0, 10);
+    console.warn('formattedDate==========>', formattedDate);
 
-     const data = await delegationtaskk('3',formattedDate);
-     console.warn("Calender report=====>",data.data.taskData.data);
-     
-     setlisting(data?.data?.taskData?.data)
-  }
+    const data = await delegationtaskk('3', formattedDate);
+    console.warn('Calender report=====>', data.data.taskData.data);
+
+    setlisting(data?.data?.taskData?.data);
+  };
 
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
@@ -114,8 +114,16 @@ const Dashboard = ({navigation}) => {
     }
     return null; // No footer if loading is false or no more data
   }, [hasMoreData]);
+  const appliedWidth = got ? 110 : isLandscape ? 280 : 200;
 
+  const handleserach = () => {
+    setgot(true);
+    setwidth(150);
+  };
 
+  const cleardata = () => {
+    listingdata();
+  };
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -134,19 +142,24 @@ const Dashboard = ({navigation}) => {
           </View>
 
           <View style={styles.firstBoxmain}>
-            <ScrollView horizontal={true}  showsHorizontalScrollIndicator={false}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
               {' '}
               <TouchableOpacity
-               style={styles.firstBox(activeStatus === 2)}
-                onPress={() => {listingdata(2); setActiveStatus(2);} }>
-                <Text style={styles.textthe(activeStatus ===2)}>
+                style={styles.firstBox(activeStatus === 2)}
+                onPress={() => {
+                  listingdata(2);
+                  setActiveStatus(2);
+                }}>
+                <Text style={styles.textthe(activeStatus === 2)}>
                   {/* {item?.data?.assigned_by_id} {'\n'}{' '} */}
                   In-Progress
-                  <Text 
+                  <Text
                     style={{
                       fontSize: 24,
                       fontWeight: 'bold',
-                      color: activeStatus?'white':'black',
+                      color: activeStatus ? 'white' : 'black',
                       fontFamily: '',
                     }}>
                     {'\n'} {task.inProgressCount}
@@ -156,19 +169,20 @@ const Dashboard = ({navigation}) => {
                 <Image source={require('../assets/images/iconprogress.png')} />
               </TouchableOpacity>
               <TouchableOpacity
-               style={styles.firstBox(activeStatus === 3)}
-               onPress={() => {
+                style={styles.firstBox(activeStatus === 3)}
+                onPress={() => {
                   setActiveStatus(3); // Set the active status when pressed
                   listingdata(3);
                 }}>
-                <Text style={styles.textthe(activeStatus ===3)}>
-                {/* {item?.data?.assigned_by_id}  */}
+                <Text style={styles.textthe(activeStatus === 3)}>
+                  {/* {item?.data?.assigned_by_id}  */}
                   Completed
                   <Text
                     style={{
                       fontSize: 24,
                       fontWeight: 'bold',
-                      color: activeStatus?'white':'black',                    }}>
+                      color: activeStatus ? 'white' : 'black',
+                    }}>
                     {'\n'} {task.taskToBeAcceptedCount}
                   </Text>
                 </Text>
@@ -176,16 +190,20 @@ const Dashboard = ({navigation}) => {
                 <Image source={require('../assets/images/iconCompleted.png')} />
               </TouchableOpacity>
               <TouchableOpacity
-               style={styles.firstBox(activeStatus === 1)}
-               onPress={() => {listingdata(1);setActiveStatus(1);}}>
-                <Text style={styles.textthe(activeStatus ===1)}>
-                {/* {item?.data?.assigned_by_id}  */}
+                style={styles.firstBox(activeStatus === 1)}
+                onPress={() => {
+                  listingdata(1);
+                  setActiveStatus(1);
+                }}>
+                <Text style={styles.textthe(activeStatus === 1)}>
+                  {/* {item?.data?.assigned_by_id}  */}
                   In-Draft
                   <Text
                     style={{
                       fontSize: 24,
                       fontWeight: 'bold',
-                      color: activeStatus?'white':'black',                    }}>
+                      color: activeStatus ? 'white' : 'black',
+                    }}>
                     {'\n'} {task.inDraftCount}
                   </Text>
                 </Text>
@@ -195,16 +213,20 @@ const Dashboard = ({navigation}) => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-               style={styles.firstBox(activeStatus === 8)}
-               onPress={() => {listingdata(8);setActiveStatus(8);}}>
-                <Text style={styles.textthe(activeStatus ===8)}>
-                {/* {item?.data?.assigned_by_id}  */}
+                style={styles.firstBox(activeStatus === 8)}
+                onPress={() => {
+                  listingdata(8);
+                  setActiveStatus(8);
+                }}>
+                <Text style={styles.textthe(activeStatus === 8)}>
+                  {/* {item?.data?.assigned_by_id}  */}
                   To Be Accepted
                   <Text
                     style={{
                       fontSize: 24,
                       fontWeight: 'bold',
-                      color: activeStatus?'white':'black',                    }}>
+                      color: activeStatus ? 'white' : 'black',
+                    }}>
                     {'\n'} {task.inDraftCount}
                   </Text>
                 </Text>
@@ -212,16 +234,19 @@ const Dashboard = ({navigation}) => {
                 <Image source={require('../assets/images/Acceptedblue.png')} />
               </TouchableOpacity>
               <TouchableOpacity
-               style={styles.firstBox(activeStatus === 5)}
-               onPress={() => {listingdata(5);setActiveStatus(5)}}>
-                <Text style={styles.textthe(activeStatus ===5)}>
-                {/* {item?.data?.assigned_by_id}  */}
+                style={styles.firstBox(activeStatus === 5)}
+                onPress={() => {
+                  listingdata(5);
+                  setActiveStatus(5);
+                }}>
+                <Text style={styles.textthe(activeStatus === 5)}>
+                  {/* {item?.data?.assigned_by_id}  */}
                   Overdue
                   <Text
                     style={{
                       fontSize: 24,
                       fontWeight: 'bold',
-                      color: activeStatus?'white':'black',
+                      color: activeStatus ? 'white' : 'black',
                     }}>
                     {'\n'} {task.inOverDueCount}
                   </Text>
@@ -252,15 +277,21 @@ const Dashboard = ({navigation}) => {
                 
                 </View> */}
 
-                <View style={styles.containerttt}>
+                <Animatable.View
+                  style={styles.containerttt}
+                  duration={4000}
+                  animation={'zoomIn'}>
                   <PieChart
                     widthAndHeight={widthAndHeight}
                     series={series}
                     cover={0.45}
                   />
-                </View>
+                </Animatable.View>
 
-                <View style={styles.listContainer}>
+                <Animatable.View
+                  style={styles.listContainer}
+                  animation={'zoomIn'}
+                  duration={3000}>
                   <FlatList
                     data={data}
                     keyExtractor={(item, index) => index.toString()} // Ensure that each item has a unique key
@@ -288,7 +319,7 @@ const Dashboard = ({navigation}) => {
                       );
                     }}
                   />
-                </View>
+                </Animatable.View>
               </View>
             </View>
           </View>
@@ -309,10 +340,7 @@ const Dashboard = ({navigation}) => {
 
               <View style={[styles.container, {width: 80}]}>
                 <TouchableOpacity
-                  style={[
-                    styles.datePickerButton,
-                    {width: isLandscape ? 280 : 200},
-                  ]}
+                  style={[styles.datePickerButton, {width: appliedWidth}]}
                   onPress={() => setOpen(true)}>
                   <Text style={styles.buttonText}>
                     {selectedDate ? `${selectedDate}` : 'Select Date'}
@@ -331,7 +359,7 @@ const Dashboard = ({navigation}) => {
                     setOpen(false);
                     setDate(date);
                     setSelectedDate(date.toDateString());
-                    calenderreport(date)
+                    calenderreport(date);
                   }}
                   onCancel={() => {
                     setOpen(false);
@@ -377,17 +405,18 @@ const Dashboard = ({navigation}) => {
                     borderWidth: 1,
                     marginLeft: 5,
                     borderColor: '#E2E8F0',
-                  }}>
+                  }}
+                  onPress={cleardata}>
                   <Text
                     style={{fontSize: 14, fontFamily: 'Inter_28pt-Regular'}}>
                     Clear
                   </Text>
                 </TouchableOpacity>
-                  
+
                 <TouchableOpacity
                   style={{
                     height: 40,
-                    width: isLandscape ? 160 : 40,
+                    width: width,
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: 4,
@@ -397,8 +426,14 @@ const Dashboard = ({navigation}) => {
                     borderWidth: 1,
                     marginLeft: 7,
                     backgroundColor: '#F8F9FA',
+                    // backgroundColor: 'black',
                     borderColor: '#E2E8F0',
-                  }}>
+                    flexDirection: 'row',
+                  }}
+                  onPress={handleserach}>
+                  <TextInput
+                    placeholder={'Search Something'}
+                    style={{flex: 1}}></TextInput>
                   <Icon name="search" size={25} color="#000000" />
                 </TouchableOpacity>
               </View>
@@ -611,8 +646,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_24pt-SemiBold',
     color: '#2D3748',
   },
-  firstBox: (isActive) => ({
-
+  firstBox: isActive => ({
     height: 81,
     width: 219.6,
     borderRadius: 10,
@@ -668,8 +702,8 @@ const styles = StyleSheet.create({
     color: '#333',
     fontFamily: 'Inter_28pt-Medium',
   },
-  textthe:  (isActive) => ({
-    color: isActive?'white':'#A0AEC0',
+  textthe: isActive => ({
+    color: isActive ? 'white' : '#A0AEC0',
     fontSize: 14,
     marginHorizontal: 10,
     fontFamily: 'Inter_18pt-Medium',

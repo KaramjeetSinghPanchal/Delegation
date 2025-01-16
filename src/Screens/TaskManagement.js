@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import {report} from '../apiClient/api';
 import AddButton from './AddButton';
 import DatePicker from 'react-native-date-picker';
@@ -130,22 +131,20 @@ const TaskManagement = ({navigation}) => {
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
 
-
   useEffect(() => {
     if (downloadSuccess && !isDownloading) {
       // Set the message after the download is successful
       setMessage('Report Downloaded successfully');
-      
+
       // Hide the message after 5 seconds
       const timer = setTimeout(() => {
         setMessage('');
       }, 5000);
-      
+
       // Cleanup the timer if the component unmounts or dependencies change
       return () => clearTimeout(timer);
     }
   }, [downloadSuccess, isDownloading]);
-
 
   const [checkedStates, setCheckedStates] = useState({
     All: false,
@@ -157,44 +156,42 @@ const TaskManagement = ({navigation}) => {
     'Revised Date': false,
   });
 
-  const handleCheckboxChange = async (status) => {
-    Alert.alert("hii");
-    console.warn("status======>", status);
-  
+  const handleCheckboxChange = async status => {
+    console.warn('status======>', status);
+
     // Toggle the checkbox state
     const updatedCheckedStates = {
       ...checkedStates,
       [status]: !checkedStates[status],
     };
     setCheckedStates(updatedCheckedStates);
-  
+
     // Get selected statuses (statuses with true value)
     const selectedStatuses = Object.keys(updatedCheckedStates).filter(
-      (key) => updatedCheckedStates[key]
+      key => updatedCheckedStates[key],
     );
-  
+
     // If no statuses are selected (i.e., all checkboxes are unchecked)
     if (selectedStatuses.length === 0) {
       // Fetch all data without any filters
       const fetchAllData = await taskmangementlisting({
-        status: '',  // Empty or null for "All" statuses
+        status: '', // Empty or null for "All" statuses
       });
-  
+
       const result = fetchAllData.data;
-      setData(result);  // Update with all data
-      console.warn("Fetched all data:", result);
+      setData(result); // Update with all data
+      console.warn('Fetched all data:', result);
     } else {
       // If some checkboxes are selected, fetch data for those specific statuses
       const fetchCheckListing = await taskmangementlisting({
         status: selectedStatuses.join(','), // Join the selected statuses
       });
-  
+
       const result = fetchCheckListing.data;
-      setData(result);  // Update with filtered data
-      console.warn("Fetched filtered data:", result);
+      setData(result); // Update with filtered data
+      console.warn('Fetched filtered data:', result);
     }
   };
-  
 
   const clearData = async () => {
     const fetchedData = await taskmangementlisting({});
@@ -271,15 +268,14 @@ const TaskManagement = ({navigation}) => {
     fetchData();
   }, []);
 
-
-  const print =()=>{
+  const print = () => {
     const timer = setTimeout(() => {
-      return 'hello'
+      return 'hello';
     }, 5000);
 
     // Cleanup the timer when component unmounts
     return () => clearTimeout(timer);
-  }
+  };
 
   useEffect(() => {
     handlesearch();
@@ -304,6 +300,7 @@ const TaskManagement = ({navigation}) => {
 
     if (fetchreport) {
       setDownloadSuccess(true);
+      Alert.alert('Report downloaded successfully');
       console.log('Report downloaded successfully:', fetchreport);
     } else {
       setErrorMessage('Failed to download the report');
@@ -337,7 +334,10 @@ const TaskManagement = ({navigation}) => {
               style={{marginTop: 10}}
             />
           </View>
-          <View style={styles.content}>
+          <Animatable.View
+            style={styles.content}
+            duration={3000}
+            animation={'zoomIn'}>
             <View style={styles.checkboxContainer}>
               {Object.entries(data).map(([label, status], index) => (
                 <View style={styles.checkboxItem} key={index}>
@@ -358,8 +358,11 @@ const TaskManagement = ({navigation}) => {
                 </View>
               ))}
             </View>
-          </View>
-          <View style={{backgroundColor: '#FFFFFF', marginTop: 15}}>
+          </Animatable.View>
+          <Animatable.View
+            style={{backgroundColor: '#FFFFFF', marginTop: 15}}
+            duration={3000}
+            animation={'zoomIn'}>
             <SelectList
               setSelected={handleSelectChange}
               data={[
@@ -381,9 +384,12 @@ const TaskManagement = ({navigation}) => {
                 borderWidth: 1,
               }}
             />
-          </View>
+          </Animatable.View>
 
-          <View style={styles.containerree}>
+          <Animatable.View
+            style={styles.containerree}
+            duration={3000}
+            animation={'zoomIn'}>
             <View style={styles.containerr}>
               <TouchableOpacity
                 style={[styles.datePickerButton, {width: finalWidth}]}
@@ -432,9 +438,12 @@ const TaskManagement = ({navigation}) => {
                 </TouchableOpacity>
               </TouchableOpacity>
             </View>
-          </View>
+          </Animatable.View>
 
-          <View style={styles.containerrr}>
+          <Animatable.View
+            style={styles.containerrr}
+            duration={3000}
+            animation={'zoomIn'}>
             <View
               style={{
                 flexDirection: 'row',
@@ -469,8 +478,7 @@ const TaskManagement = ({navigation}) => {
               <View style={{position: 'absolute', left: 100, top: 50}}>
                 <Text style={{color: 'green', fontSize: 16}}>
                   {/* Report Downloaded successfully */}
-                    {message}
-                  
+                  {message}
                 </Text>
               </View>
             ) : null}
@@ -508,20 +516,22 @@ const TaskManagement = ({navigation}) => {
                 Generate Report
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animatable.View>
 
           <FlatList
             data={datastate} // Pass users array as data
             // keyExtractor={item => item?.id?.toString()} // Ensure each item has a unique key (assuming 'id' is present)
             renderItem={({item, index}) => (
               <View>
-                <View
+                <Animatable.View
                   style={{
                     marginTop: 45,
                     marginHorizontal: 30,
                     // backgroundColor: '#E5EDF2',
                     width: '50%',
-                  }}>
+                  }}
+                  duration={3000}
+                  animation={'lightSpeedIn'}>
                   <Text
                     style={{
                       fontSize: 18,
@@ -530,7 +540,7 @@ const TaskManagement = ({navigation}) => {
                     }}>
                     Task Title will be here...
                   </Text>
-                </View>
+                </Animatable.View>
                 <View
                   style={{
                     height: 0,
@@ -639,7 +649,12 @@ const TaskManagement = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton isLandscape={isLandscape} onPress={()=>{Alert.alert("Welcome to the Delegation Project")}} />
+      <AddButton
+        isLandscape={isLandscape}
+        onPress={() => {
+          Alert.alert('Welcome to the Delegation Project');
+        }}
+      />
     </SafeAreaView>
   );
 };

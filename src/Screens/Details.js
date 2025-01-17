@@ -20,7 +20,6 @@ import Button from '../Components/Button';
 import DocumentPicker from 'react-native-document-picker';
 import { AnimatedView } from 'react-native-reanimated/lib/typescript/component/View';
 const Details = ({navigation}) => {
-  const [isOpen, setOpen] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const remove = item => {
@@ -92,7 +91,7 @@ const Details = ({navigation}) => {
       ? [...selectedDocuments, {addDocument: true}] // Add the "Add Document" button as the last item
       : [{addDocument: true}]; // Show only the "Add Document" button if no documents are selected
 
-  return (
+  return (   
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
         <TouchableOpacity

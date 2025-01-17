@@ -12,6 +12,7 @@ import {
   TextInput,
 } from 'react-native';
 import {delegationtaskk} from '../apiClient/api';
+import chart from './Chart';
 import * as Animatable from 'react-native-animatable';
 import AddButton from './AddButton';
 import {useEffect, useCallback} from 'react';
@@ -600,7 +601,7 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton isLandscape={isLandscape} />
+      <AddButton isLandscape={isLandscape} onPress={()=>navigation.navigate('Chart')}/>
     </SafeAreaView>
   );
 };

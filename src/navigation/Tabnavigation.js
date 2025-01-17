@@ -75,6 +75,8 @@ const Tabnavigation = () => {
           tabBarLabel: () => null, // Hide the label
         }}
       />
+
+
     </Tab.Navigator>
   );
 };

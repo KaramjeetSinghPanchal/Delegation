@@ -10,6 +10,7 @@ import Forgetpassword from '../Screens/Forgetpassword';
 import OTP from '../Screens/OTP';
 import Tabnavigation from './Tabnavigation'; // Import your Tabnavigator component
 import Details from '../Screens/Details';
+import Chart from '../Screens/Chart';
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
@@ -25,7 +26,7 @@ const Navigation = () => {
           <Stack.Screen name="Forgetpassword" component={Forgetpassword} />
           <Stack.Screen name="OTP" component={OTP} />
           <Stack.Screen name="Details" component={Details} />
-          
+          <Stack.Screen name="Chart" component={Chart} />
           <Stack.Screen name="Tabs" component={Tabnavigation} />
         </Stack.Navigator>
       </NavigationContainer>

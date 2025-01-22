@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Pushnotification from '../Components/Pushnotification';
 import {delegationtaskk} from '../apiClient/api';
+import chart from './Chart';
 import * as Animatable from 'react-native-animatable';
 import AddButton from './AddButton';
 import {useEffect, useCallback} from 'react';
@@ -601,7 +602,11 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
+<<<<<<< HEAD
       <AddButton isLandscape={isLandscape} onPress={Pushnotification} />
+=======
+      <AddButton isLandscape={isLandscape} onPress={()=>navigation.navigate('Chart')}/>
+>>>>>>> 8f6105d0ac537de1d9b2a8a57973eaac40faec65
     </SafeAreaView>
   );
 };

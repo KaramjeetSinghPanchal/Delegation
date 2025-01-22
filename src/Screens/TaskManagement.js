@@ -21,7 +21,6 @@ import DatePicker from 'react-native-date-picker';
 import {taskmangementlisting} from '../apiClient/api';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import {SelectList} from 'react-native-dropdown-select-list';
 
 const TaskManagement = ({navigation}) => {
@@ -150,9 +149,9 @@ const TaskManagement = ({navigation}) => {
     All: false,
     'In-Draft': false,
     'In-progress': false,
-    Completed: false,
-    Pending: false,
-    Rejected: false,
+    'Completed': false,
+    'Pending': false,
+    'Rejected': false,
     'Revised Date': false,
   });
 

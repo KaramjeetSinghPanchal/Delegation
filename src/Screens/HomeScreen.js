@@ -21,6 +21,7 @@ import {useNavigation} from '@react-navigation/native';
 import {loginUser} from '../apiClient/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Lanscape from './Lanscape';
+import Pushnotification from '../Components/Pushnotification';
 const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
@@ -80,6 +81,7 @@ const HomeScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
+      <Pushnotification/>
         <Animatable.View style={styles.logoimage} animation={'zoomIn'} duration={3000}>
           <Image source={require('../assets/images/logo-black.png')} />
         </Animatable.View>

@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { useSelector } from 'react-redux';
 import {useRef, useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -20,6 +21,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
   const data = ['Query', 'Task'];
   const flatListRef = useRef(null); // Reference to FlatList for scrolling
+  const datastate = useSelector(state => state.data.data);
+  console.warn('datastatedatastatedelegation====>', datastate);
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);

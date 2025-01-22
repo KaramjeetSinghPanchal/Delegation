@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
+import Pushnotification from '../Components/Pushnotification';
 import {delegationtaskk} from '../apiClient/api';
 import * as Animatable from 'react-native-animatable';
 import AddButton from './AddButton';
@@ -600,7 +601,7 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton isLandscape={isLandscape} />
+      <AddButton isLandscape={isLandscape} onPress={Pushnotification} />
     </SafeAreaView>
   );
 };

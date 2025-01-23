@@ -18,14 +18,18 @@ import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
 import AddButton from './AddButton';
 import { AnimatedView } from 'react-native-reanimated/lib/typescript/component/View';
+import { useDispatch, useSelector } from 'react-redux';
 const Usermanagement = ({navigation}) => {
   const [users, setUsers] = useState([]);
+  const dispatch = useDispatch()
   const isLandscape = Lanscape();
+  const items = useSelector((state) => state.data.items);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        console.warn('Fetching users...');
+ 
+  useEffect(() => { 
+    const fetchUsers = async () => { 
+      try { 
+        // console.warn('Fetching users...');
         const data = await listing(); // Call the listing function from API
 
         if (data && data.data) {

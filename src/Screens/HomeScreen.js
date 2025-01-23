@@ -26,14 +26,14 @@ const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [phone_email, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [phone_email, setUsername] = useState('admin@zapbuild.com');
+  const [password, setPassword] = useState('Ztech@44');
   const handleicon = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const handleSignIn = async () => {
-    console.warn('hii');
+    // console.warn('hii');
 
     // Check if username or password is empty
     if (!phone_email || !password) {
@@ -42,13 +42,12 @@ const HomeScreen = ({navigation}) => {
       return;
     }
 
-    console.warn('outer');
+    // console.warn('outer');
 
     try {
       // Call the login function from api.js
       const response = await loginUser(phone_email, password);
 
-      console.warn('homescreen', response);
 
       if (response.status.code === 400) {
         // Handle validation errors from the server response

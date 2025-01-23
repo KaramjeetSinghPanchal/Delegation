@@ -58,7 +58,7 @@ const Dashboard = ({navigation}) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        console.warn('Fetching users...');
+        // console.warn('Fetching users...');
         const data = await delegationtask(); // Call the listing function from API
 
         if (data && data.data) {
@@ -602,11 +602,7 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-<<<<<<< HEAD
-      <AddButton isLandscape={isLandscape} onPress={Pushnotification} />
-=======
       <AddButton isLandscape={isLandscape} onPress={()=>navigation.navigate('Chart')}/>
->>>>>>> 8f6105d0ac537de1d9b2a8a57973eaac40faec65
     </SafeAreaView>
   );
 };

@@ -13,16 +13,14 @@ export const loginUser = async (phone_email, password) => {
   console.warn(phone_email, password, 'balle');
 
   try {
-    console.log('Sending request to:', `${baseUrl}user-login`);
+    // console.log('Sending request to:', `${baseUrl}user-login`);
     const formData = new FormData();
     formData.append('phone_email', phone_email);
     formData.append('password', password);
-    console.warn('response===>1');
     const response = await fetch(`${baseUrl}user-login`, {
       method: 'POST',
       body: formData,
     });
-    console.warn('response===>', response);
 
     if (!response.ok) {
       const errorResponse = await response.json();
@@ -81,7 +79,7 @@ export const listing = async () => {
     }
 
     const data = await response.json();
-    console.log('API response:', data);
+    // console.log('API response:', data);
     return data; // Return the data if the request is successful
   } catch (error) {
     console.error('Error fetching users listing:', error);
@@ -109,7 +107,7 @@ export const delegationtask = async status => {
     }
 
     const data = await response.json();
-    console.log('API response new:', data);
+    // console.log('API response new:', data);
     return data; // Return the data if the request is successful
   } catch (error) {
     console.error('Error fetching users listing:', error);
@@ -217,30 +215,30 @@ export const taskmangementlisting = async ({
   searchQuery = '', //I can pass here the default value
   assigned_date,
 }) => {
-  const token = await gettoken();
-  let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
-  if (status) fetchUrl += '&status=' + status;
-  if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
-  if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date; // Make sure assigned_date is added
+  return new Promise(async (resolve, reject) => {
+    console.warn("entered at taskmanagement API");
+    
+    const token = await gettoken();
+    let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
+    if (status) fetchUrl += '&status=' + status;
+    if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
+    if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date; // Make sure assigned_date is added
 
-  console.warn('Listing fetchUrl:', fetchUrl); // Debug log for the URL
+    const response = await fetch(fetchUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    console.warn('!response.ok====>', response);
+    if (!response.ok) {
+      console.warn('Failed to fetch error', response.status);
+      throw new Error('Failed to fetch data');
+    }
 
-  const response = await fetch(fetchUrl, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    const data = await response.json();
+    console.warn('data===>', data);
+    resolve(data.data);
   });
-
-  if (!response.ok) {
-    console.warn('Failed to fetch error', response.status);
-    throw new Error('Failed to fetch data');
-  }
-
-  const data = await response.json();
-
-  console.warn('Listing response:', data); // Log the full response
-
-  return data.data; // Ensure 'data.data' is the correct structure
 };

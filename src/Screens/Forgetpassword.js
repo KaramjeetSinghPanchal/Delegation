@@ -22,54 +22,54 @@ const Forgetpassword = ({navigation}) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //   <ScrollView>
-    //   <TouchableOpacity
-    //   style={{
-    //     position: 'absolute',
-    //     top: isLandscape ? 40 : 10,
-    //     left: 0,
-    //     flexDirection: 'row',
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+      <TouchableOpacity
+      style={{
+        position: 'absolute',
+        top: isLandscape ? 40 : 10,
+        left: 0,
+        flexDirection: 'row',
        
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
 
-    //   }}
-    //   onPress={() => navigation.goBack()}
-    //   >
-    // <Icon name={'arrow-back'} size={25} color="black" onPress={() => navigation.goBack()}/>
-    //   <Text style={{ paddingLeft: 10, fontSize: 20 }}>Back</Text>
-    // </TouchableOpacity>
+      }}
+      onPress={() => navigation.goBack()}
+      >
+    <Icon name={'arrow-back'} size={25} color="black" onPress={() => navigation.goBack()}/>
+      <Text style={{ paddingLeft: 10, fontSize: 20 }}>Back</Text>
+    </TouchableOpacity>
 
 
-    //     <View style={styles.logoimage}>
-    //       <Image source={require('../assets/images/logo-black.png')} />
-    //     </View>
-    //     <View>
-    //       <Text style={[styles.signin]} onPress={() => navigation.goBack()}>Forgot Password?</Text>
-    //     </View>
+        <View style={styles.logoimage}>
+          <Image source={require('../assets/images/logo-black.png')} />
+        </View>
+        <View>
+          <Text style={[styles.signin]} onPress={() => navigation.goBack()}>Forgot Password?</Text>
+        </View>
 
-    //     <Inputname
-    //       style={{fontSize: 18, paddingTop: 40}}
-    //       name={'Email Address'}
-    //     />
-    //     <Inputbox
-    //       style={{
-    //         width: isLandscape ? '90%' : 290,
-    //         height: 50,
-    //         borderColor: '#ccc',
-    //         borderWidth: 1,
-    //         paddingLeft: 5,
-    //         borderRadius: 5,
-    //         marginLeft: 35,
-    //       }}
-    //       placeholder="Enter your email address"
-    //     />
+        <Inputname
+          style={{fontSize: 18, paddingTop: 40}}
+          name={'Email Address'}
+        />
+        <Inputbox
+          style={{
+            width: isLandscape ? '90%' : 290,
+            height: 50,
+            borderColor: '#ccc',
+            borderWidth: 1,
+            paddingLeft: 5,
+            borderRadius: 5,
+            marginLeft: 35,
+          }}
+          placeholder="Enter your email address"
+        />
 
-    //     <Button name={'Reset Password'} isLandscape={isLandscape} />
-    //   </ScrollView>
-    // </SafeAreaView>
-    <Pushnotification/>
+        <Button name={'Reset Password'} isLandscape={isLandscape} />
+      </ScrollView>
+    </SafeAreaView>
+  
   );
 };
 

@@ -14,6 +14,8 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { useSelector } from 'react-redux';
+import { setResultData } from '../Components/redux/dataSlice';
 import * as Animatable from 'react-native-animatable';
 import {report} from '../apiClient/api';
 import AddButton from './AddButton';
@@ -22,8 +24,9 @@ import {taskmangementlisting} from '../apiClient/api';
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {SelectList} from 'react-native-dropdown-select-list';
-
+import {useDispatch} from 'react-redux';
 const TaskManagement = ({navigation}) => {
+  const dispatch = useDispatch();
   const [selected, setSelected] = useState('');
   // const [checkdata, setcheckdata] = useState([]);
 
@@ -54,7 +57,8 @@ const TaskManagement = ({navigation}) => {
   );
 
   const [selectedDate, setSelectedDate] = useState('');
-
+  const datastateredux = useSelector((state) => state.data.items);
+  console.warn('user=====------>>', datastate);
   useEffect(() => {
     if (selected) {
       handlesearch(selected);
@@ -149,15 +153,13 @@ const TaskManagement = ({navigation}) => {
     All: false,
     'In-Draft': false,
     'In-progress': false,
-    'Completed': false,
-    'Pending': false,
-    'Rejected': false,
+    Completed: false,
+    Pending: false,
+    Rejected: false,
     'Revised Date': false,
   });
 
   const handleCheckboxChange = async status => {
-    console.warn('status======>', status);
-
     // Toggle the checkbox state
     const updatedCheckedStates = {
       ...checkedStates,
@@ -178,8 +180,9 @@ const TaskManagement = ({navigation}) => {
       });
 
       const result = fetchAllData.data;
-      setData(result); // Update with all data
-      console.warn('Fetched all data:', result);
+      console.warn('See result=>', result);
+
+      dispatch(setResultData(result));
     } else {
       // If some checkboxes are selected, fetch data for those specific statuses
       const fetchCheckListing = await taskmangementlisting({
@@ -187,8 +190,8 @@ const TaskManagement = ({navigation}) => {
       });
 
       const result = fetchCheckListing.data;
-      setData(result); // Update with filtered data
-      console.warn('Fetched filtered data:', result);
+      dispatch(setResultData(result)); // Update with filtered data
+      // console.warn('Fetched filtered data:', result);
     }
   };
 
@@ -197,7 +200,8 @@ const TaskManagement = ({navigation}) => {
 
     if (fetchedData && Array.isArray(fetchedData.data)) {
       if (fetchedData.data.length > 0) {
-        setData(fetchedData.data);
+        dispatch(setResultData(fetchedData.data))
+        // setData(fetchedData.data);
         settotal(fetchedData.data.total);
         if (!fetchedData.next_page_url) {
           setHasMoreData(false);
@@ -206,55 +210,16 @@ const TaskManagement = ({navigation}) => {
         }
       } else {
         console.log('No more data to load.');
-        setData([]);
+        dispatch(setResultData([]))
+        // setData([]);
       }
     }
   };
-
-  const fetchData = async (status = 'All', selectedDate) => {
-    setLoading(true);
-    const formattedDate = selectedDate.toISOString().slice(0, 10);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const fetchedData = await taskmangementlisting({
-        currentPage: current,
-        status: statusMapping[status],
-        assigned_date: formattedDate,
-      });
-
-      if (fetchedData && Array.isArray(fetchedData.data)) {
-        if (fetchedData.data.length > 0) {
-          setData(fetchedData.data);
-          settotal(fetchedData.data.total);
-          if (!fetchedData.next_page_url) {
-            setHasMoreData(false);
-          } else {
-            setcurrent(prev => prev + 1);
-          }
-        } else {
-          console.log('No more data to load.');
-          setData([]);
-        }
-      } else {
-        console.error(
-          'Fetched data is not in the expected format:',
-          fetchedData,
-        );
-      }
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSelectChange = val => {
     setSelected(val);
-    setData([]);
+   dispatch(setResultData([]));
     setcurrent(1);
-    fetchData(val);
+    handlesearch('',val)
   };
   const isfooterComponent = useCallback(() => {
     if (hasMoreData) {
@@ -263,9 +228,6 @@ const TaskManagement = ({navigation}) => {
     return null;
   }, [hasMoreData]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const print = () => {
     const timer = setTimeout(() => {
@@ -277,15 +239,21 @@ const TaskManagement = ({navigation}) => {
   };
 
   useEffect(() => {
-    handlesearch();
+ 
+    handlesearch(searchQuery,'');
   }, [searchQuery]);
 
-  const handlesearch = async selectedValue => {
+  const handlesearch = async (selectedValue,val) => {
+    setLoading(true);
     const filtereddata = await taskmangementlisting({
       currentPage: 1,
       searchQuery: selectedValue,
+      status:val
     });
-    setData(filtereddata.data);
+    console.warn("===filtereddata===",filtereddata);
+    
+    dispatch(setResultData(filtereddata.data));
+    setLoading(false);
   };
 
   const handleReport = async date => {
@@ -502,7 +470,6 @@ const TaskManagement = ({navigation}) => {
                 marginLeft: isLandscape ? 185 : 14,
               }}
               onPress={() => {
-                console.log('Button pressed');
                 handleReport(date); // Pass the state `date`
               }}>
               <Text
@@ -518,7 +485,7 @@ const TaskManagement = ({navigation}) => {
           </Animatable.View>
 
           <FlatList
-            data={datastate} // Pass users array as data
+            data={datastateredux} // Pass users array as data
             // keyExtractor={item => item?.id?.toString()} // Ensure each item has a unique key (assuming 'id' is present)
             renderItem={({item, index}) => (
               <View>
@@ -641,7 +608,7 @@ const TaskManagement = ({navigation}) => {
                 No tasks available
               </Text>
             } // Show message when no tasks are available
-            onEndReached={fetchData} // Trigger pagination when end is reached
+            // onEndReached={fetchData} // Trigger pagination when end is reached
             onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
             ListFooterComponent={isfooterComponent}
           />

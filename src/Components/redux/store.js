@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import dataReducer from './dataSlice'; // Import the correct reducer here
+import dataReducer from './dataSlice'
 
 const store = configureStore({
   reducer: {
-    data: dataReducer, // Assign the slice reducer to the `data` key in the store
+    data: dataReducer, // Matches the slice name in your reducer
   },
 });
 

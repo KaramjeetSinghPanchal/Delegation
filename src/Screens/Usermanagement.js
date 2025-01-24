@@ -16,16 +16,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
+import { setuserData } from '../Components/redux/dataSlice';
 import AddButton from './AddButton';
-import { AnimatedView } from 'react-native-reanimated/lib/typescript/component/View';
 import { useDispatch, useSelector } from 'react-redux';
 const Usermanagement = ({navigation}) => {
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const dispatch = useDispatch()
   const isLandscape = Lanscape();
-  const items = useSelector((state) => state.data.items);
-
- 
+  const userData = useSelector((state) => state.data.userData);
   useEffect(() => { 
     const fetchUsers = async () => { 
       try { 
@@ -34,8 +32,8 @@ const Usermanagement = ({navigation}) => {
 
         if (data && data.data) {
           // Assuming data.data contains the array of users
-
-          setUsers(data.data.data); // Set the users array to state
+            dispatch(setuserData(data?.data?.data))
+          // setUsers(data.data.data); // Set the users array to state
         } else {
           console.warn('No users data found.');
         }
@@ -77,7 +75,7 @@ const Usermanagement = ({navigation}) => {
           <View style={{marginHorizontal: 20, marginTop: 50}}>
             {/* FlatList to render each user */}
             <FlatList
-              data={users} // Pass users array as data
+              data={userData} // Pass users array as data
               keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
               renderItem={({item}) => (
                 <View style={styles.userContainer}>

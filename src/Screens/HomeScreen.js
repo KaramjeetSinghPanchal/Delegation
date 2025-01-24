@@ -13,10 +13,7 @@ import Inputbox from '../Components/Inputbox';
 import {useState} from 'react';
 import Button from '../Components/Button';
 import * as Animatable from 'react-native-animatable';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Navigation from '../navigation/Navigation';
 import {useNavigation} from '@react-navigation/native';
 import {loginUser} from '../apiClient/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -25,6 +22,8 @@ import Pushnotification from '../Components/Pushnotification';
 const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
+  console.warn('isLandscape====>',isLandscape);
+  
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [phone_email, setUsername] = useState('admin@zapbuild.com');
   const [password, setPassword] = useState('Ztech@44');
@@ -47,7 +46,6 @@ const HomeScreen = ({navigation}) => {
     try {
       // Call the login function from api.js
       const response = await loginUser(phone_email, password);
-
 
       if (response.status.code === 400) {
         // Handle validation errors from the server response
@@ -80,15 +78,20 @@ const HomeScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-      <Pushnotification/>
-        <Animatable.View style={styles.logoimage} animation={'zoomIn'} duration={3000}>
+        <Pushnotification />
+        <Animatable.View
+          style={styles.logoimage}
+          animation={'zoomIn'}
+          duration={3000}>
           <Image source={require('../assets/images/logo-black.png')} />
         </Animatable.View>
         <View>
-          <Animatable.Text style={[styles.signin,{marginRight:isLandscape?320:230}]} 
-          animation="zoomIn"
-          duration={3000}
-          >Sign In</Animatable.Text>
+          <Animatable.Text
+            style={[styles.signin, {marginRight: isLandscape ? 320 : 230}]}
+            animation="zoomIn"
+            duration={3000}>
+            Sign In
+          </Animatable.Text>
         </View>
 
         <Inputname
@@ -107,7 +110,7 @@ const HomeScreen = ({navigation}) => {
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
-            marginLeft:35
+            marginLeft: 35,
           }}
           value={phone_email}
           onChangeText={setUsername}
@@ -125,13 +128,13 @@ const HomeScreen = ({navigation}) => {
 
         <Inputbox
           style={{
-            width: isLandscape ? '90%': 290,
+            width: isLandscape ? '90%' : 290,
             height: 50,
             borderColor: '#ccc',
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
-            marginLeft:35
+            marginLeft: 35,
           }}
           // iconn={
           //   <Icon
@@ -142,7 +145,6 @@ const HomeScreen = ({navigation}) => {
           //     style={{paddingTop:6,marginRight:40}}
           //   />
 
-            
           // }
 
           iconn={
@@ -151,10 +153,8 @@ const HomeScreen = ({navigation}) => {
               size={25}
               color="#0cbcb9"
               onPress={handleicon}
-              style={{paddingTop:6,marginRight:40}}
+              style={{paddingTop: 6, marginRight: 40}}
             />
-
-            
           }
           value={password}
           onChangeText={setPassword}
@@ -162,17 +162,26 @@ const HomeScreen = ({navigation}) => {
           placeholder="Enter your password"
           isPasswordVisible={isPasswordVisible}
         />
- 
+
         <TouchableOpacity onPress={() => navigation.navigate('Forgetpassword')}>
           <Text
-            style={{color: '#0cbcb9', paddingTop: 20, left: isLandscape?531:155, fontSize: 17}}>
+            style={{
+              color: '#0cbcb9',
+              paddingTop: 20,
+              left: isLandscape ? 531 : 155,
+              fontSize: 17,
+            }}>
             Forget Password?
           </Text>
         </TouchableOpacity>
 
-        <Button name={'Sign In'} onPress={handleSignIn} isLandscape={isLandscape} />
- 
-        <View
+        <Button
+          name={'Sign In'}
+          onPress={handleSignIn}
+          isLandscape={isLandscape}
+        /> 
+
+         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -190,7 +199,7 @@ const HomeScreen = ({navigation}) => {
               justifyContent: 'center',
               alignItems: 'center',
               // marginLeft:80,
-              alignSelf:'center'
+              alignSelf: 'center',
             }}
             onPress={() => navigation.navigate('OTP')}>
             Login With OTP
@@ -226,7 +235,7 @@ const styles = StyleSheet.create({
   },
   logoimage: {
     marginLeft: 0,
-    marginBottom:10,
-    paddingTop:100
+    marginBottom: 10,
+    paddingTop: 100,
   },
 });

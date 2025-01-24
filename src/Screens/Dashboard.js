@@ -11,12 +11,10 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-import Pushnotification from '../Components/Pushnotification';
 import {delegationtaskk} from '../apiClient/api';
-import chart from './Chart';
 import * as Animatable from 'react-native-animatable';
 import AddButton from './AddButton';
-import {useEffect, useCallback} from 'react';
+import {useCallback} from 'react';
 import React from 'react';
 import {useState} from 'react';
 import Profile from '../Components/Profile';
@@ -25,8 +23,18 @@ import {delegationtask} from '../apiClient/api';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
-import Inputbox from '../Components/Inputbox';
+import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import { setExapmle } from '../Components/redux/dataSlice';
+import {setListingData} from '../Components/redux/dataSlice';
 const Dashboard = ({navigation}) => {
+  const listingDataa = useSelector(state => state?.data?.listingDataa);
+  console.warn('listingdata==>', listingDataa);
+
+  const example = useSelector(state=>state.data.exapmle)
+  console.warn("example",example);
+  
+  const dispatch = useDispatch();
   const widthAndHeight = 160;
   const [listing, setlisting] = useState([]);
   const [hasMoreData, setHasMoreData] = useState(true); // Track if more data is available
@@ -46,7 +54,7 @@ const Dashboard = ({navigation}) => {
     'In-progress',
     'Completed',
     'In-Draft',
-  ]; // Example data
+  ];
   const isLandscape = Lanscape();
   console.warn(isLandscape);
 
@@ -55,28 +63,28 @@ const Dashboard = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [task, settask] = useState({});
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // console.warn('Fetching users...');
-        const data = await delegationtask(); // Call the listing function from API
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       // console.warn('Fetching users...');
+  //       const data = await delegationtask(); // Call the listing function from API
 
-        if (data && data.data) {
-          // Assuming data.data contains the array of users
+  //       if (data && data.data) {
+  //         // Assuming data.data contains the array of users
 
-          settask(data.data.allCount); // Set the users array to state
-          setlisting(data.data.taskData.data);
-          console.warn('=============>', data?.data?.taskData?.data);
-        } else {
-          console.warn('No users data found.');
-        }
-      } catch (err) {
-        console.error('Error fetching users:', err.message);
-      }
-    };
+  //         settask(data.data.allCount); // Set the users array to state
+  //         setlisting(data.data.taskData.data);
+  //         console.warn('=============>', data?.data?.taskData?.data);
+  //       } else {
+  //         console.warn('No users data found.');
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching users:', err.message);
+  //     }
+  //   };
 
-    fetchUsers();
-  }, []);
+  //   fetchUsers();
+  // }, []);
 
   const formatDate = dateString => {
     const date = new Date(dateString); // Convert the string to a Date object
@@ -94,10 +102,15 @@ const Dashboard = ({navigation}) => {
     console.warn(status, 'status=>>');
     const data = await delegationtask(status, ''); // Call the listing function from API
     setHasMoreData(false);
-    setlisting(data?.data?.taskData?.data);
+    dispatch(setListingData(data?.data?.taskData?.data));
+    // setlisting(data?.data?.taskData?.data);
 
     setstatus(listing[0].status.id);
   };
+
+
+
+
 
   const calenderreport = async date => {
     console.warn('date==========>', date);
@@ -126,6 +139,11 @@ const Dashboard = ({navigation}) => {
   const cleardata = () => {
     listingdata();
   };
+
+  const filterdatatestredux =(val)=>{
+    Alert.alert("hii")
+    dispatch(setExapmle(val))
+  }
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -270,7 +288,7 @@ const Dashboard = ({navigation}) => {
                   fontFamily: 'Inter_18pt-ExtraBold',
                   fontWeight: 700,
                 }}>
-                Task Report {'\n'}{' '}
+               {example? example:'Task Report'} {'\n'}{' '}
               </Text>
 
               <View
@@ -382,7 +400,7 @@ const Dashboard = ({navigation}) => {
                     textAlign: 'center',
                     marginLeft: 5,
                   }}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={()=>filterdatatestredux(1)}>
                     <Text
                       style={{
                         color: '#FFFFFF',
@@ -466,7 +484,7 @@ const Dashboard = ({navigation}) => {
 
               {/* Listing */}
               <FlatList
-                data={listing} // Pass users array as data
+                data={listingDataa} // Pass users array as data
                 keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
                 renderItem={({item, index}) => (
                   <View>
@@ -602,7 +620,10 @@ const Dashboard = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <AddButton isLandscape={isLandscape} onPress={()=>navigation.navigate('Chart')}/>
+      <AddButton
+        isLandscape={isLandscape}
+        onPress={() => navigation.navigate('Chart')}
+      />
     </SafeAreaView>
   );
 };

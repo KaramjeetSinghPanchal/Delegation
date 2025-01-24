@@ -77,7 +77,7 @@ const Pushnotification = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignSelf: 'center' }}>
-      <Text>Push Notifications</Text>
+      {/* <Text>Push Notifications</Text> */}
     </View>
   );
 };

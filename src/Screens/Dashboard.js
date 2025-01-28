@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
-  Alert,
   ActivityIndicator,
   TextInput,
 } from 'react-native';
@@ -25,15 +24,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Lanscape from './Lanscape';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
-import { setExapmle } from '../Components/redux/dataSlice';
+import {setExapmle} from '../Components/redux/dataSlice';
 import {setListingData} from '../Components/redux/dataSlice';
 const Dashboard = ({navigation}) => {
   const listingDataa = useSelector(state => state?.data?.listingDataa);
-  console.warn('listingdata==>', listingDataa);
-
-  const example = useSelector(state=>state.data.exapmle)
-  console.warn("example",example);
-  
+  const example = useSelector(state => state.data.exapmle);
   const dispatch = useDispatch();
   const widthAndHeight = 160;
   const [listing, setlisting] = useState([]);
@@ -56,35 +51,11 @@ const Dashboard = ({navigation}) => {
     'In-Draft',
   ];
   const isLandscape = Lanscape();
-  console.warn(isLandscape);
 
   const [selectedDate, setSelectedDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [task, settask] = useState({});
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     try {
-  //       // console.warn('Fetching users...');
-  //       const data = await delegationtask(); // Call the listing function from API
-
-  //       if (data && data.data) {
-  //         // Assuming data.data contains the array of users
-
-  //         settask(data.data.allCount); // Set the users array to state
-  //         setlisting(data.data.taskData.data);
-  //         console.warn('=============>', data?.data?.taskData?.data);
-  //       } else {
-  //         console.warn('No users data found.');
-  //       }
-  //     } catch (err) {
-  //       console.error('Error fetching users:', err.message);
-  //     }
-  //   };
-
-  //   fetchUsers();
-  // }, []);
 
   const formatDate = dateString => {
     const date = new Date(dateString); // Convert the string to a Date object
@@ -99,7 +70,6 @@ const Dashboard = ({navigation}) => {
   };
 
   const listingdata = async status => {
-    console.warn(status, 'status=>>');
     const data = await delegationtask(status, ''); // Call the listing function from API
     setHasMoreData(false);
     dispatch(setListingData(data?.data?.taskData?.data));
@@ -108,17 +78,10 @@ const Dashboard = ({navigation}) => {
     setstatus(listing[0].status.id);
   };
 
-
-
-
-
   const calenderreport = async date => {
-    console.warn('date==========>', date);
     const formattedDate = date.toISOString().slice(0, 10);
-    console.warn('formattedDate==========>', formattedDate);
 
     const data = await delegationtaskk('3', formattedDate);
-    console.warn('Calender report=====>', data.data.taskData.data);
 
     setlisting(data?.data?.taskData?.data);
   };
@@ -140,10 +103,9 @@ const Dashboard = ({navigation}) => {
     listingdata();
   };
 
-  const filterdatatestredux =(val)=>{
-    Alert.alert("hii")
-    dispatch(setExapmle(val))
-  }
+  const filterdatatestredux = val => {
+    dispatch(setExapmle(val));
+  };
   return (
     <SafeAreaView style={styles.containermain}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -288,7 +250,7 @@ const Dashboard = ({navigation}) => {
                   fontFamily: 'Inter_18pt-ExtraBold',
                   fontWeight: 700,
                 }}>
-               {example? example:'Task Report'} {'\n'}{' '}
+                {example ? example : 'Task Report'} {'\n'}{' '}
               </Text>
 
               <View
@@ -400,7 +362,7 @@ const Dashboard = ({navigation}) => {
                     textAlign: 'center',
                     marginLeft: 5,
                   }}>
-                  <TouchableOpacity onPress={()=>filterdatatestredux(1)}>
+                  <TouchableOpacity onPress={() => filterdatatestredux(1)}>
                     <Text
                       style={{
                         color: '#FFFFFF',

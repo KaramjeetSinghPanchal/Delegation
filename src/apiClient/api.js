@@ -1,11 +1,8 @@
 // api.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReactNativeBlobUtil from 'react-native-blob-util';
-import {useState} from 'react';
-import {Alert} from 'react-native';
-import axios from 'axios';
 
-const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
+ const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
 // Login function using FormData
 
@@ -34,9 +31,7 @@ export const loginUser = async (phone_email, password) => {
     console.log('datadatadata', data);
 
     if (data.data.token) {
-      console.log('Saving token to AsyncStorage');
       await AsyncStorage.setItem('authToken', data.data.token);
-      console.log('Token saved to AsyncStorage:', data.data.token);
     } else {
       console.error('No token found in response');
     }
@@ -115,51 +110,6 @@ export const delegationtask = async status => {
   }
 };
 
-// export const report = async ({formattedDate}) => {
-//   Alert.alert("entered");
-//   console.warn("formattedDate===>", formattedDate);
-
-//   const token = await gettoken();
-//   const url = `${baseUrl}generate-report?report_type=pdf&assigned_date=${formattedDate}`;
-
-//   console.warn("Request URL:", url);
-//   console.warn("Token:", token);
-
-//   const response = await fetch(url, {
-//     method: 'GET',
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       'Content-Type': 'application/json', // Still sending JSON content type, even if PDF is returned
-//     },
-//   });
-
-//   Alert.alert("before API");
-
-//   if (!response.ok) {
-//     const errorText = await response.text();  // Get raw error response
-//     console.error('Failed to fetch, status:', response.status);
-//     console.error('Error response:', errorText);
-//     return null; // Return null or handle error accordingly
-//   }
-
-//   Alert.alert("beforenear API");
-
-//   const contentType = response.headers.get("Content-Type");
-//   console.warn("Content-Type:", contentType);
-
-//   // If the response is a PDF
-//   if (contentType.includes("application/pdf")) {
-//     const blob = await response.blob(); // Handle binary data (PDF)
-//     console.warn("Received PDF Blob:", blob);
-
-//     return blob;
-//   } else {
-//     const text = await response.text();
-//     console.warn('Raw response:', text);
-//     return text;
-//   }
-// };
-
 export const report = async formattedDate => {
   console.warn('formattedDate', formattedDate);
 
@@ -210,35 +160,30 @@ export const report = async formattedDate => {
 };
 
 export const taskmangementlisting = async ({
-  currentPage = 1,
+  page = 1,
   status,
-  searchQuery = '', //I can pass here the default value
+  searchQuery = '',
   assigned_date,
 }) => {
-  return new Promise(async (resolve, reject) => {
-    console.warn("entered at taskmanagement API");
-    
-    const token = await gettoken();
-    let fetchUrl = baseUrl + 'task-listing?page=' + currentPage;
-    if (status) fetchUrl += '&status=' + status;
-    if (searchQuery) fetchUrl += '&searchQuery=' + searchQuery;
-    if (assigned_date) fetchUrl += '&assigned_date=' + assigned_date; // Make sure assigned_date is added
+  const token = await gettoken();
+  let fetchUrl = `${baseUrl}task-listing?page=${page}`;
+  if (status) fetchUrl += `&status=${status}`;
+  if (searchQuery) fetchUrl += `&searchQuery=${searchQuery}`;
+  if (assigned_date) fetchUrl += `&assigned_date=${assigned_date}`;
 
-    const response = await fetch(fetchUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    console.warn('!response.ok====>', response);
-    if (!response.ok) {
-      console.warn('Failed to fetch error', response.status);
-      throw new Error('Failed to fetch data');
-    }
-
-    const data = await response.json();
-    console.warn('data===>', data);
-    resolve(data.data);
+  const response = await fetch(fetchUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
   });
+
+  if (!response.ok) {
+    console.warn('Failed to fetch error', response.status);
+    throw new Error('Failed to fetch data');
+  }
+
+  const data = await response.json();
+  return data.data; // Return the entire data object, including pagination info
 };

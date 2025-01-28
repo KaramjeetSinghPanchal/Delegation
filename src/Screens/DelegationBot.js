@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import {useRef, useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -21,8 +21,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Dashboard = ({navigation}) => {
   const data = ['Query', 'Task'];
   const flatListRef = useRef(null); // Reference to FlatList for scrolling
-  const datastate = useSelector(state => state.data.data);
-  console.warn('datastatedatastatedelegation====>', datastate);
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -100,7 +98,10 @@ const Dashboard = ({navigation}) => {
         </View>
 
         {/* Bot Image */}
-        <Animatable.View style={styles.center} animation={'zoomIn'} duration={2000}>
+        <Animatable.View
+          style={styles.center}
+          animation={'zoomIn'}
+          duration={2000}>
           <Image
             source={require('../assets/images/Bot.png')}
             style={styles.botImage}
@@ -109,7 +110,10 @@ const Dashboard = ({navigation}) => {
 
         {/* Greeting Text when no messages */}
         {messages.length === 0 && (
-          <Animatable.View style={styles.adminMessage} duration={2000} animation={'zoomIn'}>
+          <Animatable.View
+            style={styles.adminMessage}
+            duration={2000}
+            animation={'zoomIn'}>
             <Text style={styles.greetingText}>Hello Admin</Text>
             <Text style={styles.assistanceText}>How Can I Help You Today?</Text>
           </Animatable.View>
@@ -157,7 +161,10 @@ const Dashboard = ({navigation}) => {
         />
 
         {/* Chat Input Area */}
-        <Animatable.View style={styles.inputContainer} animation={'slideInDown'} duration={2000}>
+        <Animatable.View
+          style={styles.inputContainer}
+          animation={'slideInDown'}
+          duration={2000}>
           {/* Select List for Task */}
           <SelectList
             data={data}

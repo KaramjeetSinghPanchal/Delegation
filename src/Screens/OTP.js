@@ -12,10 +12,7 @@ import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
 import {useState} from 'react';
 import Button from '../Components/Button';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Navigation from '../navigation/Navigation';
 import {useNavigation} from '@react-navigation/native';
 import Lanscape from './Lanscape';
 const OTP = ({navigation}) => {

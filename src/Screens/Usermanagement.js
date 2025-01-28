@@ -46,83 +46,85 @@ const Usermanagement = ({navigation}) => {
   }, []); // Empt
 
   return (
-    <SafeAreaView style={styles.containermain}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.main}>
-          <View style={styles.main2}>
-            <Image
-              source={require('../assets/images/Picon.png')}
-              style={styles.icon}
-            />
-            <Text style={styles.text}>User Management</Text>
-            <Profile
-              onPress="Details"
-              navigation={navigation}
-              style={{marginTop: 10}}
-            />
-          </View>
-          <Animatable.View style={styles.inputContainer} duration={2000} animation={'zoomIn'}>
-            {/* Search Icon */}
-            <Icon name="search" size={27} color="gray" style={styles.iconS} />
-
-            {/* Text Input */}
-            <TextInput
-              style={styles.inputBox}
-              placeholder="Search For Something"
-            />
-          </Animatable.View>
-
-          <View style={{marginHorizontal: 20, marginTop: 50}}>
-            {/* FlatList to render each user */}
-            <FlatList
-              data={userData} // Pass users array as data
-              keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
-              renderItem={({item}) => (
-                <View style={styles.userContainer}>
-                  <View>
-                    <Text
-                      style={[
-                        styles.userName,
-                        {
-                          fontFamily: 'Inter_28pt-Medium',
-                          fontSize: isLandscape ? 20 : 14,
-                        },
-                      ]}>
-                      {item?.name}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.email,
-                        {
-                          fontFamily: 'Inter_28pt-Regular',
-                          fontSize: isLandscape ? 18 : 12,
-                        },
-                      ]}>
-                      {item?.email}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => console.log(`View details of ${item.name}`)}>
-                    <Text
-                      style={[
-                        styles.viewDetailsText,
-                        {
-                          fontFamily: 'Inter_28pt-Medium',
-                          fontSize: isLandscape ? 16 : 12,
-                        },
-                      ]}>
-                      View Details
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
-            />
-          </View>
-        </View>
-      </ScrollView>
-      <AddButton isLandscape={isLandscape} />
-    </SafeAreaView>
+    <SafeAreaView style={styles.containermain} >
+    <View style={styles.main}>
+      <View style={styles.main2}>
+        <Image
+          source={require('../assets/images/Picon.png')}
+          style={styles.icon}
+        />
+        <Text style={styles.text}>User Management</Text>
+        <Profile
+          onPress="Details"
+          navigation={navigation}
+          style={{marginTop: 10}}
+        />
+      </View>
+  
+      <Animatable.View style={styles.inputContainer} duration={2000} animation={'zoomIn'}>
+        {/* Search Icon */}
+        <Icon name="search" size={27} color="gray" style={styles.iconS} />
+  
+        {/* Text Input */}
+        <TextInput
+          style={styles.inputBox}
+          placeholder="Search For Something"
+        />
+      </Animatable.View>
+  
+      <View style={{marginHorizontal: 20, marginTop: 50}}>
+        {/* FlatList to render each user */}
+        <FlatList
+          data={userData} // Pass users array as data
+          keyExtractor={item => item.id.toString()} // Ensure each item has a unique key (assuming 'id' is present)
+          showsVerticalScrollIndicator={false}    
+          renderItem={({item}) => (
+            <View style={styles.userContainer}>
+              <View>
+                <Text
+                  style={[
+                    styles.userName,
+                    {
+                      fontFamily: 'Inter_28pt-Medium',
+                      fontSize: isLandscape ? 20 : 14,
+                    },
+                  ]}>
+                  {item?.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.email,
+                    {
+                      fontFamily: 'Inter_28pt-Regular',
+                      fontSize: isLandscape ? 18 : 12,
+                    },
+                  ]}>
+                  {item?.email}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => console.log(`View details of ${item.name}`)}>
+                <Text
+                  style={[
+                    styles.viewDetailsText,
+                    {
+                      fontFamily: 'Inter_28pt-Medium',
+                      fontSize: isLandscape ? 16 : 12,
+                    },
+                  ]}>
+                  View Details
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          ListEmptyComponent={<Text>No users available</Text>} // Optional: Display this if the list is empty
+        />
+      </View>
+    </View>
+  
+    <AddButton isLandscape={isLandscape} />
+  </SafeAreaView>
+  
   );
 };
 

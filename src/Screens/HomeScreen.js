@@ -22,8 +22,7 @@ import Pushnotification from '../Components/Pushnotification';
 const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
-  console.warn('isLandscape====>',isLandscape);
-  
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [phone_email, setUsername] = useState('admin@zapbuild.com');
   const [password, setPassword] = useState('Ztech@44');
@@ -179,9 +178,9 @@ const HomeScreen = ({navigation}) => {
           name={'Sign In'}
           onPress={handleSignIn}
           isLandscape={isLandscape}
-        /> 
+        />
 
-         <View
+        <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',

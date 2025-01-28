@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useEffect} from 'react';
 import {
   StyleSheet,
@@ -14,8 +14,8 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useSelector } from 'react-redux';
-import { setResultData } from '../Components/redux/dataSlice';
+import {useSelector} from 'react-redux';
+import {setResultData} from '../Components/redux/dataSlice';
 import * as Animatable from 'react-native-animatable';
 import {report} from '../apiClient/api';
 import AddButton from './AddButton';
@@ -29,36 +29,26 @@ const TaskManagement = ({navigation}) => {
   const dispatch = useDispatch();
   const [selected, setSelected] = useState('');
   // const [checkdata, setcheckdata] = useState([]);
-
   const [open, setOpen] = useState(false);
-
   const [date, setDate] = useState(new Date());
-
-  const [datastate, setData] = useState([]);
-  const [error, setError] = useState(null);
   const [current, setcurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasMoreData, setHasMoreData] = useState(true); // Track if more data is available
-
   const [searchQuery, setSearchQuery] = useState('');
-  const [rotation, setRotation] = useState(0);
   const [total, settotal] = useState();
-  const [getdate, setdate] = useState();
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false); // Tracks if download was successful
   const [errorMessage, setErrorMessage] = useState(null); // To handle errors
   const [message, setMessage] = useState('');
-
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
   const [screenheight, setscreenheight] = useState(
     Dimensions.get('window').height,
   );
-
   const [selectedDate, setSelectedDate] = useState('');
-  const datastateredux = useSelector((state) => state.data.items);
-  console.warn('user=====------>>', datastate);
+  const datastateredux = useSelector(state => state.data.items);
+
   useEffect(() => {
     if (selected) {
       handlesearch(selected);
@@ -74,18 +64,12 @@ const TaskManagement = ({navigation}) => {
       subscription.remove();
     };
   }, []);
-
   const newpage = current + 1;
-
   const calculatedWidth = screenwidth * 0.4 + 9;
-
   const maxWidth = screenwidth * 0.3 + 80;
   const minWidth = screenwidth * 0.3;
-
   const finalWidth = Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
-
   const isLandscape = screenwidth > screenheight;
-
   const data = {
     All: '',
     'In-Draft': '1',
@@ -111,7 +95,6 @@ const TaskManagement = ({navigation}) => {
     const date = new Date(dateString);
 
     if (isNaN(date)) {
-      console.error('Invalid date string:', dateString);
       return '13-Dec';
     }
 
@@ -126,7 +109,6 @@ const TaskManagement = ({navigation}) => {
 
     // Check if the date is valid (not NaN)
     if (isNaN(date)) {
-      console.error('Invalid date string:', dateString);
       return null;
     }
 
@@ -160,6 +142,7 @@ const TaskManagement = ({navigation}) => {
   });
 
   const handleCheckboxChange = async status => {
+    setLoading(true);
     // Toggle the checkbox state
     const updatedCheckedStates = {
       ...checkedStates,
@@ -171,16 +154,12 @@ const TaskManagement = ({navigation}) => {
     const selectedStatuses = Object.keys(updatedCheckedStates).filter(
       key => updatedCheckedStates[key],
     );
-
-    // If no statuses are selected (i.e., all checkboxes are unchecked)
     if (selectedStatuses.length === 0) {
-      // Fetch all data without any filters
       const fetchAllData = await taskmangementlisting({
-        status: '', // Empty or null for "All" statuses
+        status: '',
       });
 
       const result = fetchAllData.data;
-      console.warn('See result=>', result);
 
       dispatch(setResultData(result));
     } else {
@@ -191,8 +170,8 @@ const TaskManagement = ({navigation}) => {
 
       const result = fetchCheckListing.data;
       dispatch(setResultData(result)); // Update with filtered data
-      // console.warn('Fetched filtered data:', result);
     }
+    setLoading(false);
   };
 
   const clearData = async () => {
@@ -200,7 +179,7 @@ const TaskManagement = ({navigation}) => {
 
     if (fetchedData && Array.isArray(fetchedData.data)) {
       if (fetchedData.data.length > 0) {
-        dispatch(setResultData(fetchedData.data))
+        dispatch(setResultData(fetchedData.data));
         // setData(fetchedData.data);
         settotal(fetchedData.data.total);
         if (!fetchedData.next_page_url) {
@@ -210,50 +189,67 @@ const TaskManagement = ({navigation}) => {
         }
       } else {
         console.log('No more data to load.');
-        dispatch(setResultData([]))
+        dispatch(setResultData([]));
         // setData([]);
       }
     }
   };
   const handleSelectChange = val => {
     setSelected(val);
-   dispatch(setResultData([]));
+    dispatch(setResultData([]));
     setcurrent(1);
-    handlesearch('',val)
+    handlesearch('', val, '');
   };
-  const isfooterComponent = useCallback(() => {
-    if (hasMoreData) {
+
+  const isfooterComponent = () => {
+    // Show footer loader only when loading and there is more data
+    if (loading && hasMoreData) {
       return <ActivityIndicator size="large" style={{marginVertical: 36}} />;
     }
-    return null;
-  }, [hasMoreData]);
-
-
-  const print = () => {
-    const timer = setTimeout(() => {
-      return 'hello';
-    }, 5000);
-
-    // Cleanup the timer when component unmounts
-    return () => clearTimeout(timer);
+    return null; // Don't show anything if no more data or not loading
   };
 
   useEffect(() => {
- 
-    handlesearch(searchQuery,'');
+    handlesearch(searchQuery, '');
   }, [searchQuery]);
 
-  const handlesearch = async (selectedValue,val) => {
-    setLoading(true);
-    const filtereddata = await taskmangementlisting({
-      currentPage: 1,
-      searchQuery: selectedValue,
-      status:val
-    });
-    console.warn("===filtereddata===",filtereddata);
-    
-    dispatch(setResultData(filtereddata.data));
-    setLoading(false);
+  const handlesearch = async (selectedValue, val, date) => {
+    let currentPage = 1;
+    let allData = []; // To hold all task data
+    let hasMoreData = true;
+    const pageSize = 10; // Adjust based on your API's default page size
+
+    try {
+      while (hasMoreData) {
+        setLoading(true);
+        // Fetch data for the current page
+        const response = await taskmangementlisting({
+          page: currentPage,
+          searchQuery: selectedValue,
+          status: val,
+          assigned_date: date,
+        });
+
+        // Append fetched data to allData
+        allData = [...allData, ...response.data];
+
+        // Dispatch the data so far to update the UI
+        dispatch(setResultData([...allData]));
+
+        // Check if the number of items returned is less than the page size
+        if (response.data.length < pageSize) {
+          hasMoreData = false; // Stop fetching if no more data
+        } else {
+          currentPage++;
+          // isfooterComponent()
+          // await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
+        }
+      }
+    } catch (error) {
+      console.error('Error during search:', error);
+    } finally {
+      setLoading(false); // Hide the loader
+    }
   };
 
   const handleReport = async date => {
@@ -279,341 +275,326 @@ const TaskManagement = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.main}>
-          <View style={styles.main2}>
-            <Image
-              source={require('../assets/images/Picon.png')}
-              style={styles.icon}
-            />
-            <Text
-              style={{
-                fontFamily: 'Inter_24pt-SemiBold',
-                fontSize: 20,
-                marginTop: 12,
-                fontWeight: 600,
-              }}>
-              Task Management
-            </Text>
-            <Profile
-              onPress="Details"
-              navigation={navigation}
-              style={{marginTop: 10}}
-            />
-          </View>
-          <Animatable.View
-            style={styles.content}
-            duration={3000}
-            animation={'zoomIn'}>
-            <View style={styles.checkboxContainer}>
-              {Object.entries(data).map(([label, status], index) => (
-                <View style={styles.checkboxItem} key={index}>
-                  <TouchableOpacity
-                    style={[
-                      styles.checkbox,
-                      checkedStates[status] && styles.checkedCheckbox,
-                    ]}
-                    onPress={() => handleCheckboxChange(status)}>
-                    {checkedStates[status] && (
-                      <Text style={styles.checkmark}>✓</Text>
-                    )}
-                  </TouchableOpacity>
-                  <Text
-                    style={{fontFamily: 'Inter_28pt-Thin', marginRight: 10}}>
-                    {label}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </Animatable.View>
-          <Animatable.View
-            style={{backgroundColor: '#FFFFFF', marginTop: 15}}
-            duration={3000}
-            animation={'zoomIn'}>
-            <SelectList
-              setSelected={handleSelectChange}
-              data={[
-                'All',
-                'In-progress',
-                'Completed',
-                'In-Draft',
-                'Pending',
-                'Rejected',
-                'Revised date',
-              ]}
-              save="value"
-              dropdownStyles={{color: '#A0AEC0', marginHorizontal: 15}}
-              dropdownTextStyles={{color: '#A0AEC0'}}
-              boxStyles={{
-                marginHorizontal: 16,
-                backgroundColor: '#F8F9FA',
-                borderColor: '#E2E8F0',
-                borderWidth: 1,
-              }}
-            />
-          </Animatable.View>
-
-          <Animatable.View
-            style={styles.containerree}
-            duration={3000}
-            animation={'zoomIn'}>
-            <View style={styles.containerr}>
-              <TouchableOpacity
-                style={[styles.datePickerButton, {width: finalWidth}]}
-                onPress={() => setOpen(true)}>
-                <Text style={styles.buttonText}>
-                  {selectedDate ? `${selectedDate}` : 'Due Date'}
-                </Text>
-                <View style={{marginHorizontal: 10, marginTop: 8}}>
-                  <Icon name="calendar-month" size={20} color="gray" />
-                </View>
-              </TouchableOpacity>
-
-              <DatePicker
-                modal
-                open={open}
-                date={date}
-                onConfirm={selectedDate => {
-                  setOpen(false);
-                  setDate(selectedDate); // Update the date state
-                  setSelectedDate(selectedDate.toDateString()); // Update selected date as string
-
-                  // Pass the date to fetchData function
-                  fetchData('', date); // Pass the selected date to fetchData
-                }}
-                onCancel={() => setOpen(false)} // Close modal when cancel is pressed
-              />
-
-              {/* clear button */}
-              <TouchableOpacity
-                style={{
-                  height: 40,
-                  // width: 155,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 2,
-                  borderWidth: 2,
-                  borderColor: '#E2E8F0', // Border color for all sides
-                  marginTop: 20,
-                  backgroundColor: '#FAF8F9',
-                  width: finalWidth,
-                  marginLeft: 10,
-                }}
-                onPress={clearData}>
-                <TouchableOpacity>
-                  <Text style={{fontSize: 13}}>Clear</Text>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            </View>
-          </Animatable.View>
-
-          <Animatable.View
-            style={styles.containerrr}
-            duration={3000}
-            animation={'zoomIn'}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                height: 38,
-                width: finalWidth,
-                marginHorizontal: 25,
-                borderRadius: 5,
-                borderWidth: 1,
-                backgroundColor: '#F8F9FA',
-                position: 'relative',
-                borderColor: '#E2E8F0',
-              }}>
-              <Image source={require('../assets/images/Vector.png')} />
-              {/* Text Input */}
-              <TextInput
-                style={styles.inputBox}
-                placeholder="Search"
-                onChangeText={text => setSearchQuery(text)} // Capture the input text
-                onSubmitEditing={() => handlesearch(searchQuery)} // Call search when user submits input
-              />
-            </View>
-            {isDownloading ? (
-              <View style={{position: 'absolute', left: 100, top: 10}}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Downloading report...</Text>
-              </View>
-            ) : null}
-            {/* Display success message when download is complete */}
-            {'\n'}{' '}
-            {downloadSuccess && !isDownloading ? (
-              <View style={{position: 'absolute', left: 100, top: 50}}>
-                <Text style={{color: 'green', fontSize: 16}}>
-                  {/* Report Downloaded successfully */}
-                  {message}
-                </Text>
-              </View>
-            ) : null}
-            {/* Display error message if something went wrong */}
-            {errorMessage && !isDownloading ? (
-              <View style={{alignItems: 'center'}}>
-                <Text style={{color: 'red', fontSize: 16}}>{errorMessage}</Text>
-              </View>
-            ) : null}
-            <TouchableOpacity
-              style={{
-                height: 37,
-                width: 155,
-                backgroundColor: '#0cbcb9',
-                borderRadius: 4,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 6,
-                alignContent: 'center',
-                alignContent: 'center',
-                textAlign: 'center',
-                marginLeft: isLandscape ? 185 : 14,
-              }}
-              onPress={() => {
-                handleReport(date); // Pass the state `date`
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  width: 107,
-                  height: 17,
-                  fontFamily: 'inter',
-                }}>
-                Generate Report
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
-
-          <FlatList
-            data={datastateredux} // Pass users array as data
-            // keyExtractor={item => item?.id?.toString()} // Ensure each item has a unique key (assuming 'id' is present)
-            renderItem={({item, index}) => (
-              <View>
-                <Animatable.View
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <View style={styles.main}>
+              <View style={styles.main2}>
+                <Image
+                  source={require('../assets/images/Picon.png')}
+                  style={styles.icon}
+                />
+                <Text
                   style={{
-                    marginTop: 45,
-                    marginHorizontal: 30,
-                    // backgroundColor: '#E5EDF2',
-                    width: '50%',
-                  }}
-                  duration={3000}
-                  animation={'lightSpeedIn'}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontFamily: 'Inter_28pt-Bold',
-                      fontWeight: 600,
-                    }}>
-                    Task Title will be here...
-                  </Text>
-                </Animatable.View>
-                <View
-                  style={{
-                    height: 0,
-                    width: '90%',
-                    borderWidth: 1,
-                    marginHorizontal: 30,
-                    borderColor: '#E5EDF2',
-                    marginTop: 5,
-                  }}></View>
-                {/* <Text
-                  style={{
-                    fontSize: 18,
-                    fontFamily: 'Inter_28pt-Bold',
+                    fontFamily: 'Inter_24pt-SemiBold',
+                    fontSize: 20,
+                    marginTop: 12,
+                    fontWeight: 600,
                   }}>
-                  Task Index: {index}
-                </Text> */}
+                  Task Management
+                </Text>
+                <Profile
+                  onPress="Details"
+                  navigation={navigation}
+                  style={{marginTop: 10}}
+                />
+              </View>
+              <Animatable.View
+                style={styles.content}
+                duration={3000}
+                animation={'zoomIn'}>
+                <View style={styles.checkboxContainer}>
+                  {Object.entries(data).map(([label, status], index) => (
+                    <View style={styles.checkboxItem} key={index}>
+                      <TouchableOpacity
+                        style={[
+                          styles.checkbox,
+                          checkedStates[status] && styles.checkedCheckbox,
+                        ]}
+                        onPress={() => handleCheckboxChange(status)}>
+                        {checkedStates[status] && (
+                          <Text style={styles.checkmark}>✓</Text>
+                        )}
+                      </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontFamily: 'Inter_28pt-Thin',
+                          marginRight: 10,
+                        }}>
+                        {label}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </Animatable.View>
 
+              <Animatable.View
+                style={{backgroundColor: '#FFFFFF', marginTop: 15}}
+                duration={3000}
+                animation={'zoomIn'}>
+                <SelectList
+                  setSelected={handleSelectChange}
+                  data={[
+                    'All',
+                    'In-progress',
+                    'Completed',
+                    'In-Draft',
+                    'Pending',
+                    'Rejected',
+                    'Revised date',
+                  ]}
+                  save="value"
+                  dropdownStyles={{color: '#A0AEC0', marginHorizontal: 15}}
+                  dropdownTextStyles={{color: '#A0AEC0'}}
+                  boxStyles={{
+                    marginHorizontal: 16,
+                    backgroundColor: '#F8F9FA',
+                    borderColor: '#E2E8F0',
+                    borderWidth: 1,
+                  }}
+                />
+              </Animatable.View>
+
+              <Animatable.View
+                style={styles.containerree}
+                duration={3000}
+                animation={'zoomIn'}>
+                <View style={styles.containerr}>
+                  <TouchableOpacity
+                    style={[styles.datePickerButton, {width: finalWidth}]}
+                    onPress={() => setOpen(true)}>
+                    <Text style={styles.buttonText}>
+                      {selectedDate ? `${selectedDate}` : 'Due Date'}
+                    </Text>
+                    <View style={{marginHorizontal: 10, marginTop: 8}}>
+                      <Icon name="calendar-month" size={20} color="gray" />
+                    </View>
+                  </TouchableOpacity>
+
+                  <DatePicker
+                    modal
+                    open={open}
+                    date={date}
+                    onConfirm={selectedDate => {
+                      setOpen(false);
+                      setDate(selectedDate);
+                      setSelectedDate(selectedDate.toDateString());
+                      handlesearch('', '', date);
+                    }}
+                    onCancel={() => setOpen(false)}
+                  />
+
+                  {/* clear button */}
+                  <TouchableOpacity
+                    style={{
+                      height: 40,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 2,
+                      borderWidth: 2,
+                      borderColor: '#E2E8F0',
+                      marginTop: 20,
+                      backgroundColor: '#FAF8F9',
+                      width: finalWidth,
+                      marginLeft: 10,
+                    }}
+                    onPress={clearData}>
+                    <Text style={{fontSize: 13}}>Clear</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animatable.View>
+
+              {/* Search and Generate Report section */}
+              <Animatable.View
+                style={styles.containerrr}
+                duration={3000}
+                animation={'zoomIn'}>
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingTop: 30,
-                    marginHorizontal: 30,
-                    // borderWidth:2,
-                    width: '85%',
+                    alignItems: 'center',
+                    height: 38,
+                    width: finalWidth,
+                    marginHorizontal: 25,
                     borderRadius: 5,
+                    borderWidth: 1,
+                    backgroundColor: '#F8F9FA',
+                    position: 'relative',
+                    borderColor: '#E2E8F0',
                   }}>
-                  <View>
-                    <Text
-                      style={{
-                        fontFamily: 'Inter_28pt-Bold',
-                        fontSize: 16,
-                        fontWeight: 600,
-                      }}>
-                      {formatDate(item?.assignment_date)}
-                    </Text>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Regular', fontSize: 11}}>
-                      {formatmonth(item?.assignment_date)}
-                    </Text>
-                  </View>
-
-                  <View>
-                    <Text
-                      style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
-                      {item?.assigned_to?.name}
-                    </Text>
-                    {'\n'}
-                    <Text>
-                      Priority |{' '}
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          color:
-                            item.priority === 'Low'
-                              ? '#38AA3A'
-                              : item.priority === 'Medium'
-                              ? '#FE9816'
-                              : '#E31B1B',
-                        }}>
-                        {item.priority}
-                      </Text>
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(254, 152, 22, 0.12)',
-                      padding: 2,
-                      marginTop: 3,
-                      width: 120,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        color:
-                          item?.status?.title == 'Pending'
-                            ? '#FE9816'
-                            : '#38AA3A',
-                        fontWeight: '500',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        opacity: 1,
-                        marginTop: 5,
-                        borderRadius: 10,
-                      }}>
-                      {item?.status?.title ? item?.status?.title : 'Pending'}
-                    </Text>
-                  </View>
+                  <Image source={require('../assets/images/Vector.png')} />
+                  {/* Text Input */}
+                  <TextInput
+                    style={styles.inputBox}
+                    placeholder="Search"
+                    onChangeText={text => setSearchQuery(text)} // Capture the input text
+                    onSubmitEditing={() => handlesearch(searchQuery)} // Call search when user submits input
+                  />
                 </View>
-              </View>
-            )}
-            ListEmptyComponent={
+                {isDownloading ? (
+                  <View style={{position: 'absolute', left: 100, top: 10}}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text>Downloading report...</Text>
+                  </View>
+                ) : null}
+                {/* Display success message when download is complete */}
+                {'\n'}{' '}
+                {downloadSuccess && !isDownloading ? (
+                  <View style={{position: 'absolute', left: 100, top: 50}}>
+                    <Text style={{color: 'green', fontSize: 16}}>
+                      {message}
+                    </Text>
+                  </View>
+                ) : null}
+                {/* Display error message if something went wrong */}
+                {errorMessage && !isDownloading ? (
+                  <View style={{alignItems: 'center'}}>
+                    <Text style={{color: 'red', fontSize: 16}}>
+                      {errorMessage}
+                    </Text>
+                  </View>
+                ) : null}
+                <TouchableOpacity
+                  style={{
+                    height: 37,
+                    width: 155,
+                    backgroundColor: '#0cbcb9',
+                    borderRadius: 4,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 6,
+                    marginLeft: isLandscape ? 185 : 14,
+                  }}
+                  onPress={() => {
+                    handleReport(date); // Pass the state `date`
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      width: 107,
+                      height: 17,
+                      fontFamily: 'inter',
+                    }}>
+                    Generate Report
+                  </Text>
+                </TouchableOpacity>
+              </Animatable.View>
+            </View>
+          </>
+        }
+        data={datastateredux}
+        renderItem={({item, index}) => (
+         <View key={index}>
+            <Animatable.View
+              style={{
+                marginTop: 45,
+                marginHorizontal: 30,
+                width: '50%',
+              }}
+              duration={3000}
+              animation={'lightSpeedIn'}>
               <Text
                 style={{
-                  justifyContent: 'center',
-                  alignSelf: 'center',
-                  marginTop: 80,
+                  fontSize: 18,
+                  fontFamily: 'Inter_28pt-Bold',
+                  fontWeight: '600',
                 }}>
-                No tasks available
+                Task Title will be here...
               </Text>
-            } // Show message when no tasks are available
-            // onEndReached={fetchData} // Trigger pagination when end is reached
-            onEndReachedThreshold={0.5} // Start loading more when 50% of the list is visible
-            ListFooterComponent={isfooterComponent}
-          />
-        </View>
-      </ScrollView>
+            </Animatable.View>
+            <View
+              style={{
+                height: 0,
+                width: '90%',
+                borderWidth: 1,
+                marginHorizontal: 30,
+                borderColor: '#E5EDF2',
+                marginTop: 5,
+              }}></View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingTop: 30,
+                marginHorizontal: 30,
+                width: '85%',
+                borderRadius: 5,
+              }}>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: 'Inter_28pt-Bold',
+                    fontSize: 16,
+                    fontWeight: '600',
+                  }}>
+                  {formatDate(item?.assignment_date)}
+                </Text>
+                <Text style={{fontFamily: 'Inter_28pt-Regular', fontSize: 11}}>
+                  {formatmonth(item?.assignment_date)}
+                </Text>
+              </View>
+
+              <View>
+                <Text style={{fontFamily: 'Inter_28pt-Medium', fontSize: 14}}>
+                  {item?.assigned_to?.name}
+                </Text>
+                <Text>
+                  Priority |{' '}
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      color:
+                        item.priority === 'Low'
+                          ? '#38AA3A'
+                          : item.priority === 'Medium'
+                          ? '#FE9816'
+                          : '#E31B1B',
+                    }}>
+                    {item.priority}
+                  </Text>
+                </Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: 'rgba(254, 152, 22, 0.12)',
+                  padding: 2,
+                  marginTop: 3,
+                  width: 120,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color:
+                      item?.status?.title === 'Pending' ? '#FE9816' : '#38AA3A',
+                    fontWeight: '500',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    opacity: 1,
+                    marginTop: 5,
+                    borderRadius: 10,
+                  }}>
+                  {item?.status?.title ? item?.status?.title : 'Pending'}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              marginTop: 80,
+            }}>
+            No tasks available
+          </Text>
+        }
+        // onEndReachedThreshold={0.5}
+        ListFooterComponent={isfooterComponent}
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        // isfooterComponent
+      />
 
       <AddButton
         isLandscape={isLandscape}

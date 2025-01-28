@@ -12,7 +12,7 @@ const Pushnotification = () => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Authorization status:', authStatus);
+      // console.log('Authorization status:', authStatus);
       getToken(); // Get the FCM token
     } else {
       console.log('User denied notification permissions.');
@@ -22,7 +22,7 @@ const Pushnotification = () => {
   // Fetch FCM token
   const getToken = async () => {
     const token = await messaging().getToken();
-    console.warn('FCM Token:', token);
+    // console.warn('FCM Token:', token);
   };
 
   // Handle foreground notifications

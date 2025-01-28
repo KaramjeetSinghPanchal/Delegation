@@ -10,7 +10,7 @@ import store from './src/Components/redux/store';
 
 // Wrap your App component with Provider and pass the Redux store
 AppRegistry.registerComponent(appName, () => () => (
-  <Provider store={store}>  {/* Redux Provider wraps your App */}
+  <Provider store={store}>  
     <App />
   </Provider>
 ));

@@ -141,38 +141,49 @@ const TaskManagement = ({navigation}) => {
     'Revised Date': false,
   });
 
-  const handleCheckboxChange = async status => {
-    setLoading(true);
-    // Toggle the checkbox state
-    const updatedCheckedStates = {
-      ...checkedStates,
-      [status]: !checkedStates[status],
-    };
-    setCheckedStates(updatedCheckedStates);
+ const handleCheckboxChange = async (status) => {
+  setLoading(true); // Show loader while processing
 
-    // Get selected statuses (statuses with true value)
-    const selectedStatuses = Object.keys(updatedCheckedStates).filter(
-      key => updatedCheckedStates[key],
-    );
-    if (selectedStatuses.length === 0) {
-      const fetchAllData = await taskmangementlisting({
-        status: '',
-      });
-
-      const result = fetchAllData.data;
-
-      dispatch(setResultData(result));
-    } else {
-      // If some checkboxes are selected, fetch data for those specific statuses
-      const fetchCheckListing = await taskmangementlisting({
-        status: selectedStatuses.join(','), // Join the selected statuses
-      });
-
-      const result = fetchCheckListing.data;
-      dispatch(setResultData(result)); // Update with filtered data
-    }
-    setLoading(false);
+  // Update the checkbox state
+  const updatedCheckedStates = {
+    ...checkedStates,
+    [status]: !checkedStates[status],
   };
+  setCheckedStates(updatedCheckedStates);
+
+  // Get the selected statuses
+  const selectedStatuses = Object.keys(updatedCheckedStates).filter(
+    (key) => updatedCheckedStates[key]
+  );
+
+  if (selectedStatuses.length === 0) {
+    // If no checkboxes are selected, fetch all data
+    const fetchAllData = await taskmangementlisting({
+      status: '', // Empty status fetches all tasks
+    });
+
+    const result = fetchAllData.data;
+    setTimeout(() => {
+      dispatch(setResultData(result)); // Update with all tasks
+      setLoading(false);
+    }, 2000);
+    dispatch(setResultData([]))
+  } else {
+    // Fetch data for the selected statuses
+    const fetchCheckListing = await taskmangementlisting({
+      status: selectedStatuses.join(','), // Join the selected statuses
+    });
+    const result = fetchCheckListing.data;
+
+
+    setTimeout(() => {
+      dispatch(setResultData(result)); // Update with filtered tasks
+      setLoading(false);
+    }, 2000);
+    dispatch(setResultData([]))
+  }
+};
+
 
   const clearData = async () => {
     const fetchedData = await taskmangementlisting({});
@@ -247,7 +258,7 @@ const TaskManagement = ({navigation}) => {
       }
     } catch (error) {
       console.error('Error during search:', error);
-    } finally {
+    } finally { 
       setLoading(false); // Hide the loader
     }
   };
@@ -484,7 +495,7 @@ const TaskManagement = ({navigation}) => {
         }
         data={datastateredux}
         renderItem={({item, index}) => (
-         <View key={index}>
+          <View key={index}>
             <Animatable.View
               style={{
                 marginTop: 45,
@@ -580,14 +591,15 @@ const TaskManagement = ({navigation}) => {
           </View>
         )}
         ListEmptyComponent={
-          <Text
-            style={{
-              justifyContent: 'center',
-              alignSelf: 'center',
-              marginTop: 80,
-            }}>
-            No tasks available
-          </Text>
+          
+          datastateredux.length<1 && loading?<Text
+          style={{
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginTop: 80,
+          }}>
+          No tasks available
+        </Text>:<ActivityIndicator size={'large'} style={{marginVertical:40}}/>
         }
         // onEndReachedThreshold={0.5}
         ListFooterComponent={isfooterComponent}

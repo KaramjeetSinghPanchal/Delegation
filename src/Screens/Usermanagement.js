@@ -14,18 +14,17 @@ import {
 import * as Animatable from 'react-native-animatable';
 import Lanscape from './Lanscape';
 import Profile from '../Components/Profile';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import {listing} from '../apiClient/api';
 import {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import Modal from 'react-native-modal';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {setuserData} from '../Components/redux/dataSlice';
 import AddButton from './AddButton';
 import {useDispatch, useSelector} from 'react-redux';
+import { userdetails } from '../apiClient/api';
 const Usermanagement = ({navigation}) => {
-  const [selectedDate, setSelectedDate] = useState('');
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
 
@@ -53,6 +52,11 @@ const Usermanagement = ({navigation}) => {
   const dispatch = useDispatch();
   const isLandscape = Lanscape();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState(null); // Store the details of the selected person
+  const [firstName,setfirstName] = useState('')
+  const [lastName,setlastName] = useState('')
+  const [mobileNo,setmobile] = useState('')
+  const [emailId,setemailId] = useState('')
 
   const userData = useSelector(state => state.data.userData);
   useEffect(() => {
@@ -76,25 +80,29 @@ const Usermanagement = ({navigation}) => {
     fetchUsers();
   }, []); // Empt
 
-  const toggleModal = () => {
+  const toggleModal = async(id) => {
+
     setModalVisible(!isModalVisible);
+    const result =await userdetails(id)
+    if(result)
+    {
+      setfirstName(result?.first_name)
+      setlastName(result?.last_name)
+      setmobile(result.phone)
+      setemailId(result?.email)
+      handleupdate(id)
+
+    }
+
+    // const result = userData.filter(itm => itm.id == id);
+    // setSelectedPerson(result)
+    // setModalVisible(!isModalVisible);
   };
 
-  const handlesearch = () => {
-    Alert.alert('hii');
-  };
-
-  const viewdetailsmodal = val => {
-    return (
-      <View>
-        <Modal>
-          <View style={{flex: 1}}>
-            <Text>I am the modal content!</Text>
-          </View>
-        </Modal>
-      </View>
-    );
-  };
+  const handleupdate = (id)=>{
+    console.warn(id);
+    
+  }
 
   return (
     <SafeAreaView style={styles.containermain}>
@@ -156,7 +164,7 @@ const Usermanagement = ({navigation}) => {
                     {item?.email}
                   </Text>
                 </View>
-                <TouchableOpacity onPress={() => toggleModal(1)}>
+                <TouchableOpacity onPress={() => toggleModal(item.id)}>
                   <Text
                     style={[
                       styles.viewDetailsText,
@@ -175,15 +183,47 @@ const Usermanagement = ({navigation}) => {
         </View>
       </View>
 
-      <Modal isVisible={isModalVisible}>                    
-        <View style={{backgroundColor: 'white', height: 'auto', padding: 20}}>
-          <Text style={{fontSize: 20,fontWeight:600, paddingLeft: 10}}>Update User</Text>
+      <Modal isVisible={isModalVisible}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: 500,
+            padding: 20,
+            borderRadius: 10,
+          }}>
+          <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, fontWeight: 600, paddingLeft: 5}}>
+              Update User
+            </Text>
 
+            <TouchableOpacity style={{height: 20, width: 20, borderWidth: 0.5}}>
+              {' '}
+              <Icon
+                name="close"
+                size={18}
+                style={{color: 'gray', marginTop: 2, left: 1}}
+                onPress={toggleModal}
+              />
+            </TouchableOpacity>
+          </View>
+          {console.warn("selectedPerson",selectedPerson)
+          }
+         <View>
           <View style={{marginVertical: 10}}>
-            <Text style={{paddingLeft: 10,paddingTop:20}}>First Name</Text>
+            <Text style={{paddingLeft: 10, paddingTop: 20}}>
+              First Name<Text style={{color: 'red'}}>*</Text>
+            </Text>
             <TextInput
               placeholder="Enter name"
-              style={{marginHorizontal: 10}}
+              style={{
+                marginHorizontal: 10,
+                borderWidth: 0.1,
+                borderColor: 'black',
+                height: 30,
+                marginTop: 10,
+              }}
+              value={firstName}
+              onChangeText={setfirstName}
             />
           </View>
 
@@ -191,28 +231,102 @@ const Usermanagement = ({navigation}) => {
             <Text style={{paddingLeft: 10}}>Last Name</Text>
             <TextInput
               placeholder="Enter name"
-              style={{marginHorizontal: 10}}
+              style={{
+                marginHorizontal: 10,
+                borderWidth: 0.1,
+                borderColor: 'black',
+                height: 30,
+                marginTop: 10,
+              }}
+              value={lastName}
+              onChangeText={setlastName}
             />
           </View>
 
           <View style={{marginVertical: 10}}>
-            <Text style={{paddingLeft: 10}}>Email ID</Text>
+            <Text style={{paddingLeft: 10}}>
+              Email ID <Text style={{color: 'red'}}>*</Text>
+            </Text>
             <TextInput
               placeholder="Enter name"
-              style={{marginHorizontal: 10}}
+              style={{
+                marginHorizontal: 10,
+                borderWidth: 0.1,
+                borderColor: 'black',
+                height: 30,
+                marginTop: 10,
+              }}
+              value={emailId}
+              onChangeText={setemailId}
             />
+            
           </View>
 
-        
           <View style={{marginVertical: 10}}>
-            <Text style={{paddingLeft: 10}}>Mobile No.</Text>
+            <Text style={{paddingLeft: 10}}>
+              Mobile Number <Text style={{color: 'red'}}>*</Text>
+            </Text>
             <TextInput
               placeholder="Enter name"
-              style={{marginHorizontal: 10}}
+              style={{
+                marginHorizontal: 10,
+                borderWidth: 0.1,
+                borderColor: 'black',
+                height: 30,
+                marginTop: 10,
+              }}
+              value={mobileNo}
+              onChangeText={setmobile}
             />
           </View>
+          </View>
 
-          <Button title="Hide modal" onPress={toggleModal} />
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              marginTop: 50,
+            }}>
+            <TouchableOpacity
+              style={{
+                height: 35,
+                width: 100,
+                borderWidth: 1,
+                borderColor: '#0cbcb9',
+              }}>
+              <Text
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  color: '#0cbcb9',
+                  paddingTop: 7,
+                }} onPress={()=>    setModalVisible(!isModalVisible) }>
+                Clear{' '}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                height: 35,
+                width: 100,
+                borderWidth: 1,
+                borderColor: '#0cbcb9',
+              }}>
+              <Text
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  backgroundColor: '#0cbcb9',
+                  paddingTop: 7,
+                  color: 'white',
+                }}
+                onPress={handleupdate}>
+                Update
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 

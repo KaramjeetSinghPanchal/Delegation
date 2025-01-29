@@ -32,7 +32,7 @@ const TaskManagement = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [current, setcurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true); // Track if more data is available
   const [searchQuery, setSearchQuery] = useState('');
   const [total, settotal] = useState();
@@ -40,14 +40,16 @@ const TaskManagement = ({navigation}) => {
   const [downloadSuccess, setDownloadSuccess] = useState(false); // Tracks if download was successful
   const [errorMessage, setErrorMessage] = useState(null); // To handle errors
   const [message, setMessage] = useState('');
+  const [datashowloader,setdatashowloader] = useState([])
   const [screenwidth, setscreenwidth] = useState(
     Dimensions.get('window').width,
   );
+  
   const [screenheight, setscreenheight] = useState(
     Dimensions.get('window').height,
   );
   const [selectedDate, setSelectedDate] = useState('');
-  const datastateredux = useSelector(state => state.data.items);
+  const datastateredux = useSelector(state => state.data.items);  
 
   useEffect(() => {
     if (selected) {
@@ -89,7 +91,7 @@ const TaskManagement = ({navigation}) => {
     Pending: '8',
     Rejected: '7',
     'Revised Date': '9',
-  };
+  };  
 
   const formatDate = dateString => {
     const date = new Date(dateString);
@@ -116,6 +118,11 @@ const TaskManagement = ({navigation}) => {
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
 
+
+  const nodata = ()=>{
+    return  <Text>No Data</Text>
+  } 
+
   useEffect(() => {
     if (downloadSuccess && !isDownloading) {
       // Set the message after the download is successful
@@ -141,49 +148,47 @@ const TaskManagement = ({navigation}) => {
     'Revised Date': false,
   });
 
- const handleCheckboxChange = async (status) => {
-  setLoading(true); // Show loader while processing
+  const handleCheckboxChange = async status => {
+    
+    const updatedCheckedStates = {
+      ...checkedStates,
+      [status]: !checkedStates[status],
+    };
+    setCheckedStates(updatedCheckedStates);
 
-  // Update the checkbox state
-  const updatedCheckedStates = {
-    ...checkedStates,
-    [status]: !checkedStates[status],
+    const selectedStatuses = Object.keys(updatedCheckedStates).filter(
+      key => updatedCheckedStates[key],
+    );    
+    if (selectedStatuses.length === 0) {
+
+      const fetchAllData = await taskmangementlisting({
+        status: '',
+      }); 
+
+      const result = fetchAllData.data;
+
+      setTimeout(() => {
+        dispatch(setResultData(result));
+      }, 2000);
+      setLoading(false);
+    } 
+    
+    else {
+      const fetchCheckListing = await taskmangementlisting({
+        status: selectedStatuses.join(','),
+      });
+      const result = fetchCheckListing.data;
+      setdatashowloader(result)
+      if(result.length<1)
+      {
+        dispatch(setResultData(result));       
+      }else{
+        setTimeout(() => {
+          dispatch(setResultData(result));
+        }, 2000)
+      }
+    }
   };
-  setCheckedStates(updatedCheckedStates);
-
-  // Get the selected statuses
-  const selectedStatuses = Object.keys(updatedCheckedStates).filter(
-    (key) => updatedCheckedStates[key]
-  );
-
-  if (selectedStatuses.length === 0) {
-    // If no checkboxes are selected, fetch all data
-    const fetchAllData = await taskmangementlisting({
-      status: '', // Empty status fetches all tasks
-    });
-
-    const result = fetchAllData.data;
-    setTimeout(() => {
-      dispatch(setResultData(result)); // Update with all tasks
-      setLoading(false);
-    }, 2000);
-    dispatch(setResultData([]))
-  } else {
-    // Fetch data for the selected statuses
-    const fetchCheckListing = await taskmangementlisting({
-      status: selectedStatuses.join(','), // Join the selected statuses
-    });
-    const result = fetchCheckListing.data;
-
-
-    setTimeout(() => {
-      dispatch(setResultData(result)); // Update with filtered tasks
-      setLoading(false);
-    }, 2000);
-    dispatch(setResultData([]))
-  }
-};
-
 
   const clearData = async () => {
     const fetchedData = await taskmangementlisting({});
@@ -191,7 +196,6 @@ const TaskManagement = ({navigation}) => {
     if (fetchedData && Array.isArray(fetchedData.data)) {
       if (fetchedData.data.length > 0) {
         dispatch(setResultData(fetchedData.data));
-        // setData(fetchedData.data);
         settotal(fetchedData.data.total);
         if (!fetchedData.next_page_url) {
           setHasMoreData(false);
@@ -201,7 +205,7 @@ const TaskManagement = ({navigation}) => {
       } else {
         console.log('No more data to load.');
         dispatch(setResultData([]));
-        // setData([]);
+       
       }
     }
   };
@@ -213,11 +217,9 @@ const TaskManagement = ({navigation}) => {
   };
 
   const isfooterComponent = () => {
-    // Show footer loader only when loading and there is more data
-    if (loading && hasMoreData) {
-      return <ActivityIndicator size="large" style={{marginVertical: 36}} />;
-    }
-    return null; // Don't show anything if no more data or not loading
+      return <ActivityIndicator size="large" style={{marginVertical: 36}} />
+    
+    // return null; // Don't show anything if no more data or not loading
   };
 
   useEffect(() => {
@@ -258,7 +260,7 @@ const TaskManagement = ({navigation}) => {
       }
     } catch (error) {
       console.error('Error during search:', error);
-    } finally { 
+    } finally {
       setLoading(false); // Hide the loader
     }
   };
@@ -591,21 +593,24 @@ const TaskManagement = ({navigation}) => {
           </View>
         )}
         ListEmptyComponent={
-          
-          datastateredux.length<1 && loading?<Text
-          style={{
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginTop: 80,
-          }}>
-          No tasks available
-        </Text>:<ActivityIndicator size={'large'} style={{marginVertical:40}}/>
+          datashowloader.length >0 &&   loading ? (
+            <ActivityIndicator size={'large'} style={{ marginVertical: 40 }} />
+          ) : datastateredux.length === 0 ? (
+            <Text
+              style={{
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: 80,
+              }}>
+              No tasks available
+            </Text>
+          ) : null
         }
-        // onEndReachedThreshold={0.5}
-        ListFooterComponent={isfooterComponent}
+       
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
-        // isfooterComponent
+        // onEndReachedThreshold={0.5}
+        // ListFooterComponent={isfooterComponent}
       />
 
       <AddButton

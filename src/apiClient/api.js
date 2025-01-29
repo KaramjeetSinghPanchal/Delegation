@@ -187,3 +187,34 @@ export const taskmangementlisting = async ({
   const data = await response.json();
   return data.data; // Return the entire data object, including pagination info
 };
+
+
+
+export const userdetails = async (user_id) => {
+
+  const token = await gettoken();
+  console.warn("get the id",user_id);
+  
+  let fetchUrl = `${baseUrl}user-view?user_id=${user_id}`;
+
+
+  const response = await fetch(fetchUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+ 
+  
+
+  if (!response.ok) {
+    console.warn('Failed to fetch error', response.status);
+    throw new Error('Failed to fetch data');
+  }
+
+  const data = await response.json();
+  console.warn('response=====>',data);
+  return data.data; // Return the entire data object, including pagination info
+};

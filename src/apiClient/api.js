@@ -2,12 +2,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
- const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
+const baseUrl = 'http://delegation-qa.zapbuild.in/api/';
 
 // Login function using FormData
 
 export const loginUser = async (phone_email, password) => {
-  console.warn(phone_email, password, 'balle');
 
   try {
     // console.log('Sending request to:', `${baseUrl}user-login`);
@@ -57,10 +56,14 @@ const gettoken = async () => {
   }
 };
 
-export const listing = async () => {
+export const listing = async ({ page = 1, searchQuery = '' }) => {
   try {
-    const token = await gettoken(); // Get the token (ensure it's retrieved correctly)
-    const response = await fetch(`${baseUrl}user-listing`, {
+    const token = await gettoken(); // Get the token
+    let fetchUrl = `${baseUrl}user-listing?page=${page}`;
+
+    if (searchQuery) fetchUrl += `&searchQuery=${searchQuery}`;
+
+    const response = await fetch(fetchUrl, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,19 +71,20 @@ export const listing = async () => {
       },
     });
 
+
     if (!response.ok) {
       console.error('Failed to fetch users, status:', response.status);
-      return null; // Return null or handle the error as needed
+      return null;
     }
 
     const data = await response.json();
-    // console.log('API response:', data);
-    return data; // Return the data if the request is successful
+    return data; // Ensure data is returned
   } catch (error) {
-    console.error('Error fetching users listing:', error);
-    throw error; // Re-throw the error to be caught in the useEffect
+    console.error('Error fetching user listing:', error);
+    return null;
   }
 };
+
 
 export const delegationtask = async status => {
   try {
@@ -116,7 +120,6 @@ export const report = async formattedDate => {
   // Build the correct URL by adding the missing query parameters
   const fullUrl = `http://delegation-qa.zapbuild.in/api/generate-report?tab=other-user-task&report_type=pdf&user_id=&assigned_date=${formattedDate}&due_date=&filter_status=&status=&searchQuery=`;
 
-  console.warn('fullUrl', fullUrl);
 
   const token = await gettoken(); // Assuming gettoken() is an async function that retrieves your token
 
@@ -188,15 +191,10 @@ export const taskmangementlisting = async ({
   return data.data; // Return the entire data object, including pagination info
 };
 
-
-
-export const userdetails = async (user_id) => {
-
+export const userdetails = async user_id => {
   const token = await gettoken();
-  console.warn("get the id",user_id);
-  
-  let fetchUrl = `${baseUrl}user-view?user_id=${user_id}`;
 
+  let fetchUrl = `${baseUrl}user-view?user_id=${user_id}`;
 
   const response = await fetch(fetchUrl, {
     method: 'GET',
@@ -206,15 +204,44 @@ export const userdetails = async (user_id) => {
     },
   });
 
- 
-  
-
   if (!response.ok) {
     console.warn('Failed to fetch error', response.status);
     throw new Error('Failed to fetch data');
   }
 
   const data = await response.json();
-  console.warn('response=====>',data);
-  return data.data; // Return the entire data object, including pagination info
+  return data.data;
+};
+
+export const updateUser = async ({payload}) => {
+
+  try {
+    const token = await gettoken();
+    const fetchUrl = `${baseUrl}user-update`;
+    const formData = new FormData();
+    formData.append('first_name', payload.first_name);
+    formData.append('last_name', payload.last_name);
+    formData.append('email', payload.email);
+    formData.append('phone', payload.phone);
+    formData.append('user_id', payload.userId);
+    formData.append('type', payload.type);
+
+    const response = await fetch(fetchUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.message || 'Failed to update user');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error in updateUser:', error.message);
+    return {success: false, message: error.message};
+  }
 };

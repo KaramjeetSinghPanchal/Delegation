@@ -79,14 +79,14 @@ const HomeScreen = ({navigation}) => {
       <ScrollView>
         <Pushnotification />
         <Animatable.View
-          style={styles.logoimage}
+          style={[styles.logoimage,{paddingTop:isLandscape?15: 100}]}
           animation={'zoomIn'}
           duration={3000}>
-          <Image source={require('../assets/images/logo-black.png')} />
+          <Image source={require('../assets/images/logo-black.png')} style={{justifyContent:isLandscape?'center':'center',alignSelf:'center'}} />
         </Animatable.View>
         <View>
           <Animatable.Text
-            style={[styles.signin, {marginRight: isLandscape ? 320 : 230}]}
+            style={[styles.signin, {marginRight: isLandscape ? 320 : 230,fontSize:isLandscape?30:30,marginTop:20}]}
             animation="zoomIn"
             duration={3000}>
             Sign In
@@ -135,17 +135,7 @@ const HomeScreen = ({navigation}) => {
             borderRadius: 5,
             marginLeft: 35,
           }}
-          // iconn={
-          //   <Icon
-          //     name={isPasswordVisible ? 'visibility-off' : 'visibility'}
-          //     size={25}
-          //     color="#0cbcb9"
-          //     onPress={handleicon}
-          //     style={{paddingTop:6,marginRight:40}}
-          //   />
-
-          // }
-
+            
           iconn={
             <Icon
               name={isPasswordVisible ? 'visibility-off' : 'visibility'}
@@ -227,14 +217,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 700,
-    fontSize: 30,
+   
     fontFamily: 'bold',
     // marginLeft: -165,
-    paddingTop: 20,
+   
   },
   logoimage: {
     marginLeft: 0,
     marginBottom: 10,
-    paddingTop: 100,
+    
   },
 });

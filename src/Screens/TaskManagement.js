@@ -9,7 +9,6 @@ import {
   Image,
   TextInput,
   FlatList,
-  ScrollView,
   Dimensions,
   ActivityIndicator,
   Alert,
@@ -118,11 +117,6 @@ const TaskManagement = ({navigation}) => {
     return new Intl.DateTimeFormat('en-GB', options).format(date);
   };
 
-
-  const nodata = ()=>{
-    return  <Text>No Data</Text>
-  } 
-
   useEffect(() => {
     if (downloadSuccess && !isDownloading) {
       // Set the message after the download is successful
@@ -214,12 +208,6 @@ const TaskManagement = ({navigation}) => {
     dispatch(setResultData([]));
     setcurrent(1);
     handlesearch('', val, '');
-  };
-
-  const isfooterComponent = () => {
-      return <ActivityIndicator size="large" style={{marginVertical: 36}} />
-    
-    // return null; // Don't show anything if no more data or not loading
   };
 
   useEffect(() => {

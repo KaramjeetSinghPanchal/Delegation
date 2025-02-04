@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import * as Animatable from 'react-native-animatable';
-
 import Profile from '../Components/Profile';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Inputname from '../Components/Inputname';
@@ -18,10 +17,9 @@ import Inputbox from '../Components/Inputbox';
 // import { Button } from '@react-navigation/elements';
 import Button from '../Components/Button';
 import DocumentPicker from 'react-native-document-picker';
-import { AnimatedView } from 'react-native-reanimated/lib/typescript/component/View';
 const Details = ({navigation}) => {
   const [selectedDocuments, setSelectedDocuments] = useState([]);
-
+  const [date,setdate] = useState('')
   const remove = item => {
     const updatedDocuments = selectedDocuments.filter(
       doc => doc.uri !== item.uri,
@@ -61,7 +59,7 @@ const Details = ({navigation}) => {
         width: 71,
         borderWidth: 1,
         left: 10,
-        borderRadius:10
+        borderRadius: 10,
       }}>
       <Image
         source={require('../assets/images/pdf.png')}
@@ -71,7 +69,7 @@ const Details = ({navigation}) => {
         style={{
           height: 20,
           width: 20,
-          backgroundColor: 'black',
+          backgroundColor: 'gray',
           justifyContent: 'center',
           alignItems: 'center',
           borderRadius: 100,
@@ -91,7 +89,7 @@ const Details = ({navigation}) => {
       ? [...selectedDocuments, {addDocument: true}] // Add the "Add Document" button as the last item
       : [{addDocument: true}]; // Show only the "Add Document" button if no documents are selected
 
-  return (   
+  return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
         <TouchableOpacity
@@ -109,121 +107,128 @@ const Details = ({navigation}) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Animatable.View animation={'zoomIn'} duration={3000}>
-        <Inputname
-          name={'DueDate'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={styles.input}
-          placeholder="19-08-2024"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Assigned Date'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={styles.inputbox}
-          placeholder="2024-07-05"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Completion Date'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={styles.inputbox}
-          placeholder="N/A"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Revised Date'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={styles.inputbox}
-          placeholder="N/A"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Status'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={[styles.inputbox, styles.add]}
-          placeholder="In-Progress"
-          placeholderTextColor="#FE9816"
-        />
-
-        <Inputname
-          name={'Title'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={[styles.inputbox]}
-          placeholder="Delegation Module Presentation"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Description'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-        <Inputbox
-          style={[styles.inputbox, styles.description]}
-          placeholder="Delegation Module Presentation jdsfg dsfgh sdfghskd sdfkghskj"
-          placeholderTextColor="black"
-        />
-
-        <Inputname
-          name={'Attachment'}
-          style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
-        />
-  <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-       
-          <FlatList
-            data={dataToDisplay}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => {
-              if (item.addDocument) {
-                // Render "Add Document" button if this is the item
-                return (
-                  <TouchableOpacity
-                    style={{
-                      padding: 18,
-                      height: 71,
-                      width: 71,
-                      borderStyle: 'dotted',
-                      borderWidth: 1,
-                      marginTop: 20,
-                      left: 10,
-                      borderRadius:10
-                    }}
-                    onPress={handledocument}>
-                    <Image
-                      source={require('../assets/images/Vectorfile.png')}
-                      style={{height: 35, width: 35}}
-                    />
-                  </TouchableOpacity>
-                );
-              } else {
-                // Render the document items if this is a selected document
-                return renderDocumentItem({item});
-              }
-            }}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
+          <Inputname
+            name={'DueDate'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={styles.input}
+            placeholder="19-08-2024"
+            placeholderTextColor="gray"
+            value={date}
+            onChangeText={setdate}
           />
 
-          {/* Display no document selected message */}
-        
-       
-        <View style={{right:50,top:45,alignItems:'center'}}> {selectedDocuments.length === 0 && <Text>No documents selected</Text>}</View></View>
-      </Animatable.View>
+          <Inputname
+            name={'Assigned Date'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={styles.inputbox}
+            placeholder="2024-07-05"
+            placeholderTextColor="gray"
+          />
+
+          <Inputname
+            name={'Completion Date'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={styles.inputbox}
+            placeholder="N/A"
+            placeholderTextColor="gray"
+          />
+
+          <Inputname
+            name={'Revised Date'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={styles.inputbox}
+            placeholder="N/A"
+            placeholderTextColor="gray"
+          />
+
+          <Inputname
+            name={'Status'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={[styles.inputbox, styles.add]}
+            placeholder="In-Progress"
+            placeholderTextColor="#FE9816"
+          />
+
+          <Inputname
+            name={'Title'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={[styles.inputbox]}
+            placeholder="Delegation Module Presentation"
+            placeholderTextColor="gray"
+            value={date}
+          />
+
+          <Inputname
+            name={'Description'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <Inputbox
+            style={[styles.inputbox, styles.description]}
+            placeholder="Delegation Module Presentation jdsfg dsfgh sdfghskd sdfkghskj"
+            placeholderTextColor="gray"
+          />
+
+          <Inputname
+            name={'Attachment'}
+            style={{fontWeight: 600, paddingTop: 20, marginLeft: 15}}
+          />
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <FlatList
+              data={dataToDisplay}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => {
+                if (item.addDocument) {
+                  // Render "Add Document" button if this is the item
+                  return (
+                    <TouchableOpacity
+                      style={{
+                        padding: 18,
+                        height: 71,
+                        width: 71,
+                        borderStyle: 'dotted',
+                        borderWidth: 1,
+                        marginTop: 20,
+                        left: 10,
+                        borderRadius: 10,
+                      }}
+                      onPress={handledocument}>
+                      <Image
+                        source={require('../assets/images/Vectorfile.png')}
+                        style={{height: 35, width: 35}}
+                      />
+                    </TouchableOpacity>
+                  );
+                } else {
+                  // Render the document items if this is a selected document
+                  return renderDocumentItem({item});
+                }
+              }}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            />
+
+            {/* Display no document selected message */}
+
+            <View style={{right: 50, top: 45, alignItems: 'center'}}>
+              {' '}
+              {selectedDocuments.length === 0 && (
+                <Text>No documents selected</Text>
+              )}
+            </View>
+          </View>
+        </Animatable.View>
       </ScrollView>
 
       <Button
@@ -283,7 +288,7 @@ const styles = StyleSheet.create({
   },
   files: {
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: 'gray',
     borderStyle: 'dotted', // Works on iOS
     padding: 20,
     width: 77.71,

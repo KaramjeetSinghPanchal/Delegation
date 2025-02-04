@@ -66,7 +66,7 @@ const Dashboard = ({navigation}) => {
       setTimeout(() => {
         const botMessage = {
           id: (messages.length + 1).toString(),
-          text: ['Hii'],
+          text: ['Hii how can i help you?'],
           sender: 'bot', // This indicates it's the bot's message
           image: require('../assets/images/Bot.png'), // Bot's image
         };
@@ -127,7 +127,7 @@ const Dashboard = ({navigation}) => {
             <View
               style={[
                 styles.messageContainer,
-                {bottom: messages.length < 3 ? 10 : 90},
+                {bottom: messages.length < 3 ? 0 : 10},
                 item.sender === 'bot'
                   ? [
                       styles.botMessageContainer,

@@ -1365,6 +1365,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-maps (1.20.1):
+    - React-Core
   - react-native-safe-area-context (5.1.0):
     - DoubleConversion
     - glog
@@ -1993,6 +1995,7 @@ DEPENDENCIES:
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2124,6 +2127,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -2250,6 +2255,7 @@ SPEC CHECKSUMS:
   react-native-blob-util: d18fc3acedec6309daaef6166c3dfa208ae32b26
   react-native-date-picker: ce13cdf5cdfcd729025022c8d3b6f4fa547a754f
   react-native-document-picker: 1e082836a633ca9e7c75758036ff42535baaf36b
+  react-native-maps: ee1e65647460c3d41e778071be5eda10e3da6225
   react-native-safe-area-context: e0625eb857b816dff4aca46e125759cb0927e225
   React-nativeconfig: 565ebf4340d9ede95b523f0e3640f48286985ef5
   React-NativeModulesApple: ea083a4663dae82c99fe4c2186b11504ac4147e1

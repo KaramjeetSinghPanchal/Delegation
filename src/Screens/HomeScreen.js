@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { Platform } from 'react-native';
 import React from 'react';
 import Inputname from '../Components/Inputname';
 import Inputbox from '../Components/Inputbox';
@@ -24,9 +25,7 @@ import { useSelector } from 'react-redux';
 const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
-  const language = useSelector(state=>state.setlanguages)
-  console.log("=======language",language);
-  
+  const language = useSelector(state=>state.setlanguages) 
   
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [phone_email, setUsername] = useState('admin@zapbuild.com');
@@ -92,7 +91,7 @@ const HomeScreen = ({navigation}) => {
         </Animatable.View>
         <View>
           <Animatable.Text
-            style={[styles.signin, {marginRight: isLandscape ? 320 : 230,fontSize:isLandscape?30:30,marginTop:20}]}
+            style={[styles.signin, {marginRight: isLandscape ? 320 : 230,fontSize:isLandscape?30:30,marginTop:20,marginLeft:Platform.OS === 'ios'?0:10}]}
             animation="zoomIn"
             duration={3000}>
             Sign In
@@ -103,7 +102,7 @@ const HomeScreen = ({navigation}) => {
           style={{
             fontSize: 18,
             paddingTop: 20,
-            marginLeft: isLandscape ? 0 : 0,
+            marginLeft: Platform.OS === 'ios' ? 0 : 10
           }}
           name={'Email Address / Mobile Number'}
         />
@@ -115,7 +114,7 @@ const HomeScreen = ({navigation}) => {
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
-            marginLeft: 35,
+            marginLeft: Platform.OS === 'ios' ? 35 : 45,
           }}
           value={phone_email}
           onChangeText={setUsername}
@@ -126,7 +125,7 @@ const HomeScreen = ({navigation}) => {
           style={{
             fontSize: 18,
             paddingTop: 20,
-            marginLeft: isLandscape ? 0 : 0,
+            marginLeft: Platform.OS === 'ios' ? 0 : 10,
           }}
           name={'Password'}
         />
@@ -139,7 +138,7 @@ const HomeScreen = ({navigation}) => {
             borderWidth: 1,
             paddingLeft: 5,
             borderRadius: 5,
-            marginLeft: 35,
+            marginLeft: Platform.OS === 'ios' ? 35 : 45,
           }}
             
           iconn={
@@ -164,17 +163,22 @@ const HomeScreen = ({navigation}) => {
               color: '#0cbcb9',
               paddingTop: 20,
               left: isLandscape ? 531 : 155,
+              marginLeft: Platform.OS === 'ios' ? 0 : 8,
               fontSize: 17,
             }}>
             Forget Password?
           </Text>
         </TouchableOpacity>
 
+        <View style={{marginLeft: Platform.OS === 'ios' ? 0 : 10}}>
         <Button
           name={'Sign In'}
           onPress={handleSignIn}
           isLandscape={isLandscape}
         />
+        </View>
+
+       
 
         <View
           style={{

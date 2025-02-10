@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import * as Animatable from 'react-native-animatable';
@@ -163,12 +164,13 @@ const Usermanagement = ({navigation}) => {
           duration={2000}
           animation={'zoomIn'}>
           {/* Search Icon */}
-          <Icon name="search" size={27} color="gray" />
+          <Icon name="search" size={27} color="gray" style={{marginHorizontal:Platform==='ios'?0:15}}/>
 
           {/* Text Input */}
           <TextInput
             style={styles.inputBox}
             placeholder="Search For Something"
+            placeholderTextColor="#888" 
             onChangeText={(val)=>setSearchvalue(val)}
             onSubmitEditing={()=>fetchUsers(Searchvalue)} 
           />

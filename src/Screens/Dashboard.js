@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {delegationtaskk} from '../apiClient/api';
 import * as Animatable from 'react-native-animatable';
+import {Platform} from 'react-native';
 import AddButton from './AddButton';
 import {useCallback} from 'react';
 import React from 'react';
@@ -90,8 +91,13 @@ const Dashboard = ({navigation}) => {
     }
     return null; // No footer if loading is false or no more data
   }, [hasMoreData]);
-  const appliedWidth = got ? 110 : isLandscape ? 280 : 200;
-
+  const appliedWidth = got
+    ? 110
+    : isLandscape
+    ? 280
+    : Platform.OS === 'ios'
+    ? 200
+    : 180;
   const handleserach = () => {
     setgot(true);
     setwidth(150);
@@ -146,7 +152,7 @@ const Dashboard = ({navigation}) => {
                         }}>
                         {'\n'} {task.inProgressCount}
                       </Text>
-                    </Text> 
+                    </Text>
 
                     <Image
                       source={require('../assets/images/iconprogress.png')}
@@ -269,7 +275,10 @@ const Dashboard = ({navigation}) => {
                 </View> */}
 
                     <Animatable.View
-                      style={styles.containerttt}
+                      style={{
+                        marginRight: Platform.OS === 'ios' ? 0 : 15,
+                        marginTop: Platform.OS === 'ios' ? 0 : -5,
+                      }}
                       duration={4000}
                       animation={'zoomIn'}>
                       <PieChart
@@ -280,7 +289,7 @@ const Dashboard = ({navigation}) => {
                     </Animatable.View>
 
                     <Animatable.View
-                      style={styles.listContainer}
+                      style={{marginTop: Platform.OS === 'ios' ? 0 : -30}}
                       animation={'zoomIn'}
                       duration={3000}>
                       <FlatList
@@ -410,7 +419,7 @@ const Dashboard = ({navigation}) => {
                     <TouchableOpacity
                       style={{
                         height: 40,
-                        width: width,
+                        width:  width,
                         alignItems: 'center',
                         justifyContent: 'center',
                         borderRadius: 4,
@@ -420,7 +429,6 @@ const Dashboard = ({navigation}) => {
                         borderWidth: 1,
                         marginLeft: 7,
                         backgroundColor: '#F8F9FA',
-                        // backgroundColor: 'black',
                         borderColor: '#E2E8F0',
                         flexDirection: 'row',
                       }}

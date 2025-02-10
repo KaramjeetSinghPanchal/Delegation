@@ -27,7 +27,6 @@ export const loginUser = async (phone_email, password) => {
     }
 
     const data = await response.json();
-    console.log('datadatadata', data);
 
     if (data.data.token) {
       await AsyncStorage.setItem('authToken', data.data.token);

@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {useSelector} from 'react-redux';
 import {useRef, useState, useEffect} from 'react';
 import Profile from '../Components/Profile';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -41,11 +40,11 @@ const Dashboard = ({navigation}) => {
     };
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({animated: true});
+      flatListRef.current.scrollToEnd({animated: true}); 
     }
-  }, [messages]);
+  }, [messages]); 
 
   const sendMessage = () => {
     if (message.trim() !== '') {
@@ -243,6 +242,7 @@ const styles = StyleSheet.create({
   botImage: {
     width: 93.46,
     height: 130,
+    marginTop:Platform.OS == 'ios'?0:120
   },
   adminMessage: {
     justifyContent: 'center',
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
     position: 'absolute',
-    bottom: 0, // Keep the input at the bottom
+    bottom: 8, // Keep the input at the bottom
     borderColor: '#E2E8F0',
     marginLeft: 10,
     borderRadius: 50,

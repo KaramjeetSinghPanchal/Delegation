@@ -17,10 +17,13 @@ const dataSlice = createSlice({
     },
     setExapmle: (state, action) => {
       state.exapmle = action.payload + 1; // Rule: Add 1 to whatever number is sent
+    },
+    setlanguages: (state = 'ENGLISH',action)=>{
+         state.language = action.payload;
     }
   },
 });
 
-export const {setResultData,setListingData,setuserData,setExapmle} = dataSlice.actions;
+export const {setResultData,setListingData,setuserData,setExapmle,setlanguages} = dataSlice.actions;
 export default dataSlice.reducer;
 

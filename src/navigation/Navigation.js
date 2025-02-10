@@ -1,7 +1,7 @@
 // src/navigation/Navigation.js
 
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import OTP from '../Screens/OTP';
 import Tabnavigation from './Tabnavigation'; // Import your Tabnavigator component
 import Details from '../Screens/Details';
 import Chart from '../Screens/Chart';
+import Files from '../Screens/Files';
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
@@ -27,6 +28,7 @@ const Navigation = () => {
           <Stack.Screen name="OTP" component={OTP} />
           <Stack.Screen name="Details" component={Details} />
           <Stack.Screen name="Chart" component={Chart} />
+          <Stack.Screen name="Files" component={Files} />
           <Stack.Screen name="Tabs" component={Tabnavigation} />
         </Stack.Navigator>
       </NavigationContainer>

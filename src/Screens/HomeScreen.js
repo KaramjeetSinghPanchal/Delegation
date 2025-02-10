@@ -15,14 +15,19 @@ import Button from '../Components/Button';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import { setlanguages } from '../Components/redux/dataSlice';
 import {loginUser} from '../apiClient/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Lanscape from './Lanscape';
 import Pushnotification from '../Components/Pushnotification';
+import { useSelector } from 'react-redux';
 const HomeScreen = ({navigation}) => {
   const navigate = useNavigation();
   const isLandscape = Lanscape();
-
+  const language = useSelector(state=>state.setlanguages)
+  console.log("=======language",language);
+  
+  
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [phone_email, setUsername] = useState('admin@zapbuild.com');
   const [password, setPassword] = useState('Ztech@44');
@@ -77,7 +82,8 @@ const HomeScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Pushnotification />
+        {/* <Pushnotification /> */}
+        {/* <Text>udyfue</Text> */}
         <Animatable.View
           style={[styles.logoimage,{paddingTop:isLandscape?15: 100}]}
           animation={'zoomIn'}

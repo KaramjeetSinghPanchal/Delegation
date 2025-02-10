@@ -146,7 +146,7 @@ const Dashboard = ({navigation}) => {
                         }}>
                         {'\n'} {task.inProgressCount}
                       </Text>
-                    </Text>
+                    </Text> 
 
                     <Image
                       source={require('../assets/images/iconprogress.png')}

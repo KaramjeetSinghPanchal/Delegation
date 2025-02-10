@@ -130,9 +130,9 @@ const TaskManagement = ({navigation}) => {
       // Cleanup the timer if the component unmounts or dependencies change
       return () => clearTimeout(timer);
     }
-  }, [downloadSuccess, isDownloading]);
-
-  const [checkedStates, setCheckedStates] = useState({
+  }, [downloadSuccess, isDownloading]); 
+ 
+  const [checkedStates, setCheckedStates] = useState({ 
     All: false,
     'In-Draft': false,
     'In-progress': false,
@@ -141,11 +141,11 @@ const TaskManagement = ({navigation}) => {
     Rejected: false,
     'Revised Date': false,
   });
-
+ 
   const handleCheckboxChange = async status => {
-    
+     
     const updatedCheckedStates = {
-      ...checkedStates,
+      ...checkedStates, 
       [status]: !checkedStates[status],
     };
     setCheckedStates(updatedCheckedStates);

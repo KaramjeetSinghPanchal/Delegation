@@ -23,6 +23,7 @@ import {setuserData} from '../Components/redux/dataSlice';
 import AddButton from './AddButton';
 import {useDispatch, useSelector} from 'react-redux';
 import {userdetails} from '../apiClient/api';
+import Files from './Files';
 
 let userId = 0;
 const Usermanagement = ({navigation}) => {
@@ -399,7 +400,7 @@ const Usermanagement = ({navigation}) => {
           </Animatable.View>
         </Modal>
       </View>
-      <AddButton isLandscape={isLandscape} />
+      <AddButton isLandscape={isLandscape} onPress={()=>navigation.navigate('Files')} />
     </SafeAreaView>
   );
 };
